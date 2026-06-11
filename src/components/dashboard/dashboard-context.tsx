@@ -10,63 +10,36 @@ import {
 } from 'react'
 import { type ViewKey } from './navigation'
 
-export type OperationClient = {
-  initials: string
-  name: string
-  phone: string
-  kycLevel?: string
-  kycVerified?: boolean
-  balance?: string
-}
-
-type OperationView = 'depot' | 'retrait' | 'transfert'
-
-const PENDING_CLIENT_KEY = 'ricash-pending-client'
-let pendingClientCache: OperationClient | null | undefined = undefined
-
-export type PendingTransaction = {
+export type TransitDossier = {
   id: string
-  type: string
-  status: string
-  period: string
-  date: string
-  time: string
-  amount: string
-  positive: boolean
-  description: string
+  number: string
+  type: 'Import' | 'Export' | 'Transit' | 'Réexportation'
   client: string
-  reference: string
+  regime: string
+  bl: string
+  bureau: string
+  merchandise: string
+  status: string
+  honoraires: string
+  droitsTaxes: string
+  date: string
+  corridor: string
 }
 
-const PENDING_TX_KEY = 'ricash-pending-transaction'
-let pendingTxCache: PendingTransaction | null | undefined = undefined
+const PENDING_DOSSIER_KEY = 'transit-pending-dossier'
+let pendingDossierCache: TransitDossier | null | undefined = undefined
 
-export function takePendingClient(): OperationClient | null {
-  if (pendingClientCache !== undefined) return pendingClientCache
+export function takePendingDossier(): TransitDossier | null {
+  if (pendingDossierCache !== undefined) return pendingDossierCache
   if (typeof window === 'undefined') return null
-  const raw = sessionStorage.getItem(PENDING_CLIENT_KEY)
+  const raw = sessionStorage.getItem(PENDING_DOSSIER_KEY)
   if (!raw) return null
-  sessionStorage.removeItem(PENDING_CLIENT_KEY)
+  sessionStorage.removeItem(PENDING_DOSSIER_KEY)
   try {
-    pendingClientCache = JSON.parse(raw) as OperationClient
-    return pendingClientCache
+    pendingDossierCache = JSON.parse(raw) as TransitDossier
+    return pendingDossierCache
   } catch {
-    pendingClientCache = null
-    return null
-  }
-}
-
-export function takePendingTransaction(): PendingTransaction | null {
-  if (pendingTxCache !== undefined) return pendingTxCache
-  if (typeof window === 'undefined') return null
-  const raw = sessionStorage.getItem(PENDING_TX_KEY)
-  if (!raw) return null
-  sessionStorage.removeItem(PENDING_TX_KEY)
-  try {
-    pendingTxCache = JSON.parse(raw) as PendingTransaction
-    return pendingTxCache
-  } catch {
-    pendingTxCache = null
+    pendingDossierCache = null
     return null
   }
 }
@@ -75,94 +48,57 @@ type DashboardContextValue = {
   activeView: ViewKey
   setActiveView: (view: ViewKey) => void
   navigateTo: (view: ViewKey) => void
-  pendingClient: OperationClient | null
-  clearPendingClient: () => void
-  navigateToOperation: (view: OperationView, client: OperationClient) => void
-  consumePendingClient: () => OperationClient | null
-  pendingTransaction: PendingTransaction | null
-  clearPendingTransaction: () => void
-  navigateToTransactionDetails: (tx: PendingTransaction) => void
-  consumePendingTransaction: () => PendingTransaction | null
+  pendingDossier: TransitDossier | null
+  clearPendingDossier: () => void
+  navigateToDossierDetail: (dossier: TransitDossier) => void
+  consumePendingDossier: () => TransitDossier | null
 }
 
 const DashboardContext = createContext<DashboardContextValue | null>(null)
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
   const [activeView, setActiveView] = useState<ViewKey>('dashboard')
-  const [pendingClient, setPendingClient] = useState<OperationClient | null>(
-    null
-  )
-  const [pendingTransaction, setPendingTransaction] =
-    useState<PendingTransaction | null>(null)
+  const [pendingDossier, setPendingDossier] = useState<TransitDossier | null>(null)
 
   const navigateTo = useCallback((view: ViewKey) => {
     setActiveView(view)
   }, [])
 
-  const clearPendingClient = useCallback(() => {
-    setPendingClient(null)
+  const clearPendingDossier = useCallback(() => {
+    setPendingDossier(null)
   }, [])
 
-  const clearPendingTransaction = useCallback(() => {
-    setPendingTransaction(null)
-  }, [])
-
-  const navigateToOperation = useCallback(
-    (view: OperationView, client: OperationClient) => {
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem(PENDING_CLIENT_KEY, JSON.stringify(client))
-      }
-      setPendingClient(client)
-      setActiveView(view)
-    },
-    []
-  )
-
-  const navigateToTransactionDetails = useCallback((tx: PendingTransaction) => {
+  const navigateToDossierDetail = useCallback((dossier: TransitDossier) => {
     if (typeof window !== 'undefined') {
-      sessionStorage.setItem(PENDING_TX_KEY, JSON.stringify(tx))
+      sessionStorage.setItem(PENDING_DOSSIER_KEY, JSON.stringify(dossier))
     }
-    setPendingTransaction(tx)
-    setActiveView('historique-details')
+    setPendingDossier(dossier)
+    setActiveView('dossier-detail')
   }, [])
 
-  const consumePendingClient = useCallback(() => {
-    const client = pendingClient
-    setPendingClient(null)
-    return client
-  }, [pendingClient])
-
-  const consumePendingTransaction = useCallback(() => {
-    const tx = pendingTransaction
-    setPendingTransaction(null)
-    return tx
-  }, [pendingTransaction])
+  const consumePendingDossier = useCallback(() => {
+    const dossier = pendingDossier
+    setPendingDossier(null)
+    return dossier
+  }, [pendingDossier])
 
   const value = useMemo(
     () => ({
       activeView,
       setActiveView,
       navigateTo,
-      pendingClient,
-      clearPendingClient,
-      navigateToOperation,
-      consumePendingClient,
-      pendingTransaction,
-      clearPendingTransaction,
-      navigateToTransactionDetails,
-      consumePendingTransaction,
+      pendingDossier,
+      clearPendingDossier,
+      navigateToDossierDetail,
+      consumePendingDossier,
     }),
     [
       activeView,
       navigateTo,
-      pendingClient,
-      clearPendingClient,
-      navigateToOperation,
-      consumePendingClient,
-      pendingTransaction,
-      clearPendingTransaction,
-      navigateToTransactionDetails,
-      consumePendingTransaction,
+      pendingDossier,
+      clearPendingDossier,
+      navigateToDossierDetail,
+      consumePendingDossier,
     ]
   )
 

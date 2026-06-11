@@ -7,18 +7,15 @@ import { cn } from '@/lib/utils'
 import { type ViewKey } from './navigation'
 
 const viewTitles: Record<ViewKey, { title: string; subtitle: string }> = {
-  dashboard: { title: 'Tableau de bord', subtitle: 'Vue d\'ensemble de votre activité' },
-  depot: { title: 'Dépôt Wallet', subtitle: 'Créditer le wallet d\'un client' },
-  retrait: { title: 'Retrait Wallet', subtitle: 'Débiter le wallet d\'un client' },
-  transfert: { title: 'Transfert National', subtitle: 'Envoyer de l\'argent nationwide' },
-  'retrait-transfert': { title: 'Retrait Transfert', subtitle: 'Paiement d\'un transfert en attente' },
-  clients: { title: 'Gestion des Clients', subtitle: 'Créer, rechercher et gérer les clients' },
-  commissions: { title: 'Commissions', subtitle: 'Suivi de vos commissions' },
-  caisse: { title: 'Caisse Agent', subtitle: 'Gestion de votre caisse et liquidités' },
-  airtime: { title: 'Airtime & Factures', subtitle: 'Recharge et paiement de factures' },
-  historique: { title: 'Historique', subtitle: 'Historique complet des opérations' },
-  'historique-details': { title: 'Détails transaction', subtitle: 'Volume, informations et impression' },
-  rapports: { title: 'Rapports', subtitle: 'Analyses et rapports d\'activité' },
+  dashboard: { title: 'Tableau de bord', subtitle: 'Pilotage opérationnel et financier' },
+  dossiers: { title: 'Dossiers de Transit', subtitle: 'Gestion des dossiers de dédouanement' },
+  'dossier-detail': { title: 'Détails Dossier', subtitle: 'Informations et suivi du dossier' },
+  clients: { title: 'Clients & Contrats', subtitle: 'Gestion clients, contrats et tarification' },
+  transport: { title: 'Transport & Flotte', subtitle: 'Gestion de la flotte et des missions' },
+  depots: { title: 'Dépôts & Entreposage', subtitle: 'Gestion des magasins sous douane' },
+  facturation: { title: 'Facturation & Comptabilité', subtitle: 'Factures, règlements et comptabilité' },
+  ged: { title: 'Documents (GED)', subtitle: 'Gestion électronique des documents' },
+  securite: { title: 'Accès & Sécurité', subtitle: 'Gestion des rôles et permissions' },
   notifications: { title: 'Notifications', subtitle: 'Alertes et messages système' },
   parametres: { title: 'Paramètres', subtitle: 'Configuration de votre compte' },
 }
@@ -79,7 +76,7 @@ export function DashboardHeader({
         >
           <Bell className="w-5 h-5 text-[#6B7280]" />
           <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
-            2
+            3
           </span>
         </button>
         <div ref={profileRef} className="relative hidden sm:block">
@@ -88,15 +85,15 @@ export function DashboardHeader({
             onClick={() => setProfileOpen((v) => !v)}
             className="flex items-center gap-2.5 bg-[#F9FAFB] hover:bg-gray-50 rounded-xl px-3 py-2 transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-xs">
-              {user?.initials ?? 'AM'}
+            <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-semibold text-xs">
+              {user?.initials ?? 'SD'}
             </div>
             <div className="text-left">
               <p className="text-sm font-medium text-[#111827] leading-5">
-                {user?.name ?? 'Amadou Moussa'}
+                {user?.name ?? 'Seydou Diarra'}
               </p>
               <p className="text-[10px] text-[#9CA3AF] leading-4">
-                Agent · {user?.location ?? 'Bamako'}
+                Directeur · {user?.location ?? 'Bamako'}
               </p>
             </div>
             <ChevronDown

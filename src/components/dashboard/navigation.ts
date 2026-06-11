@@ -4,19 +4,16 @@ import { useState } from 'react'
 
 export type ViewKey =
   | 'dashboard'
-  | 'depot'
-  | 'retrait'
-  | 'transfert'
-  | 'retrait-transfert'
+  | 'dossiers'
+  | 'dossier-detail'
   | 'clients'
-  | 'commissions'
-  | 'caisse'
-  | 'airtime'
-  | 'historique'
-  | 'historique-details'
+  | 'transport'
+  | 'depots'
+  | 'facturation'
+  | 'ged'
+  | 'securite'
   | 'notifications'
   | 'parametres'
-  | 'rapports'
 
 export function useNavigation() {
   const [activeView, setActiveView] = useState<ViewKey>('dashboard')

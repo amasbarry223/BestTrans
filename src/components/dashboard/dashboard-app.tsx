@@ -6,34 +6,28 @@ import { DashboardHeader } from '@/components/dashboard/header'
 import { DashboardProvider, useDashboard } from '@/components/dashboard/dashboard-context'
 import { type ViewKey } from '@/components/dashboard/navigation'
 import { DashboardView } from '@/components/dashboard/views/dashboard-view'
-import { DepotView } from '@/components/dashboard/views/depot-view'
-import { RetraitView } from '@/components/dashboard/views/retrait-view'
-import { TransfertView } from '@/components/dashboard/views/transfert-view'
-import { RetraitTransfertView } from '@/components/dashboard/views/retrait-transfert-view'
+import { DossiersView } from '@/components/dashboard/views/dossiers-view'
+import { DossierDetailView } from '@/components/dashboard/views/dossier-detail-view'
 import { ClientsView } from '@/components/dashboard/views/clients-view'
-import { CommissionsView } from '@/components/dashboard/views/commissions-view'
-import { CaisseView } from '@/components/dashboard/views/caisse-view'
-import { AirtimeView } from '@/components/dashboard/views/airtime-view'
-import { HistoriqueView } from '@/components/dashboard/views/historique-view'
-import { HistoriqueDetailsView } from '@/components/dashboard/views/historique-details-view'
+import { TransportView } from '@/components/dashboard/views/transport-view'
+import { DepotsView } from '@/components/dashboard/views/depots-view'
+import { FacturationView } from '@/components/dashboard/views/facturation-view'
+import { GedView } from '@/components/dashboard/views/ged-view'
+import { SecuriteView } from '@/components/dashboard/views/securite-view'
 import { NotificationsView } from '@/components/dashboard/views/notifications-view'
 import { ParametresView } from '@/components/dashboard/views/parametres-view'
-import { RapportsView } from '@/components/dashboard/views/rapports-view'
 
 const viewComponents: Record<Exclude<ViewKey, 'dashboard'>, React.ComponentType> = {
-  depot: DepotView,
-  retrait: RetraitView,
-  transfert: TransfertView,
-  'retrait-transfert': RetraitTransfertView,
+  dossiers: DossiersView,
+  'dossier-detail': DossierDetailView,
   clients: ClientsView,
-  commissions: CommissionsView,
-  caisse: CaisseView,
-  airtime: AirtimeView,
-  historique: HistoriqueView,
-  'historique-details': HistoriqueDetailsView,
+  transport: TransportView,
+  depots: DepotsView,
+  facturation: FacturationView,
+  ged: GedView,
+  securite: SecuriteView,
   notifications: NotificationsView,
   parametres: ParametresView,
-  rapports: RapportsView,
 }
 
 export function DashboardLoading() {

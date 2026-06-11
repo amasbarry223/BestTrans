@@ -2,42 +2,36 @@
 
 import {
   LayoutDashboard,
-  ArrowDownToLine,
-  ArrowUpFromLine,
-  Send,
-  QrCode,
+  FolderOpen,
   Users,
-  Percent,
-  Wallet,
-  Smartphone,
-  Clock,
+  Truck,
+  Warehouse,
+  Receipt,
+  FileText,
+  Shield,
   Bell,
   Settings,
   X,
-  BarChart3,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { RicashLogo } from '@/components/ricash-logo'
+import { TransitLogo } from '@/components/transit-logo'
 import { type ViewKey } from './navigation'
 
 const mainItems: { key: ViewKey; label: string; icon: React.ElementType }[] = [
   { key: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
-  { key: 'depot', label: 'Dépôt Wallet', icon: ArrowDownToLine },
-  { key: 'retrait', label: 'Retrait Wallet', icon: ArrowUpFromLine },
-  { key: 'transfert', label: 'Transfert National', icon: Send },
-  { key: 'retrait-transfert', label: 'Retrait Transfert', icon: QrCode },
+  { key: 'dossiers', label: 'Dossiers de Transit', icon: FolderOpen },
+  { key: 'clients', label: 'Clients & Contrats', icon: Users },
+  { key: 'transport', label: 'Transport & Flotte', icon: Truck },
+  { key: 'depots', label: 'Dépôts & Entreposage', icon: Warehouse },
 ]
 
 const managementItems: { key: ViewKey; label: string; icon: React.ElementType }[] = [
-  { key: 'clients', label: 'Clients', icon: Users },
-  { key: 'commissions', label: 'Commissions', icon: Percent },
-  { key: 'caisse', label: 'Caisse Agent', icon: Wallet },
+  { key: 'facturation', label: 'Facturation & Compta', icon: Receipt },
+  { key: 'ged', label: 'Documents (GED)', icon: FileText },
 ]
 
-const servicesItems: { key: ViewKey; label: string; icon: React.ElementType }[] = [
-  { key: 'airtime', label: 'Airtime & Factures', icon: Smartphone },
-  { key: 'historique', label: 'Historique', icon: Clock },
-  { key: 'rapports', label: 'Rapports', icon: BarChart3 },
+const systemItems: { key: ViewKey; label: string; icon: React.ElementType }[] = [
+  { key: 'securite', label: 'Accès & Sécurité', icon: Shield },
   { key: 'notifications', label: 'Notifications', icon: Bell },
   { key: 'parametres', label: 'Paramètres', icon: Settings },
 ]
@@ -58,7 +52,7 @@ function NavContent({
 
   return (
     <nav className="flex-1 overflow-y-auto px-3 py-4 scrollbar-thin">
-      {/* Main */}
+      {/* Opérations */}
       <div className="mb-6">
         <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-[#9CA3AF]">
           Opérations
@@ -71,14 +65,14 @@ function NavContent({
                 className={cn(
                   'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
                   activeView === item.key
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-teal-50 text-teal-700'
                     : 'text-[#6B7280] hover:bg-gray-50 hover:text-[#111827]'
                 )}
               >
                 <item.icon
                   className={cn(
                     'w-5 h-5',
-                    activeView === item.key ? 'text-emerald-600' : 'text-[#9CA3AF]'
+                    activeView === item.key ? 'text-teal-600' : 'text-[#9CA3AF]'
                   )}
                 />
                 {item.label}
@@ -88,7 +82,7 @@ function NavContent({
         </ul>
       </div>
 
-      {/* Management */}
+      {/* Gestion */}
       <div className="mb-6">
         <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-[#9CA3AF]">
           Gestion
@@ -101,14 +95,14 @@ function NavContent({
                 className={cn(
                   'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
                   activeView === item.key
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-teal-50 text-teal-700'
                     : 'text-[#6B7280] hover:bg-gray-50 hover:text-[#111827]'
                 )}
               >
                 <item.icon
                   className={cn(
                     'w-5 h-5',
-                    activeView === item.key ? 'text-emerald-600' : 'text-[#9CA3AF]'
+                    activeView === item.key ? 'text-teal-600' : 'text-[#9CA3AF]'
                   )}
                 />
                 {item.label}
@@ -118,27 +112,27 @@ function NavContent({
         </ul>
       </div>
 
-      {/* Services */}
+      {/* Système */}
       <div className="mb-2">
         <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-[#9CA3AF]">
-          Services
+          Système
         </p>
         <ul className="space-y-0.5">
-          {servicesItems.map((item) => (
+          {systemItems.map((item) => (
             <li key={item.key}>
               <button
                 onClick={() => handleClick(item.key)}
                 className={cn(
                   'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
                   activeView === item.key
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-teal-50 text-teal-700'
                     : 'text-[#6B7280] hover:bg-gray-50 hover:text-[#111827]'
                 )}
               >
                 <item.icon
                   className={cn(
                     'w-5 h-5',
-                    activeView === item.key ? 'text-emerald-600' : 'text-[#9CA3AF]'
+                    activeView === item.key ? 'text-teal-600' : 'text-[#9CA3AF]'
                   )}
                 />
                 {item.label}
@@ -162,9 +156,9 @@ export function DashboardSidebar({
     <aside className="hidden lg:flex w-[260px] min-w-[260px] flex-col border-r border-[#E5E7EB] bg-white h-screen sticky top-0">
       {/* Logo */}
       <div className="flex justify-center items-center px-4 py-6 border-b border-[#E5E7EB]">
-        <RicashLogo
+        <TransitLogo
           showText={false}
-          imageClassName="h-16 w-auto max-w-[220px]"
+          imageClassName="h-14 w-auto max-w-[220px]"
           className="justify-center"
         />
       </div>
@@ -196,9 +190,9 @@ export function MobileSidebar({
         }`}
       >
         <div className="relative flex items-center justify-center px-6 py-6 border-b border-[#E5E7EB]">
-          <RicashLogo
+          <TransitLogo
             showText={false}
-            imageClassName="h-14 w-auto max-w-[200px]"
+            imageClassName="h-12 w-auto max-w-[200px]"
             className="justify-center"
           />
           <button

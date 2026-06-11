@@ -2,26 +2,24 @@
 
 import React from 'react'
 import {
-  Wallet,
-  ArrowLeftRight,
-  Users,
-  Percent,
-  ArrowDownToLine,
-  ArrowUpFromLine,
-  Send,
-  QrCode,
-  Smartphone,
-  UserPlus,
+  FolderOpen,
   TrendingUp,
   TrendingDown,
   ChevronRight,
-
+  Truck,
+  Warehouse,
+  Receipt,
+  Clock,
+  Users,
+  AlertTriangle,
   Calendar,
   BarChart3,
   PieChart as PieChartIcon,
   Activity,
-  Clock,
-  RefreshCw,
+  ArrowUpRight,
+  ArrowDownRight,
+  DollarSign,
+  FileCheck,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { type ViewKey } from '../navigation'
@@ -51,177 +49,146 @@ import {
 
 const stats = [
   {
-    label: 'Solde Caisse',
-    value: '2 450 000 FCFA',
+    label: 'Dossiers en cours',
+    value: '34',
     trend: '+12%',
     trendUp: true,
-    icon: Wallet,
-    accent: 'emerald' as const,
+    icon: FolderOpen,
+    accent: 'teal' as const,
   },
   {
-    label: 'Transactions du jour',
-    value: '47',
-    trend: '+8%',
+    label: 'Chiffre d\'affaires',
+    value: '127,5 M FCFA',
+    trend: '+18%',
     trendUp: true,
-    icon: ArrowLeftRight,
+    icon: DollarSign,
     accent: 'sky' as const,
   },
   {
-    label: 'Clients servis',
-    value: '23',
-    trend: '-3%',
-    trendUp: false,
-    icon: Users,
+    label: 'Débours en cours',
+    value: '42,3 M FCFA',
+    trend: '+8%',
+    trendUp: true,
+    icon: Receipt,
     accent: 'amber' as const,
   },
   {
-    label: 'Commissions du jour',
-    value: '35 250 FCFA',
-    trend: '+5%',
-    trendUp: true,
-    icon: Percent,
-    accent: 'teal' as const,
+    label: 'Créances clients',
+    value: '28,7 M FCFA',
+    trend: '-5%',
+    trendUp: false,
+    icon: AlertTriangle,
+    accent: 'rose' as const,
   },
 ]
 
 const accentMap: Record<string, { bg: string; iconBg: string; iconText: string; ring: string }> = {
-  emerald: { bg: 'bg-emerald-50', iconBg: 'bg-emerald-100', iconText: 'text-emerald-600', ring: 'ring-emerald-200' },
-  sky:     { bg: 'bg-sky-50',     iconBg: 'bg-sky-100',     iconText: 'text-sky-600',     ring: 'ring-sky-200' },
-  amber:   { bg: 'bg-amber-50',   iconBg: 'bg-amber-100',   iconText: 'text-amber-600',   ring: 'ring-amber-200' },
-  teal:    { bg: 'bg-teal-50',    iconBg: 'bg-teal-100',    iconText: 'text-teal-600',    ring: 'ring-teal-200' },
-  violet:  { bg: 'bg-violet-50',  iconBg: 'bg-violet-100',  iconText: 'text-violet-600',  ring: 'ring-violet-200' },
-  rose:    { bg: 'bg-rose-50',    iconBg: 'bg-rose-100',    iconText: 'text-rose-600',    ring: 'ring-rose-200' },
-  blue:    { bg: 'bg-blue-50',    iconBg: 'bg-blue-100',    iconText: 'text-blue-600',    ring: 'ring-blue-200' },
+  teal:  { bg: 'bg-teal-50',  iconBg: 'bg-teal-100',  iconText: 'text-teal-600',  ring: 'ring-teal-200' },
+  sky:   { bg: 'bg-sky-50',   iconBg: 'bg-sky-100',   iconText: 'text-sky-600',   ring: 'ring-sky-200' },
+  amber: { bg: 'bg-amber-50', iconBg: 'bg-amber-100', iconText: 'text-amber-600', ring: 'ring-amber-200' },
+  rose:  { bg: 'bg-rose-50',  iconBg: 'bg-rose-100',  iconText: 'text-rose-600',  ring: 'ring-rose-200' },
+  violet:{ bg: 'bg-violet-50',iconBg: 'bg-violet-100',iconText: 'text-violet-600',ring: 'ring-violet-200' },
+  emerald:{ bg: 'bg-emerald-50', iconBg: 'bg-emerald-100', iconText: 'text-emerald-600', ring: 'ring-emerald-200' },
 }
 
 const quickActionViewMap: Record<string, ViewKey> = {
-  'Dépôt': 'depot',
-  'Retrait': 'retrait',
-  'Transfert': 'transfert',
-  'Retrait Transfert': 'retrait-transfert',
-  'Airtime': 'airtime',
-  'Nouveau Client': 'clients',
+  'Nouveau Dossier': 'dossiers',
+  'Clients': 'clients',
+  'Transport': 'transport',
+  'Dépôts': 'depots',
+  'Facturation': 'facturation',
+  'Documents': 'ged',
 }
 
 const quickActions = [
-  { label: 'Dépôt',            icon: ArrowDownToLine, accent: 'emerald' },
-  { label: 'Retrait',          icon: ArrowUpFromLine, accent: 'sky' },
-  { label: 'Transfert',        icon: Send,            accent: 'amber' },
-  { label: 'Retrait Transfert',icon: QrCode,          accent: 'violet' },
-  { label: 'Airtime',          icon: Smartphone,      accent: 'rose' },
-  { label: 'Nouveau Client',   icon: UserPlus,        accent: 'teal' },
+  { label: 'Nouveau Dossier', icon: FolderOpen, accent: 'teal' },
+  { label: 'Clients',         icon: Users,      accent: 'sky' },
+  { label: 'Transport',       icon: Truck,      accent: 'amber' },
+  { label: 'Dépôts',         icon: Warehouse,  accent: 'violet' },
+  { label: 'Facturation',     icon: Receipt,    accent: 'rose' },
+  { label: 'Documents',       icon: FileCheck,  accent: 'emerald' },
 ] as const
 
-type TxType = 'Dépôt' | 'Retrait' | 'Transfert' | 'Retrait Transfert' | 'Airtime' | 'Commission'
-type TxStatus = 'Succès' | 'En cours' | 'Échoué'
+type DossierStatus = 'Ouvert' | 'En cours' | 'BAE' | 'Livré' | 'Clôturé'
+type DossierType = 'Import' | 'Export' | 'Transit' | 'Réexport.'
 
-const txTypeIcon: Record<TxType, React.ElementType> = {
-  'Dépôt': ArrowDownToLine,
-  'Retrait': ArrowUpFromLine,
-  'Transfert': Send,
-  'Retrait Transfert': QrCode,
-  'Airtime': Smartphone,
-  'Commission': Percent,
+const statusStyle: Record<DossierStatus, { bg: string; text: string; dot: string }> = {
+  'Ouvert':   { bg: 'bg-sky-50',   text: 'text-sky-700',   dot: 'bg-sky-500' },
+  'En cours': { bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-500' },
+  'BAE':      { bg: 'bg-teal-50',  text: 'text-teal-700',  dot: 'bg-teal-500' },
+  'Livré':    { bg: 'bg-violet-50',text: 'text-violet-700', dot: 'bg-violet-500' },
+  'Clôturé':  { bg: 'bg-emerald-50',text: 'text-emerald-700',dot: 'bg-emerald-500' },
 }
 
-const txTypeAccent: Record<TxType, string> = {
-  'Dépôt': 'emerald',
-  'Retrait': 'sky',
-  'Transfert': 'amber',
-  'Retrait Transfert': 'violet',
-  'Airtime': 'rose',
-  'Commission': 'teal',
-}
-
-const recentTransactions: {
+const recentDossiers: {
   id: string
-  type: TxType
-  description: string
+  number: string
+  type: DossierType
   client: string
-  clientInitials: string
-  amount: string
-  positive: boolean
-  time: string
+  merchandise: string
+  corridor: string
+  status: DossierStatus
+  honoraires: string
   date: string
-  status: TxStatus
-  ref: string
 }[] = [
-  { id: '1', type: 'Dépôt',             description: 'Dépôt wallet',            client: 'Aïcha Diallo',     clientInitials: 'AD', amount: '150 000 FCFA',  positive: true,  time: '09:42', date: "Aujourd'hui", status: 'Succès',   ref: 'RIC-2025-001234' },
-  { id: '2', type: 'Retrait',           description: 'Retrait wallet',          client: 'Ibrahim Sow',       clientInitials: 'IS', amount: '75 000 FCFA',   positive: false, time: '09:28', date: "Aujourd'hui", status: 'Succès',   ref: 'RIC-2025-001233' },
-  { id: '3', type: 'Transfert',         description: 'Transfert national',      client: 'Mariam Koné',       clientInitials: 'MK', amount: '200 000 FCFA',  positive: false, time: '09:15', date: "Aujourd'hui", status: 'En cours',  ref: 'RIC-2025-001232' },
-  { id: '4', type: 'Retrait Transfert', description: 'Retrait transfert',       client: 'Ousmane Bah',       clientInitials: 'OB', amount: '50 000 FCFA',   positive: true,  time: '08:58', date: "Aujourd'hui", status: 'Succès',   ref: 'RIC-2025-001231' },
-  { id: '5', type: 'Airtime',           description: 'Recharge Moov 5000',      client: 'Fatou Ndiaye',      clientInitials: 'FN', amount: '5 000 FCFA',    positive: false, time: '08:45', date: "Aujourd'hui", status: 'Succès',   ref: 'RIC-2025-001230' },
-  { id: '6', type: 'Commission',        description: 'Commission dépôt',        client: '—',                 clientInitials: '—',  amount: '1 500 FCFA',    positive: true,  time: '08:42', date: "Aujourd'hui", status: 'Succès',   ref: 'RIC-2025-001229' },
-  { id: '7', type: 'Dépôt',             description: 'Dépôt wallet',            client: 'Yacouba Touré',     clientInitials: 'YT', amount: '320 000 FCFA',  positive: true,  time: '08:30', date: "Aujourd'hui", status: 'Succès',   ref: 'RIC-2025-001228' },
-  { id: '8', type: 'Transfert',         description: 'Transfert international', client: 'Aminata Diop',      clientInitials: 'AD', amount: '500 000 FCFA',  positive: false, time: '08:15', date: "Aujourd'hui", status: 'Échoué',   ref: 'RIC-2025-001227' },
+  { id: '1', number: 'TRS-2026-0142', type: 'Import',     client: 'SOCOPAO Mali',       merchandise: 'Matériel agricole', corridor: 'Dakar-Bamako', status: 'En cours', honoraires: '2 500 000 FCFA',  date: '08 Mars' },
+  { id: '2', number: 'TRS-2026-0141', type: 'Import',     client: 'MALI TEXTILES',       merchandise: 'Tissus & vêtements', corridor: 'Abidjan-Bamako', status: 'BAE',     honoraires: '1 800 000 FCFA',  date: '07 Mars' },
+  { id: '3', number: 'TRS-2026-0140', type: 'Export',     client: 'SOMADIA',             merchandise: 'Noix de cajou',      corridor: 'Bamako-Abidjan', status: 'Ouvert',   honoraires: '950 000 FCFA',    date: '07 Mars' },
+  { id: '4', number: 'TRS-2026-0139', type: 'Transit',    client: 'CMA CGM Mali',        merchandise: 'Conteneurs 40\' HC', corridor: 'Lomé-Bamako',   status: 'En cours', honoraires: '3 200 000 FCFA',  date: '06 Mars' },
+  { id: '5', number: 'TRS-2026-0138', type: 'Import',     client: 'PHARMACIE POPULAIRE', merchandise: 'Produits pharmaceutiques', corridor: 'Dakar-Bamako', status: 'Livré',  honoraires: '1 200 000 FCFA',  date: '06 Mars' },
+  { id: '6', number: 'TRS-2026-0137', type: 'Réexport.',  client: 'TOTAL MALI',          merchandise: 'Équipements pétroliers', corridor: 'Conakry-Bamako', status: 'Clôturé', honoraires: '4 100 000 FCFA',  date: '05 Mars' },
+  { id: '7', number: 'TRS-2026-0136', type: 'Import',     client: 'BRAMALI',             merchandise: 'Ciments & matériaux',  corridor: 'Abidjan-Bamako', status: 'BAE',    honoraires: '1 600 000 FCFA',  date: '05 Mars' },
+  { id: '8', number: 'TRS-2026-0135', type: 'Transit',    client: 'MAERSK MALI',         merchandise: 'Marchandises diverses', corridor: 'Tema-Bamako',   status: 'En cours', honoraires: '2 800 000 FCFA',  date: '04 Mars' },
 ]
-
-const statusStyle: Record<TxStatus, { bg: string; text: string; dot: string }> = {
-  'Succès':   { bg: 'bg-emerald-50',  text: 'text-emerald-700',  dot: 'bg-emerald-500' },
-  'En cours': { bg: 'bg-amber-50',    text: 'text-amber-700',    dot: 'bg-amber-500' },
-  'Échoué':   { bg: 'bg-rose-50',     text: 'text-rose-700',     dot: 'bg-rose-500' },
-}
-
-
 
 /* ------------------------------------------------------------------ */
 /*  Chart Data                                                         */
 /* ------------------------------------------------------------------ */
 
-// Weekly volume bar chart
-const weeklyVolumeData = [
-  { day: 'Lun', depot: 850000, retrait: 420000, transfert: 280000 },
-  { day: 'Mar', depot: 920000, retrait: 510000, transfert: 350000 },
-  { day: 'Mer', depot: 780000, retrait: 380000, transfert: 220000 },
-  { day: 'Jeu', depot: 1100000, retrait: 620000, transfert: 410000 },
-  { day: 'Ven', depot: 1250000, retrait: 580000, transfert: 470000 },
-  { day: 'Sam', depot: 640000, retrait: 310000, transfert: 180000 },
-  { day: 'Dim', depot: 320000, retrait: 150000, transfert: 90000 },
+const monthlyVolumeData = [
+  { month: 'Oct', import: 28, export: 12, transit: 8 },
+  { month: 'Nov', import: 32, export: 15, transit: 10 },
+  { month: 'Déc', import: 35, export: 18, transit: 12 },
+  { month: 'Jan', import: 30, export: 14, transit: 9 },
+  { month: 'Fév', import: 38, export: 20, transit: 14 },
+  { month: 'Mar', import: 34, export: 16, transit: 11 },
 ]
 
-const weeklyVolumeConfig: ChartConfig = {
-  depot:     { label: 'Dépôt',     color: '#10b981' },
-  retrait:   { label: 'Retrait',   color: '#0ea5e9' },
-  transfert: { label: 'Transfert', color: '#f59e0b' },
+const monthlyVolumeConfig: ChartConfig = {
+  import:  { label: 'Import',     color: '#0d9488' },
+  export:  { label: 'Export',     color: '#0ea5e9' },
+  transit: { label: 'Transit',    color: '#f59e0b' },
 }
 
-// Daily trend area chart (last 7 days)
-const dailyTrendData = [
-  { day: 'Lun', volume: 1550000 },
-  { day: 'Mar', volume: 1780000 },
-  { day: 'Mer', volume: 1380000 },
-  { day: 'Jeu', volume: 2130000 },
-  { day: 'Ven', volume: 2300000 },
-  { day: 'Sam', volume: 1130000 },
-  { day: 'Dim', volume: 560000 },
+const revenueTrendData = [
+  { month: 'Oct', ca: 95, debours: 32 },
+  { month: 'Nov', ca: 108, debours: 38 },
+  { month: 'Déc', ca: 118, debours: 35 },
+  { month: 'Jan', ca: 102, debours: 30 },
+  { month: 'Fév', ca: 125, debours: 42 },
+  { month: 'Mar', ca: 127, debours: 40 },
 ]
 
-const dailyTrendConfig: ChartConfig = {
-  volume: { label: 'Volume', color: '#10b981' },
+const revenueTrendConfig: ChartConfig = {
+  ca:      { label: 'CA Honoraires', color: '#0d9488' },
+  debours: { label: 'Débours',      color: '#f59e0b' },
 }
 
-// Transaction type distribution (donut chart)
-const typeDistributionData = [
-  { name: 'Dépôt',             value: 38, color: '#10b981' },
-  { name: 'Retrait',           value: 22, color: '#0ea5e9' },
-  { name: 'Transfert',         value: 18, color: '#f59e0b' },
-  { name: 'Retrait Transfert', value: 10, color: '#8b5cf6' },
-  { name: 'Airtime',           value: 8,  color: '#f43f5e' },
-  { name: 'Commission',        value: 4,  color: '#14b8a6' },
+const corridorDistributionData = [
+  { name: 'Dakar-Bamako',    value: 35, color: '#0d9488' },
+  { name: 'Abidjan-Bamako',  value: 28, color: '#0ea5e9' },
+  { name: 'Lomé-Bamako',     value: 18, color: '#f59e0b' },
+  { name: 'Tema-Bamako',     value: 12, color: '#8b5cf6' },
+  { name: 'Conakry-Bamako',  value: 7,  color: '#f43f5e' },
 ]
 
-const typeDistributionConfig: ChartConfig = {
-  'Dépôt':             { label: 'Dépôt',             color: '#10b981' },
-  'Retrait':           { label: 'Retrait',           color: '#0ea5e9' },
-  'Transfert':         { label: 'Transfert',         color: '#f59e0b' },
-  'Retrait Transfert': { label: 'Retrait Transfert', color: '#8b5cf6' },
-  'Airtime':           { label: 'Airtime',           color: '#f43f5e' },
-  'Commission':        { label: 'Commission',        color: '#14b8a6' },
+const corridorConfig: ChartConfig = {
+  'Dakar-Bamako':   { label: 'Dakar-Bamako',   color: '#0d9488' },
+  'Abidjan-Bamako': { label: 'Abidjan-Bamako', color: '#0ea5e9' },
+  'Lomé-Bamako':    { label: 'Lomé-Bamako',    color: '#f59e0b' },
+  'Tema-Bamako':    { label: 'Tema-Bamako',    color: '#8b5cf6' },
+  'Conakry-Bamako': { label: 'Conakry-Bamako', color: '#f43f5e' },
 }
-
-/* ------------------------------------------------------------------ */
-/*  Custom Tooltip for Pie                                             */
-/* ------------------------------------------------------------------ */
 
 function PieCustomLabel({
   cx,
@@ -242,18 +209,9 @@ function PieCustomLabel({
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5
   const x = cx + radius * Math.cos(-midAngle * RADIAN)
   const y = cy + radius * Math.sin(-midAngle * RADIAN)
-
   if (percent < 0.08) return null
-
   return (
-    <text
-      x={x}
-      y={y}
-      fill="white"
-      textAnchor="middle"
-      dominantBaseline="central"
-      className="text-[10px] font-bold"
-    >
+    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" className="text-[10px] font-bold">
       {`${(percent * 100).toFixed(0)}%`}
     </text>
   )
@@ -272,20 +230,15 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey
           const colors = accentMap[s.accent]
           const Icon = s.icon
           return (
-            <div
-              key={s.label}
-              className="bg-white border border-[#E5E7EB] rounded-xl p-5 flex flex-col gap-3 hover:shadow-md transition-shadow"
-            >
+            <div key={s.label} className="bg-white border border-[#E5E7EB] rounded-xl p-5 flex flex-col gap-3 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', colors.iconBg)}>
                   <Icon className={cn('w-5 h-5', colors.iconText)} />
                 </div>
-                <span
-                  className={cn(
-                    'inline-flex items-center gap-0.5 text-xs font-medium px-2 py-0.5 rounded-full',
-                    s.trendUp ? 'text-emerald-700 bg-emerald-50' : 'text-rose-700 bg-rose-50'
-                  )}
-                >
+                <span className={cn(
+                  'inline-flex items-center gap-0.5 text-xs font-medium px-2 py-0.5 rounded-full',
+                  s.trendUp ? 'text-teal-700 bg-teal-50' : 'text-rose-700 bg-rose-50'
+                )}>
                   {s.trendUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                   {s.trend}
                 </span>
@@ -327,45 +280,31 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey
 
       {/* ---- Charts Row ---- */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Volume hebdomadaire - Bar Chart */}
+        {/* Volume mensuel - Bar Chart */}
         <div className="lg:col-span-2 bg-white border border-[#E5E7EB] rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <BarChart3 className="w-4.5 h-4.5 text-emerald-600" />
-              <h2 className="text-sm font-semibold text-[#111827]">Volume hebdomadaire</h2>
+              <BarChart3 className="w-4.5 h-4.5 text-teal-600" />
+              <h2 className="text-sm font-semibold text-[#111827]">Volume mensuel (dossiers)</h2>
             </div>
             <div className="flex items-center gap-1 text-xs text-[#9CA3AF]">
               <Calendar className="w-3.5 h-3.5" />
-              <span>Cette semaine</span>
+              <span>6 derniers mois</span>
             </div>
           </div>
-
-          <ChartContainer config={weeklyVolumeConfig} className="h-[220px] w-full">
-            <BarChart data={weeklyVolumeData} barGap={2} barCategoryGap="20%">
+          <ChartContainer config={monthlyVolumeConfig} className="h-[220px] w-full">
+            <BarChart data={monthlyVolumeData} barGap={2} barCategoryGap="20%">
               <CartesianGrid vertical={false} stroke="#E5E7EB" strokeDasharray="3 3" />
-              <XAxis
-                dataKey="day"
-                tickLine={false}
-                axisLine={false}
-                tick={{ fontSize: 12, fill: '#9CA3AF' }}
-              />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                tick={{ fontSize: 11, fill: '#9CA3AF' }}
-                tickFormatter={(v: number) => `${(v / 1000000).toFixed(1)}M`}
-                width={40}
-              />
+              <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
+              <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} width={30} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="depot" fill="var(--color-depot)" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="retrait" fill="var(--color-retrait)" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="transfert" fill="var(--color-transfert)" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="import" fill="var(--color-import)" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="export" fill="var(--color-export)" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="transit" fill="var(--color-transit)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ChartContainer>
-
-          {/* Legend */}
           <div className="flex items-center justify-center gap-5 mt-3">
-            {Object.entries(weeklyVolumeConfig).map(([key, cfg]) => (
+            {Object.entries(monthlyVolumeConfig).map(([key, cfg]) => (
               <div key={key} className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: cfg.color }} />
                 <span className="text-xs text-[#6B7280]">{cfg.label}</span>
@@ -374,49 +313,27 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey
           </div>
         </div>
 
-        {/* Répartition par type - Donut Chart */}
+        {/* Répartition par corridor - Donut */}
         <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <PieChartIcon className="w-4.5 h-4.5 text-amber-600" />
-              <h2 className="text-sm font-semibold text-[#111827]">Répartition par type</h2>
+              <h2 className="text-sm font-semibold text-[#111827]">Corridors</h2>
             </div>
           </div>
-
           <div className="flex flex-col items-center">
-            <ChartContainer config={typeDistributionConfig} className="h-[180px] w-full">
+            <ChartContainer config={corridorConfig} className="h-[180px] w-full">
               <PieChart>
-                <Pie
-                  data={typeDistributionData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
-                  paddingAngle={3}
-                  dataKey="value"
-                  labelLine={false}
-                  label={PieCustomLabel}
-                  strokeWidth={0}
-                >
-                  {typeDistributionData.map((entry, index) => (
+                <Pie data={corridorDistributionData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value" labelLine={false} label={PieCustomLabel} strokeWidth={0}>
+                  {corridorDistributionData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <RechartsTooltip
-                  formatter={(value: number, name: string) => [`${value}%`, name]}
-                  contentStyle={{
-                    borderRadius: '8px',
-                    border: '1px solid #E5E7EB',
-                    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
-                    fontSize: '12px',
-                  }}
-                />
+                <RechartsTooltip formatter={(value: number, name: string) => [`${value}%`, name]} contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', fontSize: '12px' }} />
               </PieChart>
             </ChartContainer>
-
-            {/* Legend */}
             <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-3 w-full">
-              {typeDistributionData.map((item) => (
+              {corridorDistributionData.map((item) => (
                 <div key={item.name} className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
                   <span className="text-[11px] text-[#6B7280] truncate">{item.name}</span>
@@ -428,160 +345,116 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey
         </div>
       </div>
 
-      {/* ---- Trend + Transactions Row ---- */}
+      {/* ---- Trend + Dossiers Row ---- */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-5 min-h-0">
-        {/* Daily Trend Area Chart */}
+        {/* Revenue Trend Area Chart */}
         <div className="lg:col-span-2 bg-white border border-[#E5E7EB] rounded-xl p-5 flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Activity className="w-4.5 h-4.5 text-emerald-600" />
-              <h2 className="text-sm font-semibold text-[#111827]">Tendance journalière</h2>
+              <Activity className="w-4.5 h-4.5 text-teal-600" />
+              <h2 className="text-sm font-semibold text-[#111827]">Tendance financière</h2>
             </div>
             <div className="flex items-center gap-1 text-xs text-[#9CA3AF]">
               <Clock className="w-3.5 h-3.5" />
-              <span>7 derniers jours</span>
+              <span>6 derniers mois</span>
             </div>
           </div>
-
           <div className="flex-1 min-h-0">
-            <ChartContainer config={dailyTrendConfig} className="h-full w-full min-h-[180px]">
-              <AreaChart data={dailyTrendData}>
+            <ChartContainer config={revenueTrendConfig} className="h-full w-full min-h-[180px]">
+              <AreaChart data={revenueTrendData}>
                 <defs>
-                  <linearGradient id="volumeGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0.02} />
+                  <linearGradient id="caGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#0d9488" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#0d9488" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid vertical={false} stroke="#E5E7EB" strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="day"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fontSize: 12, fill: '#9CA3AF' }}
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fontSize: 11, fill: '#9CA3AF' }}
-                  tickFormatter={(v: number) => `${(v / 1000000).toFixed(1)}M`}
-                  width={40}
-                />
+                <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
+                <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} tickFormatter={(v: number) => `${v}M`} width={40} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Area
-                  type="monotone"
-                  dataKey="volume"
-                  stroke="#10b981"
-                  strokeWidth={2.5}
-                  fill="url(#volumeGradient)"
-                />
+                <Area type="monotone" dataKey="ca" stroke="#0d9488" strokeWidth={2.5} fill="url(#caGradient)" />
+                <Area type="monotone" dataKey="debours" stroke="#f59e0b" strokeWidth={2} fill="none" strokeDasharray="5 5" />
               </AreaChart>
             </ChartContainer>
           </div>
-
-          {/* Quick stats under chart */}
           <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-[#E5E7EB]">
             <div>
-              <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Meilleur jour</p>
-              <p className="text-sm font-bold text-[#111827]">Ven</p>
-              <p className="text-xs text-emerald-600">2.3M FCFA</p>
+              <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Délai moy. dédouane</p>
+              <p className="text-sm font-bold text-[#111827]">4,2 jours</p>
+              <p className="text-xs text-teal-600">-0,8 j vs N-1</p>
             </div>
             <div>
-              <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Moyenne</p>
-              <p className="text-sm font-bold text-[#111827]">1.47M</p>
-              <p className="text-xs text-[#6B7280]">FCFA/jour</p>
+              <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Taux occupation</p>
+              <p className="text-sm font-bold text-[#111827]">72%</p>
+              <p className="text-xs text-[#6B7280]">dépôts</p>
             </div>
             <div>
-              <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Variation</p>
-              <p className="text-sm font-bold text-emerald-600">+18%</p>
-              <p className="text-xs text-[#6B7280]">vs sem. dern.</p>
+              <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">DSO moyen</p>
+              <p className="text-sm font-bold text-teal-600">32 jours</p>
+              <p className="text-xs text-[#6B7280]">créances</p>
             </div>
           </div>
         </div>
 
-        {/* Transactions récentes - Refonted */}
+        {/* Dossiers récents */}
         <div className="lg:col-span-3 bg-white border border-[#E5E7EB] rounded-xl overflow-hidden flex flex-col min-h-0">
-          {/* Header */}
           <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <RefreshCw className="w-4 h-4 text-emerald-600" />
-              <h2 className="text-sm font-semibold text-[#111827]">Transactions récentes</h2>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
-                {recentTransactions.length}
+              <FolderOpen className="w-4 h-4 text-teal-600" />
+              <h2 className="text-sm font-semibold text-[#111827]">Dossiers récents</h2>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700">
+                {recentDossiers.length}
               </span>
             </div>
             <button
               type="button"
-              onClick={() => setActiveView('historique')}
-              className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
+              onClick={() => setActiveView('dossiers')}
+              className="inline-flex items-center gap-1 text-xs font-medium text-teal-600 hover:text-teal-700 transition-colors"
             >
               Voir tout
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          {/* Desktop: Enhanced Table */}
+          {/* Desktop: Table */}
           <div className="hidden md:block flex-1 overflow-y-auto min-h-0">
             <table className="w-full text-sm">
               <thead className="sticky top-0 bg-[#F9FAFB] z-10">
                 <tr className="border-b border-[#E5E7EB]">
-                  <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Type</th>
-                  <th className="py-2.5 px-3 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Description</th>
+                  <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">N° Dossier</th>
+                  <th className="py-2.5 px-3 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Type</th>
                   <th className="py-2.5 px-3 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Client</th>
-                  <th className="py-2.5 px-3 text-right text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Montant</th>
+                  <th className="py-2.5 px-3 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Corridor</th>
+                  <th className="py-2.5 px-3 text-right text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Honoraires</th>
                   <th className="py-2.5 px-3 text-center text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Statut</th>
-                  <th className="py-2.5 px-3 text-right text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Réf</th>
                 </tr>
               </thead>
               <tbody>
-                {recentTransactions.map((tx) => {
-                  const TxIcon = txTypeIcon[tx.type]
-                  const colors = accentMap[txTypeAccent[tx.type]]
-                  const status = statusStyle[tx.status]
+                {recentDossiers.map((d) => {
+                  const status = statusStyle[d.status]
                   return (
-                    <tr
-                      key={tx.id}
-                      className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors cursor-pointer group"
-                    >
+                    <tr key={d.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors cursor-pointer group">
                       <td className="py-3 px-5">
-                        <div className="flex items-center gap-2.5">
-                          <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center', colors.iconBg)}>
-                            <TxIcon className={cn('w-4 h-4', colors.iconText)} />
-                          </div>
-                          <span className="font-medium text-[#111827] text-xs">{tx.type}</span>
-                        </div>
+                        <span className="font-mono text-xs font-semibold text-teal-700 group-hover:text-teal-800">{d.number}</span>
                       </td>
-                      <td className="py-3 px-3 text-[#6B7280] text-xs">{tx.description}</td>
                       <td className="py-3 px-3">
-                        <div className="flex items-center gap-2">
-                          <div className={cn('w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold', colors.iconBg, colors.iconText)}>
-                            {tx.clientInitials}
-                          </div>
-                          <span className="text-xs text-[#374151] font-medium truncate max-w-[100px]">{tx.client}</span>
-                        </div>
-                      </td>
-                      <td
-                        className={cn(
-                          'py-3 px-3 text-right font-bold text-xs whitespace-nowrap',
-                          tx.positive ? 'text-emerald-600' : 'text-rose-600'
-                        )}
-                      >
-                        {tx.positive ? '+' : '−'}{tx.amount}
-                      </td>
-                      <td className="py-3 px-3 text-center">
-                        <span
-                          className={cn(
-                            'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold',
-                            status.bg,
-                            status.text
-                          )}
-                        >
-                          <span className={cn('w-1.5 h-1.5 rounded-full', status.dot)} />
-                          {tx.status}
+                        <span className={cn(
+                          'text-xs font-medium px-2 py-0.5 rounded',
+                          d.type === 'Import' ? 'bg-teal-50 text-teal-700' :
+                          d.type === 'Export' ? 'bg-sky-50 text-sky-700' :
+                          d.type === 'Transit' ? 'bg-amber-50 text-amber-700' :
+                          'bg-violet-50 text-violet-700'
+                        )}>
+                          {d.type}
                         </span>
                       </td>
-                      <td className="py-3 px-3 text-right">
-                        <span className="text-[10px] text-[#9CA3AF] font-mono group-hover:text-[#6B7280] transition-colors">
-                          {tx.ref.slice(-6)}
+                      <td className="py-3 px-3 text-[#374151] text-xs font-medium truncate max-w-[120px]">{d.client}</td>
+                      <td className="py-3 px-3 text-[#6B7280] text-xs">{d.corridor}</td>
+                      <td className="py-3 px-3 text-right font-bold text-xs text-[#111827] whitespace-nowrap">{d.honoraires}</td>
+                      <td className="py-3 px-3 text-center">
+                        <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold', status.bg, status.text)}>
+                          <span className={cn('w-1.5 h-1.5 rounded-full', status.dot)} />
+                          {d.status}
                         </span>
                       </td>
                     </tr>
@@ -594,39 +467,24 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey
           {/* Mobile: Card list */}
           <div className="md:hidden flex-1 overflow-y-auto min-h-0">
             <div className="divide-y divide-[#F3F4F6]">
-              {recentTransactions.map((tx) => {
-                const TxIcon = txTypeIcon[tx.type]
-                const colors = accentMap[txTypeAccent[tx.type]]
-                const status = statusStyle[tx.status]
+              {recentDossiers.slice(0, 5).map((d) => {
+                const status = statusStyle[d.status]
                 return (
-                  <div key={tx.id} className="px-4 py-3 flex items-center gap-3">
-                    <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0', colors.iconBg)}>
-                      <TxIcon className={cn('w-4.5 h-4.5', colors.iconText)} />
+                  <div key={d.id} className="px-4 py-3 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center shrink-0">
+                      <FolderOpen className="w-4.5 h-4.5 text-teal-600" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-semibold text-[#111827] truncate">{tx.type}</p>
-                        <span
-                          className={cn(
-                            'text-sm font-bold whitespace-nowrap ml-2',
-                            tx.positive ? 'text-emerald-600' : 'text-rose-600'
-                          )}
-                        >
-                          {tx.positive ? '+' : '−'}{tx.amount}
+                        <p className="text-sm font-semibold text-[#111827] truncate font-mono">{d.number}</p>
+                        <span className={cn('inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold ml-2', status.bg, status.text)}>
+                          <span className={cn('w-1 h-1 rounded-full', status.dot)} />
+                          {d.status}
                         </span>
                       </div>
                       <div className="flex items-center justify-between mt-0.5">
-                        <p className="text-xs text-[#9CA3AF] truncate">{tx.client} · {tx.time}</p>
-                        <span
-                          className={cn(
-                            'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold ml-2',
-                            status.bg,
-                            status.text
-                          )}
-                        >
-                          <span className={cn('w-1 h-1 rounded-full', status.dot)} />
-                          {tx.status}
-                        </span>
+                        <p className="text-xs text-[#9CA3AF] truncate">{d.client} · {d.corridor}</p>
+                        <span className="text-xs font-bold text-[#111827] ml-2 whitespace-nowrap">{d.honoraires}</span>
                       </div>
                     </div>
                   </div>
@@ -636,8 +494,6 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey
           </div>
         </div>
       </div>
-
-
     </div>
   )
 }

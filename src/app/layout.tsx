@@ -16,12 +16,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ricash Web Agent",
-  description: "Tableau de bord agent pour les services financiers Ricash au Mali",
-  keywords: ["Ricash", "agent", "Mali", "mobile money", "transfert"],
+  title: "TransitPro — Plateforme de Gestion Transit & Logistique",
+  description: "Plateforme numérique de gestion pour société de transit et logistique — Dédouanement, Transport, Entreposage, Facturation",
+  keywords: ["TransitPro", "transit", "logistique", "dédouanement", "Mali", "UEMOA", "FCFA"],
   openGraph: {
-    title: "Ricash Web Agent",
-    description: "Tableau de bord agent Ricash",
+    title: "TransitPro — Transit & Logistique",
+    description: "Plateforme de gestion transit et logistique",
     type: "website",
   },
 };

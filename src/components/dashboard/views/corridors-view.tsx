@@ -221,10 +221,10 @@ const corridorStatusIcon: Record<CorridorStatus, typeof CheckCircle2> = {
   'Bloqué': AlertTriangle,
 }
 
-const etatRouteStyle: Record<string, { bg: string; text: string }> = {
-  'Bon':    { bg: 'bg-emerald-50', text: 'text-emerald-700' },
-  'Moyen':  { bg: 'bg-amber-50',   text: 'text-amber-700' },
-  'Mauvais': { bg: 'bg-rose-50',   text: 'text-rose-700' },
+const etatRouteStyle: Record<string, { bg: string; text: string; dot: string }> = {
+  'Bon':    { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
+  'Moyen':  { bg: 'bg-amber-50',   text: 'text-amber-700', dot: 'bg-amber-500' },
+  'Mauvais': { bg: 'bg-rose-50',   text: 'text-rose-700', dot: 'bg-rose-500' },
 }
 
 const baxStatusStyle: Record<BAXStatus, { bg: string; text: string; dot: string }> = {

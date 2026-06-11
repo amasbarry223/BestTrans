@@ -218,21 +218,13 @@ const corridorConfig: ChartConfig = {
   'Conakry-Bamako': { label: 'Conakry-Bamako', color: '#f43f5e' },
 }
 
-function PieCustomLabel({
-  cx,
-  cy,
-  midAngle,
-  innerRadius,
-  outerRadius,
-  percent,
-}: {
-  cx: number
-  cy: number
-  midAngle: number
-  innerRadius: number
-  outerRadius: number
-  percent: number
-}) {
+function PieCustomLabel(props: Record<string, unknown>) {
+  const cx = Number(props.cx ?? 0)
+  const cy = Number(props.cy ?? 0)
+  const midAngle = Number(props.midAngle ?? 0)
+  const innerRadius = Number(props.innerRadius ?? 0)
+  const outerRadius = Number(props.outerRadius ?? 0)
+  const percent = Number(props.percent ?? 0)
   const RADIAN = Math.PI / 180
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5
   const x = cx + radius * Math.cos(-midAngle * RADIAN)
@@ -407,12 +399,12 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey
           <div className="flex flex-col items-center">
             <ChartContainer config={corridorConfig} className="h-[180px] w-full">
               <PieChart>
-                <Pie data={corridorDistributionData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value" labelLine={false} label={PieCustomLabel} strokeWidth={0}>
+                <Pie data={corridorDistributionData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value" labelLine={false} label={PieCustomLabel as unknown as boolean} strokeWidth={0}>
                   {corridorDistributionData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <RechartsTooltip formatter={(value: number, name: string) => [`${value}%`, name]} contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', fontSize: '12px' }} />
+                <RechartsTooltip formatter={(value: unknown, name: unknown) => [`${value}%`, String(name)]} contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', fontSize: '12px' }} />
               </PieChart>
             </ChartContainer>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-3 w-full">

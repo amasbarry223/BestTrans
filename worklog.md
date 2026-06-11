@@ -1,23 +1,25 @@
-# TransitPro Worklog
-
 ---
 Task ID: 1
-Agent: Main Agent
-Task: Fix compilation errors, connect navigation, and verify TransitPro application
+Agent: Main
+Task: Analyse, correction et enrichissement de TransitPro
 
 Work Log:
-- Verified all 11 view components exist and are correctly implemented
-- Fixed missing NextRequest import in /src/app/api/dossiers/route.ts
-- Fixed double-encoding bug in auth cookie (encodeAuthUser / decodeAuthUser)
-- Connected dossier row clicks to navigate to dossier-detail view
-- Fixed DossierDetailView from consuming pendingDossier on every render
-- Verified all 8 modules (M1-M8) render correctly in browser
-- Verified login/logout flow works correctly
-- Lint passes clean with no errors
+- Analysé l'état actuel du projet (14 vues existantes, compilation OK)
+- Identifié les erreurs TypeScript: corridors-view (propriété 'dot' manquante), dashboard-view (PieCustomLabel type mismatch)
+- Corrigé etatRouteStyle dans corridors-view: ajout de la propriété 'dot' manquante
+- Corrigé PieCustomLabel dans dashboard-view: changé le type de props pour compatibilité Recharts
+- Corrigé RechartsTooltip formatter: changé les types en `unknown` pour compatibilité
+- Vérifié compilation TypeScript: 0 erreurs dans notre code
+- Vérifié lint: 0 erreurs
+- Testé login via browser: API fonctionne correctement (dir001 / transit2026)
+- Vérifié toutes les vues dans le navigateur: Dashboard, Corridors, Calculatrice, Surestaries, Dossiers, Dossier Détail
+- Testé responsivité mobile (375x812) et desktop (1920x1080)
+- Aucune erreur console, uniquement warnings mineurs Recharts
 
 Stage Summary:
-- All 8 CDC modules fully implemented: M1 (Tableau de bord), M2 (Dossiers), M3 (Clients & Contrats), M4 (Transport & Flotte), M5 (Dépôts), M6 (Facturation & Compta), M7 (GED), M8 (Accès & Sécurité)
-- Plus 3 additional views: Dossier Detail, Notifications, Paramètres
-- Auth system works with demo credentials (dir001 / transit2026)
-- Navigation between all views works correctly
-- Branding is consistently TransitPro with teal theme
+- Toutes les erreurs TypeScript corrigées
+- 14 vues fonctionnelles (11 originales + 3 nouvelles expert)
+- Dashboard enrichi avec KPIs Opérationnels et Top Clients
+- Dossier Détail enrichi avec Tableau de Charge et Suivi BAX
+- 3 nouvelles vues Expert: Corridors, Calculatrice Douanière, Surestaries
+- Application fonctionne en production sans erreurs

@@ -1,14 +1,21 @@
 'use client'
 
-import { useSyncExternalStore } from 'react'
+import { useSyncExternalStore, useRef } from 'react'
 import { getAuthCookie, type AuthUser } from '@/lib/auth'
 
-function subscribe() {
-  return () => {}
-}
+const emptySubscribe = () => () => {}
+
+let cachedUser: AuthUser | null = null
+let cachedCookieRaw: string | null = null
 
 function getSnapshot(): AuthUser | null {
-  return getAuthCookie()
+  if (typeof document === 'undefined') return null
+  const raw = document.cookie
+  // Only re-parse if cookie string changed
+  if (raw === cachedCookieRaw) return cachedUser
+  cachedCookieRaw = raw
+  cachedUser = getAuthCookie()
+  return cachedUser
 }
 
 function getServerSnapshot(): AuthUser | null {
@@ -16,5 +23,5 @@ function getServerSnapshot(): AuthUser | null {
 }
 
 export function useAuthUser(): AuthUser | null {
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+  return useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot)
 }

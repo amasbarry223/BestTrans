@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { NewDossierDialog } from '@/components/dashboard/new-dossier-dialog'
+import { useDashboard, type TransitDossier } from '@/components/dashboard/dashboard-context'
 
 type DossierStatus = 'Ouvert' | 'Docs reçus' | 'Déclaration' | 'Liquidation' | 'Paiement' | 'BAE' | 'Enlèvement' | 'Livré' | 'Clôturé'
 type DossierType = 'Import' | 'Export' | 'Transit' | 'Réexport.'
@@ -59,6 +60,7 @@ const miniStats = [
 ]
 
 export function DossiersView() {
+  const { navigateToDossierDetail } = useDashboard()
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState<string>('all')
   const [filterStatus, setFilterStatus] = useState<string>('all')
@@ -73,6 +75,25 @@ export function DossiersView() {
     const matchStatus = filterStatus === 'all' || d.status === filterStatus
     return matchSearch && matchType && matchStatus
   })
+
+  const handleDossierClick = (d: typeof mockDossiers[number]) => {
+    const dossier: TransitDossier = {
+      id: d.id,
+      number: d.number,
+      type: d.type as TransitDossier['type'],
+      client: d.client,
+      regime: d.regime,
+      bl: d.bl,
+      bureau: 'Bamako-Sénou',
+      merchandise: d.merchandise,
+      status: d.status,
+      honoraires: d.honoraires,
+      droitsTaxes: d.droitsTaxes,
+      date: d.date,
+      corridor: 'Dakar-Bamako',
+    }
+    navigateToDossierDetail(dossier)
+  }
 
   return (
     <div className="h-full flex flex-col gap-5">
@@ -183,7 +204,7 @@ export function DossiersView() {
                 const sty = statusStyle[d.status]
                 const tsty = typeStyle[d.type]
                 return (
-                  <tr key={d.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors cursor-pointer group">
+                  <tr key={d.id} onClick={() => handleDossierClick(d)} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors cursor-pointer group">
                     <td className="py-3 px-4">
                       <span className="font-mono text-xs font-semibold text-teal-700">{d.number}</span>
                     </td>
@@ -217,7 +238,7 @@ export function DossiersView() {
             const sty = statusStyle[d.status]
             const tsty = typeStyle[d.type]
             return (
-              <div key={d.id} className="bg-white border border-[#E5E7EB] rounded-xl p-4">
+              <div key={d.id} onClick={() => handleDossierClick(d)} className="bg-white border border-[#E5E7EB] rounded-xl p-4 cursor-pointer hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-sm font-semibold text-teal-700">{d.number}</span>
                   <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold', sty.bg, sty.text)}>

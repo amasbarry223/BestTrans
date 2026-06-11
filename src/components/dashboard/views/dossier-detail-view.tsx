@@ -22,8 +22,13 @@ const workflowSteps = [
 ]
 
 export function DossierDetailView() {
-  const { consumePendingDossier, setActiveView } = useDashboard()
-  const dossier = consumePendingDossier()
+  const { pendingDossier, clearPendingDossier, setActiveView } = useDashboard()
+  const dossier = pendingDossier
+
+  const handleBack = () => {
+    clearPendingDossier()
+    setActiveView('dossiers')
+  }
 
   if (!dossier) {
     return (
@@ -31,7 +36,7 @@ export function DossierDetailView() {
         <FileText className="w-12 h-12" />
         <p>Aucun dossier sélectionné</p>
         <button
-          onClick={() => setActiveView('dossiers')}
+          onClick={handleBack}
           className="text-teal-600 text-sm font-medium hover:underline"
         >
           Retour aux dossiers
@@ -48,7 +53,7 @@ export function DossierDetailView() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setActiveView('dossiers')}
+            onClick={handleBack}
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-[#6B7280]" />

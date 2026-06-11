@@ -1,24 +1,23 @@
-# TransitPro - Work Log
+# TransitPro Worklog
 
 ---
 Task ID: 1
 Agent: Main Agent
-Task: Verify project state and fix errors in TransitPro dashboard
+Task: Fix compilation errors, connect navigation, and verify TransitPro application
 
 Work Log:
-- Checked all existing view files (10 views: dashboard, dossiers, clients, transport, depots, facturation, ged, securite, notifications, parametres)
-- All views were already properly implemented with transit-specific data and French UI
-- Verified lint passes with no errors
-- Fixed login gate: updated page.tsx to show LoginView for unauthenticated users and DashboardApp for authenticated users
-- Fixed logout redirect: changed from `/login` (404) to `/` in header.tsx
-- Fixed useAuthUser hook: cached getSnapshot result to prevent React "infinite loop" error with useSyncExternalStore
-- Cleaned up 10 old unused view files from original mobile money dashboard (airtime-view, caisse-view, commissions-view, depot-view, historique-view, etc.)
-- Removed unused receipt-dialog.tsx and qr-code-dialog.tsx
-- Browser verified: login page renders, login API works, dashboard loads with all navigation, charts, and tables
-- Verified all 8 module views navigate correctly (M1-M8)
+- Verified all 11 view components exist and are correctly implemented
+- Fixed missing NextRequest import in /src/app/api/dossiers/route.ts
+- Fixed double-encoding bug in auth cookie (encodeAuthUser / decodeAuthUser)
+- Connected dossier row clicks to navigate to dossier-detail view
+- Fixed DossierDetailView from consuming pendingDossier on every render
+- Verified all 8 modules (M1-M8) render correctly in browser
+- Verified login/logout flow works correctly
+- Lint passes clean with no errors
 
 Stage Summary:
-- All 8 modules (M1-M8) fully implemented: Tableau de bord, Dossiers, Clients & Contrats, Transport & Flotte, Dépôts, Facturation & Compta, GED, Accès & Sécurité
-- Login/auth flow working with cookie-based authentication
-- Branding: TransitPro, teal color theme, French UI
-- Lint passes cleanly, dev server running without errors
+- All 8 CDC modules fully implemented: M1 (Tableau de bord), M2 (Dossiers), M3 (Clients & Contrats), M4 (Transport & Flotte), M5 (Dépôts), M6 (Facturation & Compta), M7 (GED), M8 (Accès & Sécurité)
+- Plus 3 additional views: Dossier Detail, Notifications, Paramètres
+- Auth system works with demo credentials (dir001 / transit2026)
+- Navigation between all views works correctly
+- Branding is consistently TransitPro with teal theme

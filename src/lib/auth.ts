@@ -40,19 +40,19 @@ export function validateCredentials(
 }
 
 export function encodeAuthUser(user: AuthUser): string {
-  return encodeURIComponent(JSON.stringify(user))
+  return JSON.stringify(user)
 }
 
 export function decodeAuthUser(value: string): AuthUser | null {
   try {
-    return JSON.parse(decodeURIComponent(value)) as AuthUser
+    return JSON.parse(value) as AuthUser
   } catch {
     return null
   }
 }
 
 export function setAuthCookie(user: AuthUser) {
-  document.cookie = `${AUTH_COOKIE}=${encodeAuthUser(user)}; path=/; max-age=${AUTH_MAX_AGE}; SameSite=Lax`
+  document.cookie = `${AUTH_COOKIE}=${encodeURIComponent(encodeAuthUser(user))}; path=/; max-age=${AUTH_MAX_AGE}; SameSite=Lax`
 }
 
 export function clearAuthCookie() {
@@ -65,5 +65,6 @@ export function getAuthCookie(): AuthUser | null {
     .split('; ')
     .find((row) => row.startsWith(`${AUTH_COOKIE}=`))
   if (!match) return null
-  return decodeAuthUser(match.slice(AUTH_COOKIE.length + 1))
+  const rawValue = match.slice(AUTH_COOKIE.length + 1)
+  return decodeAuthUser(decodeURIComponent(rawValue))
 }

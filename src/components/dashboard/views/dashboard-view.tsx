@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { type ViewKey } from '../navigation'
+import { useDashboard, type TransitDossier } from '@/components/dashboard/dashboard-context'
 import {
   Bar,
   BarChart,
@@ -222,6 +223,26 @@ function PieCustomLabel({
 /* ------------------------------------------------------------------ */
 
 export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey) => void }) {
+  const { navigateToDossierDetail } = useDashboard()
+
+  const handleRecentDossierClick = (d: typeof recentDossiers[number]) => {
+    const dossier: TransitDossier = {
+      id: d.id,
+      number: d.number,
+      type: d.type as TransitDossier['type'],
+      client: d.client,
+      regime: 'Consommation',
+      bl: '-',
+      bureau: 'Bamako-Sénou',
+      merchandise: d.merchandise,
+      status: d.status,
+      honoraires: d.honoraires,
+      droitsTaxes: '-',
+      date: d.date,
+      corridor: d.corridor,
+    }
+    navigateToDossierDetail(dossier)
+  }
   return (
     <div className="h-full w-full flex flex-col gap-5">
       {/* ---- Stat cards ---- */}
@@ -433,7 +454,7 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey
                 {recentDossiers.map((d) => {
                   const status = statusStyle[d.status]
                   return (
-                    <tr key={d.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors cursor-pointer group">
+                    <tr key={d.id} onClick={() => handleRecentDossierClick(d)} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors cursor-pointer group">
                       <td className="py-3 px-5">
                         <span className="font-mono text-xs font-semibold text-teal-700 group-hover:text-teal-800">{d.number}</span>
                       </td>
@@ -470,7 +491,7 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey
               {recentDossiers.slice(0, 5).map((d) => {
                 const status = statusStyle[d.status]
                 return (
-                  <div key={d.id} className="px-4 py-3 flex items-center gap-3">
+                  <div key={d.id} onClick={() => handleRecentDossierClick(d)} className="px-4 py-3 flex items-center gap-3 cursor-pointer hover:bg-gray-50 transition-colors">
                     <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center shrink-0">
                       <FolderOpen className="w-4.5 h-4.5 text-teal-600" />
                     </div>

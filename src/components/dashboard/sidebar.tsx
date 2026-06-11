@@ -12,6 +12,9 @@ import {
   Bell,
   Settings,
   X,
+  Route,
+  Calculator,
+  Container,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { TransitLogo } from '@/components/transit-logo'
@@ -23,6 +26,12 @@ const mainItems: { key: ViewKey; label: string; icon: React.ElementType }[] = [
   { key: 'clients', label: 'Clients & Contrats', icon: Users },
   { key: 'transport', label: 'Transport & Flotte', icon: Truck },
   { key: 'depots', label: 'Dépôts & Entreposage', icon: Warehouse },
+]
+
+const expertItems: { key: ViewKey; label: string; icon: React.ElementType; badge?: string }[] = [
+  { key: 'corridors', label: 'Suivi Corridors', icon: Route, badge: 'NEW' },
+  { key: 'calculatrice', label: 'Calcul Douanes', icon: Calculator, badge: 'NEW' },
+  { key: 'surestaries', label: 'Surestaries', icon: Container, badge: 'NEW' },
 ]
 
 const managementItems: { key: ViewKey; label: string; icon: React.ElementType }[] = [
@@ -53,7 +62,7 @@ function NavContent({
   return (
     <nav className="flex-1 overflow-y-auto px-3 py-4 scrollbar-thin">
       {/* Opérations */}
-      <div className="mb-6">
+      <div className="mb-5">
         <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-[#9CA3AF]">
           Opérations
         </p>
@@ -82,8 +91,43 @@ function NavContent({
         </ul>
       </div>
 
+      {/* Outils Expert */}
+      <div className="mb-5">
+        <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-teal-500">
+          Outils Expert
+        </p>
+        <ul className="space-y-0.5">
+          {expertItems.map((item) => (
+            <li key={item.key}>
+              <button
+                onClick={() => handleClick(item.key)}
+                className={cn(
+                  'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                  activeView === item.key
+                    ? 'bg-teal-50 text-teal-700'
+                    : 'text-[#6B7280] hover:bg-gray-50 hover:text-[#111827]'
+                )}
+              >
+                <item.icon
+                  className={cn(
+                    'w-5 h-5',
+                    activeView === item.key ? 'text-teal-600' : 'text-[#9CA3AF]'
+                  )}
+                />
+                {item.label}
+                {item.badge && (
+                  <span className="ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded bg-teal-100 text-teal-700 leading-none">
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       {/* Gestion */}
-      <div className="mb-6">
+      <div className="mb-5">
         <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-[#9CA3AF]">
           Gestion
         </p>

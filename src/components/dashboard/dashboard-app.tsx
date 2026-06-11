@@ -13,6 +13,9 @@ import { TransportView } from '@/components/dashboard/views/transport-view'
 import { DepotsView } from '@/components/dashboard/views/depots-view'
 import { FacturationView } from '@/components/dashboard/views/facturation-view'
 import { GedView } from '@/components/dashboard/views/ged-view'
+import { CorridorsView } from '@/components/dashboard/views/corridors-view'
+import { CalculatriceView } from '@/components/dashboard/views/calculatrice-view'
+import { SurestariesView } from '@/components/dashboard/views/surestaries-view'
 import { SecuriteView } from '@/components/dashboard/views/securite-view'
 import { NotificationsView } from '@/components/dashboard/views/notifications-view'
 import { ParametresView } from '@/components/dashboard/views/parametres-view'
@@ -25,6 +28,9 @@ const viewComponents: Record<Exclude<ViewKey, 'dashboard'>, React.ComponentType>
   depots: DepotsView,
   facturation: FacturationView,
   ged: GedView,
+  corridors: CorridorsView,
+  calculatrice: CalculatriceView,
+  surestaries: SurestariesView,
   securite: SecuriteView,
   notifications: NotificationsView,
   parametres: ParametresView,

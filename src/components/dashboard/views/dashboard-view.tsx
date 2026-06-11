@@ -16,10 +16,15 @@ import {
   BarChart3,
   PieChart as PieChartIcon,
   Activity,
-  ArrowUpRight,
-  ArrowDownRight,
   DollarSign,
   FileCheck,
+  Route,
+  Container,
+  ArrowUpRight,
+  ArrowDownRight,
+  Timer,
+  CheckCircle2,
+  Zap,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { type ViewKey } from '../navigation'
@@ -58,7 +63,7 @@ const stats = [
     accent: 'teal' as const,
   },
   {
-    label: 'Chiffre d\'affaires',
+    label: "Chiffre d'affaires",
     value: '127,5 M FCFA',
     trend: '+18%',
     trendUp: true,
@@ -83,6 +88,13 @@ const stats = [
   },
 ]
 
+const expertKPIs = [
+  { label: 'Délai moy. dédouane', value: '4,2 j', target: '5 j', icon: Timer, color: 'text-teal-600', bg: 'bg-teal-50', status: 'good' as const },
+  { label: 'Conteneurs en surestaries', value: '3', alert: '+2 ce mois', icon: Container, color: 'text-rose-600', bg: 'bg-rose-50', status: 'warning' as const },
+  { label: 'Taux occupation dépôts', value: '72%', target: '<85%', icon: Warehouse, color: 'text-amber-600', bg: 'bg-amber-50', status: 'good' as const },
+  { label: 'DSO moyen', value: '32 j', target: '<45 j', icon: Clock, color: 'text-sky-600', bg: 'bg-sky-50', status: 'good' as const },
+]
+
 const accentMap: Record<string, { bg: string; iconBg: string; iconText: string; ring: string }> = {
   teal:  { bg: 'bg-teal-50',  iconBg: 'bg-teal-100',  iconText: 'text-teal-600',  ring: 'ring-teal-200' },
   sky:   { bg: 'bg-sky-50',   iconBg: 'bg-sky-100',   iconText: 'text-sky-600',   ring: 'ring-sky-200' },
@@ -99,6 +111,9 @@ const quickActionViewMap: Record<string, ViewKey> = {
   'Dépôts': 'depots',
   'Facturation': 'facturation',
   'Documents': 'ged',
+  'Corridors': 'corridors',
+  'Calcul Douanes': 'calculatrice',
+  'Surestaries': 'surestaries',
 }
 
 const quickActions = [
@@ -108,6 +123,9 @@ const quickActions = [
   { label: 'Dépôts',         icon: Warehouse,  accent: 'violet' },
   { label: 'Facturation',     icon: Receipt,    accent: 'rose' },
   { label: 'Documents',       icon: FileCheck,  accent: 'emerald' },
+  { label: 'Corridors',       icon: Route,      accent: 'teal' },
+  { label: 'Calcul Douanes',  icon: Zap,        accent: 'amber' },
+  { label: 'Surestaries',     icon: Container,  accent: 'rose' },
 ] as const
 
 type DossierStatus = 'Ouvert' | 'En cours' | 'BAE' | 'Livré' | 'Clôturé'
@@ -132,14 +150,23 @@ const recentDossiers: {
   honoraires: string
   date: string
 }[] = [
-  { id: '1', number: 'TRS-2026-0142', type: 'Import',     client: 'SOCOPAO Mali',       merchandise: 'Matériel agricole', corridor: 'Dakar-Bamako', status: 'En cours', honoraires: '2 500 000 FCFA',  date: '08 Mars' },
+  { id: '1', number: 'TRS-2026-0142', type: 'Import',     client: 'SCOPEX Mali',        merchandise: 'Matériel agricole', corridor: 'Dakar-Bamako', status: 'En cours', honoraires: '2 500 000 FCFA',  date: '08 Mars' },
   { id: '2', number: 'TRS-2026-0141', type: 'Import',     client: 'MALI TEXTILES',       merchandise: 'Tissus & vêtements', corridor: 'Abidjan-Bamako', status: 'BAE',     honoraires: '1 800 000 FCFA',  date: '07 Mars' },
   { id: '3', number: 'TRS-2026-0140', type: 'Export',     client: 'SOMADIA',             merchandise: 'Noix de cajou',      corridor: 'Bamako-Abidjan', status: 'Ouvert',   honoraires: '950 000 FCFA',    date: '07 Mars' },
-  { id: '4', number: 'TRS-2026-0139', type: 'Transit',    client: 'CMA CGM Mali',        merchandise: 'Conteneurs 40\' HC', corridor: 'Lomé-Bamako',   status: 'En cours', honoraires: '3 200 000 FCFA',  date: '06 Mars' },
+  { id: '4', number: 'TRS-2026-0139', type: 'Transit',    client: 'CMA CGM Mali',        merchandise: "Conteneurs 40' HC", corridor: 'Lomé-Bamako',   status: 'En cours', honoraires: '3 200 000 FCFA',  date: '06 Mars' },
   { id: '5', number: 'TRS-2026-0138', type: 'Import',     client: 'PHARMACIE POPULAIRE', merchandise: 'Produits pharmaceutiques', corridor: 'Dakar-Bamako', status: 'Livré',  honoraires: '1 200 000 FCFA',  date: '06 Mars' },
   { id: '6', number: 'TRS-2026-0137', type: 'Réexport.',  client: 'TOTAL MALI',          merchandise: 'Équipements pétroliers', corridor: 'Conakry-Bamako', status: 'Clôturé', honoraires: '4 100 000 FCFA',  date: '05 Mars' },
   { id: '7', number: 'TRS-2026-0136', type: 'Import',     client: 'BRAMALI',             merchandise: 'Ciments & matériaux',  corridor: 'Abidjan-Bamako', status: 'BAE',    honoraires: '1 600 000 FCFA',  date: '05 Mars' },
   { id: '8', number: 'TRS-2026-0135', type: 'Transit',    client: 'MAERSK MALI',         merchandise: 'Marchandises diverses', corridor: 'Tema-Bamako',   status: 'En cours', honoraires: '2 800 000 FCFA',  date: '04 Mars' },
+]
+
+/* Top Clients */
+const topClients = [
+  { name: 'CMA CGM Mali', ca: '22,0 M', dossiers: 56, trend: '+15%', color: '#0d9488' },
+  { name: 'MAERSK MALI', ca: '18,0 M', dossiers: 48, trend: '+8%', color: '#0ea5e9' },
+  { name: 'SCOPEX Mali', ca: '15,2 M', dossiers: 34, trend: '+22%', color: '#f59e0b' },
+  { name: 'TOTAL MALI', ca: '12,4 M', dossiers: 41, trend: '+5%', color: '#8b5cf6' },
+  { name: 'MALI TEXTILES', ca: '8,5 M', dossiers: 22, trend: '+12%', color: '#f43f5e' },
 ]
 
 /* ------------------------------------------------------------------ */
@@ -273,6 +300,41 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey
         })}
       </div>
 
+      {/* ---- Expert KPIs ---- */}
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4 text-teal-600" />
+            <h2 className="text-sm font-semibold text-[#111827]">KPIs Opérationnels</h2>
+          </div>
+          <span className="text-[10px] text-[#9CA3AF]">Mise à jour temps réel</span>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {expertKPIs.map((kpi) => {
+            const Icon = kpi.icon
+            return (
+              <div key={kpi.label} className="flex items-center gap-3 p-3 bg-[#F9FAFB] rounded-lg">
+                <div className={cn('w-9 h-9 rounded-lg flex items-center justify-center shrink-0', kpi.bg)}>
+                  <Icon className={cn('w-4 h-4', kpi.color)} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">{kpi.label}</p>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-sm font-bold text-[#111827]">{kpi.value}</span>
+                    {kpi.target && <span className="text-[10px] text-[#9CA3AF]">/ {kpi.target}</span>}
+                    {kpi.alert && <span className="text-[10px] text-rose-500 font-medium">{kpi.alert}</span>}
+                  </div>
+                </div>
+                <span className={cn(
+                  'ml-auto w-2 h-2 rounded-full shrink-0',
+                  kpi.status === 'good' ? 'bg-emerald-400' : 'bg-amber-400'
+                )} />
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
       {/* ---- Quick actions ---- */}
       <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
         <h2 className="text-sm font-semibold text-[#111827] mb-4">Actions rapides</h2>
@@ -366,22 +428,54 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey
         </div>
       </div>
 
-      {/* ---- Trend + Dossiers Row ---- */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-5 min-h-0">
+      {/* ---- Bottom Row: Top Clients + Revenue + Dossiers ---- */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 min-h-0">
+        {/* Top Clients */}
+        <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-teal-600" />
+              <h2 className="text-sm font-semibold text-[#111827]">Top Clients</h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveView('clients')}
+              className="text-xs text-teal-600 hover:text-teal-700 font-medium"
+            >
+              Voir tout
+            </button>
+          </div>
+          <div className="space-y-3">
+            {topClients.map((client, i) => (
+              <div key={client.name} className="flex items-center gap-2.5">
+                <span className="text-xs font-bold text-[#9CA3AF] w-4 text-center">{i + 1}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold text-[#111827] truncate">{client.name}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-[#9CA3AF]">{client.ca} FCFA</span>
+                    <span className="text-[10px] font-medium text-teal-600">{client.trend}</span>
+                  </div>
+                </div>
+                <span className="text-[10px] text-[#6B7280]">{client.dossiers} dos.</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Revenue Trend Area Chart */}
-        <div className="lg:col-span-2 bg-white border border-[#E5E7EB] rounded-xl p-5 flex flex-col">
+        <div className="lg:col-span-1 bg-white border border-[#E5E7EB] rounded-xl p-5 flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Activity className="w-4.5 h-4.5 text-teal-600" />
-              <h2 className="text-sm font-semibold text-[#111827]">Tendance financière</h2>
+              <h2 className="text-sm font-semibold text-[#111827]">Tendance</h2>
             </div>
             <div className="flex items-center gap-1 text-xs text-[#9CA3AF]">
               <Clock className="w-3.5 h-3.5" />
-              <span>6 derniers mois</span>
+              <span>6 mois</span>
             </div>
           </div>
           <div className="flex-1 min-h-0">
-            <ChartContainer config={revenueTrendConfig} className="h-full w-full min-h-[180px]">
+            <ChartContainer config={revenueTrendConfig} className="h-full w-full min-h-[140px]">
               <AreaChart data={revenueTrendData}>
                 <defs>
                   <linearGradient id="caGradient" x1="0" y1="0" x2="0" y2="1">
@@ -390,29 +484,22 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey
                   </linearGradient>
                 </defs>
                 <CartesianGrid vertical={false} stroke="#E5E7EB" strokeDasharray="3 3" />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
-                <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} tickFormatter={(v: number) => `${v}M`} width={40} />
+                <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} />
+                <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 10, fill: '#9CA3AF' }} tickFormatter={(v: number) => `${v}M`} width={35} />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Area type="monotone" dataKey="ca" stroke="#0d9488" strokeWidth={2.5} fill="url(#caGradient)" />
                 <Area type="monotone" dataKey="debours" stroke="#f59e0b" strokeWidth={2} fill="none" strokeDasharray="5 5" />
               </AreaChart>
             </ChartContainer>
           </div>
-          <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-[#E5E7EB]">
+          <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#E5E7EB]">
             <div>
-              <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Délai moy. dédouane</p>
-              <p className="text-sm font-bold text-[#111827]">4,2 jours</p>
-              <p className="text-xs text-teal-600">-0,8 j vs N-1</p>
+              <p className="text-[10px] text-[#9CA3AF] uppercase">Délai dédouane</p>
+              <p className="text-xs font-bold text-[#111827]">4,2 j <span className="text-teal-600 font-normal">-0,8</span></p>
             </div>
             <div>
-              <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Taux occupation</p>
-              <p className="text-sm font-bold text-[#111827]">72%</p>
-              <p className="text-xs text-[#6B7280]">dépôts</p>
-            </div>
-            <div>
-              <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">DSO moyen</p>
-              <p className="text-sm font-bold text-teal-600">32 jours</p>
-              <p className="text-xs text-[#6B7280]">créances</p>
+              <p className="text-[10px] text-[#9CA3AF] uppercase">DSO moyen</p>
+              <p className="text-xs font-bold text-teal-600">32 j</p>
             </div>
           </div>
         </div>

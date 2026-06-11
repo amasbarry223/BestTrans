@@ -247,6 +247,24 @@
   animation: login-shine 3.5s ease-in-out infinite;
 }
 
+/* Custom scrollbar for demo users list */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(20, 184, 166, 0.25);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 184, 166, 0.4);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .login-page-bg,
   .login-orb-1,

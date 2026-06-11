@@ -1,10 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { ArrowRight, Check, Eye, EyeOff, Loader2, Lock, User } from 'lucide-react'
+import {
+  ArrowRight,
+  Check,
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  User,
+  Users,
+  Sparkles,
+} from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { getAllDemoUsers, getRoleLabel, getRoleColor } from '@/lib/auth'
 import type { AuthUser } from '@/lib/auth'
 
 const inputClass =
@@ -18,6 +29,24 @@ export function LoginForm() {
   const [remember, setRemember] = useState(true)
   const [loading, setLoading] = useState(false)
   const [focused, setFocused] = useState<'id' | 'pwd' | null>(null)
+  const [selectedDemo, setSelectedDemo] = useState<string | null>(null)
+  const identifierRef = useRef<HTMLInputElement>(null)
+
+  const demoUsers = getAllDemoUsers()
+
+  // When a demo user is selected, auto-fill and focus the password field
+  useEffect(() => {
+    if (selectedDemo) {
+      setIdentifier(selectedDemo)
+      setPassword('transit2026')
+      // Focus the password field after a brief delay for UI update
+      const timer = setTimeout(() => {
+        const pwdInput = document.getElementById('password')
+        pwdInput?.focus()
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  }, [selectedDemo])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -54,8 +83,15 @@ export function LoginForm() {
     }
   }
 
+  function handleDemoClick(username: string) {
+    setSelectedDemo(username)
+    setIdentifier(username)
+    setPassword('transit2026')
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Identifier Input */}
       <div className="space-y-2">
         <label
           htmlFor="identifier"
@@ -71,6 +107,7 @@ export function LoginForm() {
             )}
           />
           <input
+            ref={identifierRef}
             id="identifier"
             type="text"
             autoComplete="username"
@@ -78,13 +115,17 @@ export function LoginForm() {
             value={identifier}
             onFocus={() => setFocused('id')}
             onBlur={() => setFocused(null)}
-            onChange={(e) => setIdentifier(e.target.value)}
-            placeholder="dir001 ou email"
+            onChange={(e) => {
+              setIdentifier(e.target.value)
+              setSelectedDemo(null)
+            }}
+            placeholder="Nom d'utilisateur ou email"
             className={inputClass}
           />
         </div>
       </div>
 
+      {/* Password Input */}
       <div className="space-y-2">
         <label
           htmlFor="password"
@@ -122,6 +163,7 @@ export function LoginForm() {
         </div>
       </div>
 
+      {/* Remember + Forgot */}
       <div className="flex items-center justify-between pt-1">
         <label className="flex items-center gap-2.5 cursor-pointer group">
           <span className="relative flex items-center justify-center">
@@ -140,7 +182,10 @@ export function LoginForm() {
               )}
             >
               <Check
-                className={cn('w-3 h-3 text-white transition-opacity', remember ? 'opacity-100' : 'opacity-0')}
+                className={cn(
+                  'w-3 h-3 text-white transition-opacity',
+                  remember ? 'opacity-100' : 'opacity-0'
+                )}
                 strokeWidth={3}
               />
             </span>
@@ -153,13 +198,16 @@ export function LoginForm() {
           type="button"
           className="text-sm text-teal-600 hover:text-teal-700 font-medium transition-colors"
           onClick={() =>
-            toast.info('Contactez l\'administrateur système pour réinitialiser votre mot de passe.')
+            toast.info(
+              "Contactez l'administrateur système pour réinitialiser votre mot de passe."
+            )
           }
         >
           Mot de passe oublié ?
         </button>
       </div>
 
+      {/* Submit Button */}
       <button
         type="submit"
         disabled={loading}
@@ -178,18 +226,98 @@ export function LoginForm() {
         )}
       </button>
 
-      <div className="rounded-2xl border border-dashed border-teal-200/80 bg-teal-50/50 px-4 py-3 mt-2">
-        <p className="text-[11px] font-medium text-teal-800/70 text-center mb-1.5">
-          Accès démonstration
-        </p>
-        <div className="flex items-center justify-center gap-2 flex-wrap">
-          <code className="text-xs font-mono bg-white/80 px-2.5 py-1 rounded-lg text-[#374151] border border-teal-100">
-            dir001
-          </code>
-          <span className="text-[#9CA3AF] text-xs">/</span>
-          <code className="text-xs font-mono bg-white/80 px-2.5 py-1 rounded-lg text-[#374151] border border-teal-100">
-            transit2026
-          </code>
+      {/* Demo Accounts Section */}
+      <div className="pt-3">
+        <div className="rounded-2xl border border-teal-200/60 bg-gradient-to-b from-teal-50/60 to-teal-50/30 px-4 py-4">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+            <p className="text-xs font-semibold text-teal-700 uppercase tracking-wider">
+              Comptes de démonstration
+            </p>
+            <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+          </div>
+          <p className="text-[11px] text-teal-600/70 text-center mb-3">
+            Cliquez sur un rôle pour remplir automatiquement les identifiants
+          </p>
+          <div className="grid grid-cols-1 gap-1.5 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
+            {demoUsers.map((du) => {
+              const roleColor = getRoleColor(du.role)
+              const roleLabel = getRoleLabel(du.role)
+              const isSelected = selectedDemo === du.username
+
+              return (
+                <button
+                  key={du.username}
+                  type="button"
+                  onClick={() => handleDemoClick(du.username)}
+                  className={cn(
+                    'w-full flex items-center gap-2.5 px-3 py-2 rounded-xl border text-left transition-all duration-200',
+                    'hover:shadow-sm hover:scale-[1.01] active:scale-[0.99]',
+                    isSelected
+                      ? 'border-teal-300 bg-teal-100/80 shadow-sm ring-1 ring-teal-400/30'
+                      : cn(
+                          roleColor.border,
+                          roleColor.bg,
+                          'hover:border-teal-300/60'
+                        )
+                  )}
+                >
+                  {/* Role color dot */}
+                  <span
+                    className={cn(
+                      'shrink-0 w-2.5 h-2.5 rounded-full',
+                      du.role === 'admin'
+                        ? 'bg-rose-500'
+                        : du.role === 'directeur'
+                          ? 'bg-teal-500'
+                          : du.role === 'declarant'
+                            ? 'bg-amber-500'
+                            : du.role === 'agent'
+                              ? 'bg-sky-500'
+                              : du.role === 'magasinier'
+                                ? 'bg-violet-500'
+                                : du.role === 'transport'
+                                  ? 'bg-orange-500'
+                                  : du.role === 'comptable'
+                                    ? 'bg-emerald-500'
+                                    : du.role === 'commercial'
+                                      ? 'bg-pink-500'
+                                      : 'bg-gray-500'
+                    )}
+                  />
+                  {/* Role label */}
+                  <span
+                    className={cn(
+                      'text-xs font-semibold shrink-0',
+                      roleColor.text
+                    )}
+                  >
+                    {roleLabel}
+                  </span>
+                  {/* Separator */}
+                  <span className="text-teal-300/60 text-[10px]">•</span>
+                  {/* Name */}
+                  <span className="text-xs text-[#6B7280] truncate flex-1">
+                    {du.name}
+                  </span>
+                  {/* Username badge */}
+                  <code
+                    className={cn(
+                      'text-[10px] font-mono px-1.5 py-0.5 rounded-md shrink-0 border',
+                      isSelected
+                        ? 'bg-teal-100 border-teal-300 text-teal-700'
+                        : 'bg-white/80 border-[#E5E7EB] text-[#6B7280]'
+                    )}
+                  >
+                    {du.username}
+                  </code>
+                </button>
+              )
+            })}
+          </div>
+          <p className="text-[10px] text-teal-500/60 text-center mt-2.5">
+            Mot de passe commun : <code className="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-teal-100 text-[#6B7280]">transit2026</code>
+          </p>
         </div>
       </div>
     </form>

@@ -10,16 +10,19 @@ datasource db {
 // ─── M8: Users & RBAC ───────────────────────────────────────
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  password  String
-  role      String   @default("agent")
-  phone     String?
-  initials  String?
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  username    String   @unique
+  email       String   @unique
+  name        String
+  password    String
+  role        String   @default("agent")
+  permissions String   @default("[]")
+  phone       String?
+  initials    String?
+  active      Boolean  @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   dossiersCreated  Dossier[]     @relation("DeclarantDossiers")
   missionsDriven   Mission[]     @relation("ChauffeurMissions")

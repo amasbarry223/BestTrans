@@ -1,25 +1,31 @@
 ---
-Task ID: 1
-Agent: Main
-Task: Analyse, correction et enrichissement de TransitPro
+Task ID: 1-9
+Agent: Main Orchestrator
+Task: Refont Login with RBA, rebuild Paramètres with horizontal tabs (Historique + Gestion Utilisateurs)
 
 Work Log:
-- Analysé l'état actuel du projet (14 vues existantes, compilation OK)
-- Identifié les erreurs TypeScript: corridors-view (propriété 'dot' manquante), dashboard-view (PieCustomLabel type mismatch)
-- Corrigé etatRouteStyle dans corridors-view: ajout de la propriété 'dot' manquante
-- Corrigé PieCustomLabel dans dashboard-view: changé le type de props pour compatibilité Recharts
-- Corrigé RechartsTooltip formatter: changé les types en `unknown` pour compatibilité
-- Vérifié compilation TypeScript: 0 erreurs dans notre code
-- Vérifié lint: 0 erreurs
-- Testé login via browser: API fonctionne correctement (dir001 / transit2026)
-- Vérifié toutes les vues dans le navigateur: Dashboard, Corridors, Calculatrice, Surestaries, Dossiers, Dossier Détail
-- Testé responsivité mobile (375x812) et desktop (1920x1080)
-- Aucune erreur console, uniquement warnings mineurs Recharts
+- Analyzed current project state (all existing views, auth system, API routes)
+- Updated Prisma schema: added `username` (unique), `permissions` (JSON string), `lastLoginAt` fields to User model
+- Pushed schema changes to SQLite database with `db:push`
+- Created seed script (`prisma/seed.ts`) with 10 RBA demo users across 9 roles and 25 audit log entries
+- Seeded database successfully with all demo users and audit logs
+- Rewrote `src/lib/auth.ts`: added 9 demo users with role-based permissions, `getAllDemoUsers()`, `getRoleLabel()`, `getRoleColor()`, `hasPermission()` functions
+- Updated `src/app/api/auth/login/route.ts`: uses new validateCredentials from auth.ts
+- Rewrote `src/app/api/users/route.ts`: full CRUD (GET, POST, PUT, DELETE) with permissions parsing
+- Created `src/app/api/audit-logs/route.ts`: GET with filters (entity, userId, action, pagination) and POST
+- Dispatched subagent for Login RBA refont: rewrote login-form.tsx, login-view.tsx, login-page-client.tsx
+- Dispatched subagent for Paramètres rebuild: rewrote parametres-view.tsx with 6 horizontal tabs
+- Verified all 6 tabs: Mon Profil, Entreprise, Notifications, Sécurité, Historique & Traçabilité, Gestion Utilisateurs
+- Verified API endpoints working: /api/auth/login, /api/users, /api/audit-logs
+- Ran lint with 0 errors
+- Regenerated Prisma client after schema changes
 
 Stage Summary:
-- Toutes les erreurs TypeScript corrigées
-- 14 vues fonctionnelles (11 originales + 3 nouvelles expert)
-- Dashboard enrichi avec KPIs Opérationnels et Top Clients
-- Dossier Détail enrichi avec Tableau de Charge et Suivi BAX
-- 3 nouvelles vues Expert: Corridors, Calculatrice Douanière, Surestaries
-- Application fonctionne en production sans erreurs
+- Login page now has 9 RBA demo accounts with role-colored badges and auto-fill functionality
+- Paramètres view has 6 full-width horizontal tabs using shadcn/ui Tabs component
+- Historique & Traçabilité tab: full audit trail table with filters (action, entity, date range, search), color-coded action badges, pagination
+- Gestion Utilisateurs tab: CRUD operations, enable/disable users, expandable permissions view, role-based permission presets, add/edit dialog with 14 permission modules
+- All text in French, teal color theme throughout
+- 10 demo users across 9 roles seeded in database
+- 25 audit log entries seeded for testing
+- APIs verified working: login (admin001/transit2026), users (10 total), audit-logs (25 total)

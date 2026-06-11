@@ -6,25 +6,27 @@ export type AuthUser = {
   id: string
   name: string
   email: string
+  role: string
   location: string
   initials: string
 }
 
 const DEMO_USER: AuthUser = {
-  id: 'agent001',
-  name: 'Amadou Moussa',
-  email: 'amadou.moussa@ricash.ml',
+  id: 'dir001',
+  name: 'Seydou Diarra',
+  email: 's.diarra@transitpro.ml',
+  role: 'directeur',
   location: 'Bamako',
-  initials: 'AM',
+  initials: 'SD',
 }
 
 const VALID_IDENTIFIERS = new Set([
-  'agent001',
-  'amadou.moussa@ricash.ml',
-  'amadou',
+  'dir001',
+  's.diarra@transitpro.ml',
+  'seydou',
 ])
 
-export const DEMO_PASSWORD = 'ricash2024'
+export const DEMO_PASSWORD = 'transit2026'
 
 export function validateCredentials(
   identifier: string,

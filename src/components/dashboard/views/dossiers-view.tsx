@@ -14,6 +14,7 @@ import {
   ChevronDown,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { NewDossierDialog } from '@/components/dashboard/new-dossier-dialog'
 
 type DossierStatus = 'Ouvert' | 'Docs reçus' | 'Déclaration' | 'Liquidation' | 'Paiement' | 'BAE' | 'Enlèvement' | 'Livré' | 'Clôturé'
 type DossierType = 'Import' | 'Export' | 'Transit' | 'Réexport.'
@@ -123,10 +124,7 @@ export function DossiersView() {
               <Download className="w-4 h-4" />
               Export
             </button>
-            <button className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-colors">
-              <Plus className="w-4 h-4" />
-              Nouveau Dossier
-            </button>
+            <NewDossierDialog />
           </div>
         </div>
 

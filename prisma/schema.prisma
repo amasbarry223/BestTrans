@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,20 +7,267 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ─── M8: Users & RBAC ───────────────────────────────────────
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
-  name      String?
+  name      String
+  password  String
+  role      String   @default("agent")
+  phone     String?
+  initials  String?
+  active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  dossiersCreated  Dossier[]     @relation("DeclarantDossiers")
+  missionsDriven   Mission[]     @relation("ChauffeurMissions")
+  movements        DepotMovement[]
+  documents        Document[]
+  invoicesCreated  Invoice[]     @relation("InvoiceCreator")
+  paymentsReceived Payment[]     @relation("PaymentReceiver")
+  auditLogs        AuditLog[]
 }
 
-model Post {
+// ─── M2: Dossiers de Transit & Dédouanement ──────────────────
+
+model Dossier {
+  id              String   @id @default(cuid())
+  number          String   @unique
+  type            String
+  clientName      String
+  clientNif       String?
+  regime          String
+  blLta           String
+  declarationNum  String?
+  bureau          String
+  merchandise     String
+  colis           Int?
+  poids           String?
+  volume          String?
+  valeurCaf       String?
+  devise          String   @default("FCFA")
+  containerInfo   String?
+  portNavire      String?
+  corridor        String?
+  droitsTaxes     String?
+  honoraires      String
+  status          String   @default("Ouvert")
+  observations    String?
+  declarantId     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  declarant       User?          @relation("DeclarantDossiers", fields: [declarantId], references: [id])
+  clientLinks     DossierClient[]
+  movements       DepotMovement[]
+  documents       Document[]
+  missions        Mission[]
+  invoices        Invoice[]
+  payments        Payment[]
+}
+
+// ─── M3: Clients ─────────────────────────────────────────────
+
+model Client {
+  id          String   @id @default(cuid())
+  name        String
+  nif         String?
+  rccm        String?
+  type        String
+  contact     String?
+  phone       String?
+  email       String?
+  address     String?
+  encours     String   @default("0")
+  plafond     String   @default("0")
+  status      String   @default("Actif")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  dossierLinks DossierClient[]
+  invoices     Invoice[]
+  payments     Payment[]
+}
+
+model DossierClient {
+  id        String @id @default(cuid())
+  dossierId String
+  clientId  String
+  role      String @default("titulaire")
+
+  dossier   Dossier @relation(fields: [dossierId], references: [id])
+  client    Client  @relation(fields: [clientId], references: [id])
+}
+
+// ─── M4: Transport & Flotte ─────────────────────────────────
+
+model Vehicle {
+  id              String   @id @default(cuid())
+  immatriculation String   @unique
+  type            String
+  capacite        String?
+  status          String   @default("Disponible")
+  visiteTech      String?
+  assurance       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  missions        Mission[]
+}
+
+model Mission {
+  id          String   @id @default(cuid())
+  number      String   @unique
+  dossierId   String?
+  vehicleId   String?
+  chauffeurId String?
+  corridor    String
+  depart      String
+  destination String
+  status      String   @default("Préparée")
+  dateDepart  DateTime?
+  eta         DateTime?
+  fraisRoute  String?
+  perDiem     String?
+  peages      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  dossier     Dossier? @relation(fields: [dossierId], references: [id])
+  vehicle     Vehicle? @relation(fields: [vehicleId], references: [id])
+  chauffeur   User?    @relation("ChauffeurMissions", fields: [chauffeurId], references: [id])
+}
+
+// ─── M5: Dépôts & Entreposage ───────────────────────────────
+
+model Depot {
   id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
+  name      String
+  location  String
+  type      String
+  capacity  Int
+  used      Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  movements  DepotMovement[]
+  containers Container[]
+}
+
+model DepotMovement {
+  id              String   @id @default(cuid())
+  reference       String   @unique
+  type            String
+  depotId         String
+  depotDestId     String?
+  dossierId       String?
+  merchandise     String
+  colis           Int?
+  poids           String?
+  containerNum    String?
+  dateMouvement   DateTime @default(now())
+  dureeSejour     String?
+  fraisMagasinage String?  @default("0")
+  etat            String?
+  observations    String?
+  operatedBy      String?
+  createdAt       DateTime @default(now())
+
+  depot           Depot    @relation(fields: [depotId], references: [id])
+  dossier         Dossier? @relation(fields: [dossierId], references: [id])
+  operator        User?    @relation(fields: [operatedBy], references: [id])
+}
+
+model Container {
+  id          String   @id @default(cuid())
+  number      String   @unique
+  type        String
+  status      String   @default("Plein")
+  scelle      String?
+  depotId     String?
+  surestaries Boolean  @default(false)
+  dossierId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  depot       Depot?   @relation(fields: [depotId], references: [id])
+}
+
+// ─── M6: Facturation & Comptabilité ─────────────────────────
+
+model Invoice {
+  id            String   @id @default(cuid())
+  number        String   @unique
+  clientId      String?
+  dossierId     String?
+  type          String
+  montant       String
+  status        String   @default("En attente")
+  dateEmission  DateTime @default(now())
+  echeance      DateTime?
+  createdBy     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  client        Client?  @relation(fields: [clientId], references: [id])
+  dossier       Dossier? @relation(fields: [dossierId], references: [id])
+  creator       User?    @relation("InvoiceCreator", fields: [createdBy], references: [id])
+  payments      Payment[]
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  reference     String   @unique
+  clientId      String?
+  invoiceId     String?
+  dossierId     String?
+  mode          String
+  montant       String
+  datePaiement  DateTime @default(now())
+  receivedBy    String?
+  createdAt     DateTime @default(now())
+
+  client        Client?  @relation(fields: [clientId], references: [id])
+  invoice       Invoice? @relation(fields: [invoiceId], references: [id])
+  dossier       Dossier? @relation(fields: [dossierId], references: [id])
+  receiver      User?    @relation("PaymentReceiver", fields: [receivedBy], references: [id])
+}
+
+// ─── M7: GED ────────────────────────────────────────────────
+
+model Document {
+  id          String   @id @default(cuid())
+  name        String
+  category    String
+  dossierId   String?
+  uploadedBy  String?
+  size        String?
+  status      String   @default("En attente")
+  version     Int      @default(1)
+  filePath    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  dossier     Dossier? @relation(fields: [dossierId], references: [id])
+  uploader    User?    @relation(fields: [uploadedBy], references: [id])
+}
+
+// ─── M8: Audit Log ──────────────────────────────────────────
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  details   String?
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([entity, entityId])
+  @@index([userId])
+  @@index([createdAt])
 }

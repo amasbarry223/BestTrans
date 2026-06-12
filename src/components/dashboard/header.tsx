@@ -7,20 +7,23 @@ import { cn } from '@/lib/utils'
 import { type ViewKey } from './navigation'
 
 const viewTitles: Record<ViewKey, { title: string; subtitle: string }> = {
-  dashboard: { title: 'Tableau de bord', subtitle: 'Pilotage opérationnel et financier' },
-  dossiers: { title: 'Dossiers de Transit', subtitle: 'Gestion des dossiers de dédouanement' },
-  'dossier-detail': { title: 'Détails Dossier', subtitle: 'Informations et suivi du dossier' },
-  clients: { title: 'Clients & Contrats', subtitle: 'Gestion clients, contrats et tarification' },
-  transport: { title: 'Transport & Flotte', subtitle: 'Gestion de la flotte et des missions' },
-  depots: { title: 'Dépôts & Entreposage', subtitle: 'Gestion des magasins sous douane' },
-  facturation: { title: 'Facturation & Comptabilité', subtitle: 'Factures, règlements et comptabilité' },
-  ged: { title: 'Documents (GED)', subtitle: 'Gestion électronique des documents' },
-  corridors: { title: 'Suivi des Corridors', subtitle: 'Temps réel Dakar, Abidjan, Lomé, Conakry, Tema' },
-  calculatrice: { title: 'Calculatrice Douanière', subtitle: 'Simulation droits & taxes par code SH' },
-  surestaries: { title: 'Gestion Surestaries', subtitle: 'Suivi demurrage & detention conteneurs' },
-  securite: { title: 'Accès & Sécurité', subtitle: 'Gestion des rôles et permissions' },
+  dashboard: { title: 'Tableau de bord', subtitle: 'Vue d\'ensemble de la plateforme' },
+  passagers: { title: 'Passagers', subtitle: 'Gestion des comptes passagers' },
+  chauffeurs: { title: 'Chauffeurs', subtitle: 'Supervision et validation des chauffeurs' },
+  'chauffeur-detail': { title: 'Fiche Chauffeur', subtitle: 'Profil et performances' },
+  'kyc-validation': { title: 'Validation KYC', subtitle: 'Vérification des documents chauffeurs' },
+  courses: { title: 'Courses', subtitle: 'Suivi opérationnel des courses' },
+  'course-detail': { title: 'Détail Course', subtitle: 'Informations et trajet de la course' },
+  'carte-operations': { title: 'Carte opérations', subtitle: 'Suivi GPS en temps réel' },
+  transactions: { title: 'Transactions', subtitle: 'Historique des paiements' },
+  'revenus-chauffeurs': { title: 'Revenus chauffeurs', subtitle: 'Soldes et versements' },
+  'synthese-finance': { title: 'Synthèse financière', subtitle: 'CA, commissions et rapprochement' },
+  tickets: { title: 'Tickets support', subtitle: 'Réclamations et demandes' },
+  'ticket-detail': { title: 'Détail Ticket', subtitle: 'Conversation et interventions' },
+  faq: { title: 'FAQ', subtitle: 'Questions fréquentes' },
+  rapports: { title: 'Rapports & Analytique', subtitle: 'Tableaux de bord analytiques' },
+  parametres: { title: 'Paramètres', subtitle: 'Tarification, rôles, notifications' },
   notifications: { title: 'Notifications', subtitle: 'Alertes et messages système' },
-  parametres: { title: 'Paramètres', subtitle: 'Configuration de votre compte' },
 }
 
 export function DashboardHeader({
@@ -79,7 +82,7 @@ export function DashboardHeader({
         >
           <Bell className="w-5 h-5 text-[#6B7280]" />
           <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
-            3
+            5
           </span>
         </button>
         <div ref={profileRef} className="relative hidden sm:block">
@@ -88,15 +91,15 @@ export function DashboardHeader({
             onClick={() => setProfileOpen((v) => !v)}
             className="flex items-center gap-2.5 bg-[#F9FAFB] hover:bg-gray-50 rounded-xl px-3 py-2 transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-semibold text-xs">
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-xs">
               {user?.initials ?? 'SD'}
             </div>
             <div className="text-left">
               <p className="text-sm font-medium text-[#111827] leading-5">
-                {user?.name ?? 'Seydou Diarra'}
+                {user?.name ?? 'Admin BestTrans'}
               </p>
               <p className="text-[10px] text-[#9CA3AF] leading-4">
-                Directeur · {user?.location ?? 'Bamako'}
+                Super Admin · Bamako
               </p>
             </div>
             <ChevronDown

@@ -16,12 +16,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TransitPro — Plateforme de Gestion Transit & Logistique",
-  description: "Plateforme numérique de gestion pour société de transit et logistique — Dédouanement, Transport, Entreposage, Facturation",
-  keywords: ["TransitPro", "transit", "logistique", "dédouanement", "Mali", "UEMOA", "FCFA"],
+  title: "BestTrans — Dashboard Admin",
+  description: "Dashboard d'administration BestTrans — Supervision de la plateforme VTC, gestion des courses, chauffeurs et paiements",
+  keywords: ["BestTrans", "VTC", "dashboard", "admin", "courses", "chauffeurs", "Mali"],
   openGraph: {
-    title: "TransitPro — Transit & Logistique",
-    description: "Plateforme de gestion transit et logistique",
+    title: "BestTrans — Dashboard Admin",
+    description: "Plateforme d'administration BestTrans",
     type: "website",
   },
 };

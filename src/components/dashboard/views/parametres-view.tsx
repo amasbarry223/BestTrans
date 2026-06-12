@@ -85,7 +85,7 @@ type AuditAction =
   | 'MODIFICATION'
   | 'SUPPRESSION'
   | 'PAIEMENT'
-  | 'DEPOT_FICHIER'
+  | 'VALIDATION_KYC'
   | 'DECONNEXION'
 
 type AuditLogEntry = {
@@ -130,19 +130,16 @@ type UserEntry = {
 
 const PERMISSION_MODULES = [
   { key: 'dashboard', label: 'Tableau de bord', perms: ['read', 'write'] },
-  { key: 'dossiers', label: 'Dossiers', perms: ['read', 'write', 'delete'] },
-  { key: 'clients', label: 'Clients', perms: ['read', 'write', 'delete'] },
-  { key: 'transport', label: 'Transport', perms: ['read', 'write', 'delete'] },
-  { key: 'depots', label: 'Dépôts', perms: ['read', 'write', 'delete'] },
-  { key: 'facturation', label: 'Facturation', perms: ['read', 'write', 'delete'] },
-  { key: 'ged', label: 'GED', perms: ['read', 'write', 'delete'] },
-  { key: 'securite', label: 'Sécurité', perms: ['read', 'write'] },
-  { key: 'users', label: 'Utilisateurs', perms: ['read', 'write', 'delete'] },
+  { key: 'users', label: 'Utilisateurs (passagers)', perms: ['read', 'write', 'delete'] },
+  { key: 'drivers', label: 'Chauffeurs', perms: ['read', 'write', 'delete'] },
+  { key: 'courses', label: 'Courses', perms: ['read', 'write', 'delete'] },
+  { key: 'payments', label: 'Paiements', perms: ['read', 'write', 'delete'] },
+  { key: 'support', label: 'Support', perms: ['read', 'write', 'delete'] },
+  { key: 'reports', label: 'Rapports', perms: ['read', 'write'] },
+  { key: 'settings', label: 'Paramètres', perms: ['read', 'write'] },
+  { key: 'roles', label: 'Rôles', perms: ['read', 'write', 'delete'] },
   { key: 'audit', label: 'Audit', perms: ['read'] },
-  { key: 'parametres', label: 'Paramètres', perms: ['read', 'write'] },
-  { key: 'corridors', label: 'Corridors', perms: ['read', 'write'] },
-  { key: 'calculatrice', label: 'Calculatrice', perms: ['read'] },
-  { key: 'surestaries', label: 'Surestaries', perms: ['read', 'write'] },
+  { key: 'notifications', label: 'Notifications', perms: ['read', 'write'] },
 ] as const
 
 const PERM_LABELS: Record<string, string> = {
@@ -153,71 +150,33 @@ const PERM_LABELS: Record<string, string> = {
 
 // Role-based permission presets
 const ROLE_PRESETS: Record<string, string[]> = {
-  admin: PERMISSION_MODULES.flatMap((m) => m.perms.map((p) => `${m.key}:${p}`)),
-  directeur: [
+  super_admin: PERMISSION_MODULES.flatMap((m) => m.perms.map((p) => `${m.key}:${p}`)),
+  admin: [
     'dashboard:read', 'dashboard:write',
-    'dossiers:read', 'dossiers:write',
-    'clients:read', 'clients:write',
-    'transport:read',
-    'depots:read',
-    'facturation:read', 'facturation:write',
-    'ged:read',
-    'corridors:read',
-    'calculatrice:read',
-    'surestaries:read',
+    'users:read', 'users:write',
+    'drivers:read', 'drivers:write',
+    'courses:read', 'courses:write',
+    'payments:read', 'payments:write',
+    'support:read', 'support:write',
+    'reports:read',
+    'settings:read',
     'audit:read',
-    'parametres:read',
+    'notifications:read',
   ],
-  declarant: [
+  support: [
     'dashboard:read',
-    'dossiers:read', 'dossiers:write',
-    'clients:read',
-    'ged:read', 'ged:write',
-    'corridors:read',
-    'calculatrice:read',
+    'users:read',
+    'drivers:read', 'drivers:write',
+    'courses:read', 'courses:write',
+    'support:read', 'support:write',
+    'notifications:read', 'notifications:write',
   ],
-  agent: [
+  finance: [
     'dashboard:read',
-    'dossiers:read', 'dossiers:write',
-    'ged:read', 'ged:write',
-    'clients:read',
-  ],
-  magasinier: [
-    'dashboard:read',
-    'depots:read', 'depots:write',
-    'surestaries:read', 'surestaries:write',
-    'ged:read',
-  ],
-  transport: [
-    'dashboard:read',
-    'transport:read', 'transport:write',
-    'corridors:read',
-  ],
-  comptable: [
-    'dashboard:read',
-    'facturation:read', 'facturation:write',
-    'clients:read',
-  ],
-  commercial: [
-    'dashboard:read',
-    'clients:read', 'clients:write',
-    'facturation:read',
-  ],
-  auditeur: [
-    'dashboard:read',
-    'dossiers:read',
-    'clients:read',
-    'transport:read',
-    'depots:read',
-    'facturation:read',
-    'ged:read',
-    'audit:read',
-    'securite:read',
-  ],
-  client: [
-    'dashboard:read',
-    'dossiers:read',
-    'facturation:read',
+    'payments:read', 'payments:write',
+    'courses:read',
+    'reports:read', 'reports:write',
+    'drivers:read',
   ],
 }
 
@@ -230,7 +189,7 @@ function getActionBadgeConfig(action: AuditAction) {
     MODIFICATION: { bg: 'bg-sky-50', text: 'text-sky-700', icon: <Pencil className="w-3 h-3" /> },
     SUPPRESSION: { bg: 'bg-red-50', text: 'text-red-700', icon: <Trash2 className="w-3 h-3" /> },
     PAIEMENT: { bg: 'bg-amber-50', text: 'text-amber-700', icon: <CreditCard className="w-3 h-3" /> },
-    DEPOT_FICHIER: { bg: 'bg-violet-50', text: 'text-violet-700', icon: <FileUp className="w-3 h-3" /> },
+    VALIDATION_KYC: { bg: 'bg-violet-50', text: 'text-violet-700', icon: <ShieldCheck className="w-3 h-3" /> },
     DECONNEXION: { bg: 'bg-gray-50', text: 'text-gray-700', icon: <LogOut className="w-3 h-3" /> },
   }
   return config[action]
@@ -269,7 +228,7 @@ function InitialsAvatar({ initials, name, size = 'md' }: { initials: string; nam
   }
   return (
     <div
-      className={cn('rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold shrink-0', sizeClasses[size])}
+      className={cn('rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold shrink-0', sizeClasses[size])}
       title={name}
     >
       {initials}
@@ -289,7 +248,7 @@ export function ParametresView() {
           <TabsTrigger
             value="profil"
             className={cn(
-              'flex-1 min-w-0 data-[state=active]:bg-teal-50 data-[state=active]:text-teal-700 data-[state=active]:shadow-sm',
+              'flex-1 min-w-0 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm',
               'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
             )}
           >
@@ -299,7 +258,7 @@ export function ParametresView() {
           <TabsTrigger
             value="entreprise"
             className={cn(
-              'flex-1 min-w-0 data-[state=active]:bg-teal-50 data-[state=active]:text-teal-700 data-[state=active]:shadow-sm',
+              'flex-1 min-w-0 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm',
               'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
             )}
           >
@@ -309,7 +268,7 @@ export function ParametresView() {
           <TabsTrigger
             value="notifications"
             className={cn(
-              'flex-1 min-w-0 data-[state=active]:bg-teal-50 data-[state=active]:text-teal-700 data-[state=active]:shadow-sm',
+              'flex-1 min-w-0 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm',
               'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
             )}
           >
@@ -319,7 +278,7 @@ export function ParametresView() {
           <TabsTrigger
             value="securite"
             className={cn(
-              'flex-1 min-w-0 data-[state=active]:bg-teal-50 data-[state=active]:text-teal-700 data-[state=active]:shadow-sm',
+              'flex-1 min-w-0 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm',
               'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
             )}
           >
@@ -329,7 +288,7 @@ export function ParametresView() {
           <TabsTrigger
             value="historique"
             className={cn(
-              'flex-1 min-w-0 data-[state=active]:bg-teal-50 data-[state=active]:text-teal-700 data-[state=active]:shadow-sm',
+              'flex-1 min-w-0 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm',
               'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
             )}
           >
@@ -339,7 +298,7 @@ export function ParametresView() {
           <TabsTrigger
             value="utilisateurs"
             className={cn(
-              'flex-1 min-w-0 data-[state=active]:bg-teal-50 data-[state=active]:text-teal-700 data-[state=active]:shadow-sm',
+              'flex-1 min-w-0 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm',
               'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
             )}
           >
@@ -398,11 +357,11 @@ function ProfilTab() {
     <div className="bg-white border border-[#E5E7EB] rounded-xl p-6">
       <h3 className="text-lg font-semibold text-[#111827] mb-6">Informations personnelles</h3>
       <div className="flex items-center gap-4 mb-6">
-        <InitialsAvatar initials="SD" name="Seydou Diarra" size="lg" />
+        <InitialsAvatar initials="AD" name="Amadou Diallo" size="lg" />
         <div>
-          <p className="font-semibold text-[#111827]">Seydou Diarra</p>
-          <p className="text-sm text-[#6B7280]">Directeur</p>
-          <button className="text-xs text-teal-600 font-medium mt-1 hover:underline">
+          <p className="font-semibold text-[#111827]">Amadou Diallo</p>
+          <p className="text-sm text-[#6B7280]">Super Admin</p>
+          <button className="text-xs text-blue-600 font-medium mt-1 hover:underline">
             Changer la photo
           </button>
         </div>
@@ -410,11 +369,11 @@ function ProfilTab() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label className="text-xs font-medium text-[#6B7280] mb-1">Nom complet</Label>
-          <Input type="text" defaultValue="Seydou Diarra" className="mt-1" />
+          <Input type="text" defaultValue="Amadou Diallo" className="mt-1" />
         </div>
         <div>
           <Label className="text-xs font-medium text-[#6B7280] mb-1">Email</Label>
-          <Input type="email" defaultValue="s.diarra@transitpro.ml" className="mt-1" />
+          <Input type="email" defaultValue="a.diallo@besttrans.ml" className="mt-1" />
         </div>
         <div>
           <Label className="text-xs font-medium text-[#6B7280] mb-1">Téléphone</Label>
@@ -422,13 +381,13 @@ function ProfilTab() {
         </div>
         <div>
           <Label className="text-xs font-medium text-[#6B7280] mb-1">Rôle</Label>
-          <Input type="text" defaultValue="Directeur" disabled className="mt-1 bg-gray-50 text-[#6B7280]" />
+          <Input type="text" defaultValue="Super Admin" disabled className="mt-1 bg-gray-50 text-[#6B7280]" />
         </div>
       </div>
       <Button
         onClick={handleSave}
         disabled={saving}
-        className="mt-6 bg-teal-600 hover:bg-teal-700 text-white"
+        className="mt-6 bg-blue-600 hover:bg-blue-700 text-white"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Save className="w-4 h-4 mr-1.5" />}
         Enregistrer
@@ -455,15 +414,15 @@ function EntrepriseTab() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label className="text-xs font-medium text-[#6B7280] mb-1">Raison sociale</Label>
-          <Input type="text" defaultValue="TransitPro SARL" className="mt-1" />
+          <Input type="text" defaultValue="BestTrans SA" className="mt-1" />
         </div>
         <div>
           <Label className="text-xs font-medium text-[#6B7280] mb-1">NIF</Label>
-          <Input type="text" defaultValue="NIF-12-45-6789-Z" className="mt-1" />
+          <Input type="text" defaultValue="NIF-08-12-3456-A" className="mt-1" />
         </div>
         <div>
           <Label className="text-xs font-medium text-[#6B7280] mb-1">RCCM</Label>
-          <Input type="text" defaultValue="RCCM-BKO-2020-1234" className="mt-1" />
+          <Input type="text" defaultValue="RCCM-BKO-2021-5678" className="mt-1" />
         </div>
         <div>
           <Label className="text-xs font-medium text-[#6B7280] mb-1">Devise</Label>
@@ -471,17 +430,17 @@ function EntrepriseTab() {
         </div>
         <div>
           <Label className="text-xs font-medium text-[#6B7280] mb-1">Zone d&apos;opération</Label>
-          <Input type="text" defaultValue="Mali / UEMOA" disabled className="mt-1 bg-gray-50 text-[#6B7280]" />
+          <Input type="text" defaultValue="Bamako, Mali" disabled className="mt-1 bg-gray-50 text-[#6B7280]" />
         </div>
         <div>
-          <Label className="text-xs font-medium text-[#6B7280] mb-1">Franchise dépôt (jours)</Label>
-          <Input type="number" defaultValue="21" className="mt-1" />
+          <Label className="text-xs font-medium text-[#6B7280] mb-1">Commission plateforme (%)</Label>
+          <Input type="number" defaultValue="15" className="mt-1" />
         </div>
       </div>
       <Button
         onClick={handleSave}
         disabled={saving}
-        className="mt-6 bg-teal-600 hover:bg-teal-700 text-white"
+        className="mt-6 bg-blue-600 hover:bg-blue-700 text-white"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Save className="w-4 h-4 mr-1.5" />}
         Enregistrer
@@ -496,19 +455,19 @@ function EntrepriseTab() {
 
 function NotificationsTab() {
   const [prefs, setPrefs] = useState<Record<string, boolean>>({
-    franchise: true,
-    facturesRetard: true,
-    echeances: true,
-    missions: false,
+    nouveauChauffeur: true,
+    coursesAnnulees: true,
+    kycEnAttente: true,
+    misesAJourMissions: false,
     rapports: false,
     alertesSecurite: true,
   })
 
   const notifications = [
-    { key: 'franchise', label: 'Alertes de franchise dépôt', desc: 'Notification quand un dossier approche la franchise' },
-    { key: 'facturesRetard', label: 'Factures en retard', desc: 'Rappel pour les factures non réglées après échéance' },
-    { key: 'echeances', label: 'Échéances déclarations', desc: 'Rappel pour les déclarations en douane à déposer' },
-    { key: 'missions', label: 'Missions de transport', desc: 'Mise à jour du statut des missions' },
+    { key: 'nouveauChauffeur', label: 'Nouveau chauffeur inscrit', desc: 'Notification quand un chauffeur s\'inscrit sur la plateforme' },
+    { key: 'coursesAnnulees', label: 'Courses annulées', desc: 'Alerte lorsqu\'une course est annulée par le passager ou le chauffeur' },
+    { key: 'kycEnAttente', label: 'Documents KYC en attente', desc: 'Rappel pour les documents KYC nécessitant une validation' },
+    { key: 'misesAJourMissions', label: 'Mises à jour missions', desc: 'Mise à jour du statut des courses en cours' },
     { key: 'rapports', label: 'Rapports hebdomadaires', desc: 'Synthèse hebdomadaire par email' },
     { key: 'alertesSecurite', label: 'Alertes sécurité', desc: 'Tentatives de connexion suspectes' },
   ]
@@ -529,7 +488,7 @@ function NotificationsTab() {
                 onCheckedChange={(checked) =>
                   setPrefs((prev) => ({ ...prev, [item.key]: checked }))
                 }
-                className="data-[state=checked]:bg-teal-600"
+                className="data-[state=checked]:bg-blue-600"
               />
             </div>
             {idx < notifications.length - 1 && <Separator />}
@@ -581,7 +540,7 @@ function SecuriteTab() {
           <Switch
             checked={twoFA}
             onCheckedChange={setTwoFA}
-            className="data-[state=checked]:bg-teal-600"
+            className="data-[state=checked]:bg-blue-600"
           />
         </div>
         <Separator />
@@ -593,14 +552,14 @@ function SecuriteTab() {
           <Switch
             checked={autoLogout}
             onCheckedChange={setAutoLogout}
-            className="data-[state=checked]:bg-teal-600"
+            className="data-[state=checked]:bg-blue-600"
           />
         </div>
       </div>
       <Button
         onClick={handleSave}
         disabled={saving}
-        className="mt-6 bg-teal-600 hover:bg-teal-700 text-white"
+        className="mt-6 bg-blue-600 hover:bg-blue-700 text-white"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Save className="w-4 h-4 mr-1.5" />}
         Mettre à jour
@@ -613,8 +572,8 @@ function SecuriteTab() {
 // TAB 5: HISTORIQUE & TRAÇABILITÉ
 // ═════════════════════════════════════════════════════════════
 
-const ALL_ACTIONS: AuditAction[] = ['CONNEXION', 'CREATION', 'MODIFICATION', 'SUPPRESSION', 'PAIEMENT', 'DEPOT_FICHIER', 'DECONNEXION']
-const ALL_ENTITIES = ['Auth', 'Dossier', 'Client', 'Facture', 'Paiement', 'Transport', 'Mission', 'Dépôt', 'GED', 'Document', 'Utilisateur', 'Paramètre']
+const ALL_ACTIONS: AuditAction[] = ['CONNEXION', 'CREATION', 'MODIFICATION', 'SUPPRESSION', 'PAIEMENT', 'VALIDATION_KYC', 'DECONNEXION']
+const ALL_ENTITIES = ['Auth', 'Passager', 'Chauffeur', 'Course', 'Paiement', 'Transaction', 'Ticket', 'Paramètre', 'Utilisateur', 'Rapport']
 
 function HistoriqueTab() {
   const [logs, setLogs] = useState<AuditLogEntry[]>([])
@@ -873,7 +832,7 @@ function UtilisateursTab() {
   const [formEmail, setFormEmail] = useState('')
   const [formPhone, setFormPhone] = useState('')
   const [formPassword, setFormPassword] = useState('')
-  const [formRole, setFormRole] = useState('agent')
+  const [formRole, setFormRole] = useState('support')
   const [formPermissions, setFormPermissions] = useState<string[]>([])
   const [formInitials, setFormInitials] = useState('')
 
@@ -917,8 +876,8 @@ function UtilisateursTab() {
     setFormEmail('')
     setFormPhone('')
     setFormPassword('')
-    setFormRole('agent')
-    setFormPermissions(ROLE_PRESETS['agent'] || [])
+    setFormRole('support')
+    setFormPermissions(ROLE_PRESETS['support'] || [])
     setFormInitials('')
     setDialogOpen(true)
   }
@@ -1066,7 +1025,7 @@ function UtilisateursTab() {
       <div className="p-4 border-b border-[#E5E7EB] space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-[#111827]">Gestion des utilisateurs</h3>
-          <Button onClick={openNewUserDialog} className="bg-teal-600 hover:bg-teal-700 text-white h-8 text-sm">
+          <Button onClick={openNewUserDialog} className="bg-blue-600 hover:bg-blue-700 text-white h-8 text-sm">
             <Plus className="w-4 h-4 mr-1.5" />
             Nouvel utilisateur
           </Button>
@@ -1089,16 +1048,10 @@ function UtilisateursTab() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tous les rôles</SelectItem>
-              <SelectItem value="admin">Administrateur</SelectItem>
-              <SelectItem value="directeur">Directeur</SelectItem>
-              <SelectItem value="declarant">Déclarant</SelectItem>
-              <SelectItem value="agent">Agent de transit</SelectItem>
-              <SelectItem value="magasinier">Magasinier</SelectItem>
-              <SelectItem value="transport">Resp. Transport</SelectItem>
-              <SelectItem value="comptable">Comptable</SelectItem>
-              <SelectItem value="commercial">Commercial</SelectItem>
-              <SelectItem value="auditeur">Auditeur</SelectItem>
-              <SelectItem value="client">Client</SelectItem>
+              <SelectItem value="super_admin">Super Admin</SelectItem>
+              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="support">Support</SelectItem>
+              <SelectItem value="finance">Finance</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -1170,7 +1123,7 @@ function UtilisateursTab() {
                               return next
                             })
                           }
-                          className="text-xs text-teal-600 font-medium ml-1.5 hover:underline"
+                          className="text-xs text-blue-600 font-medium ml-1.5 hover:underline"
                         >
                           {isExpanded ? 'Masquer' : 'Voir'}
                         </button>
@@ -1288,7 +1241,7 @@ function UtilisateursTab() {
                   value={formUsername}
                   onChange={(e) => setFormUsername(e.target.value)}
                   disabled={!!editingUser}
-                  placeholder="ex: agent002"
+                  placeholder="ex: support01"
                   className="mt-1"
                 />
               </div>
@@ -1307,7 +1260,7 @@ function UtilisateursTab() {
                   type="email"
                   value={formEmail}
                   onChange={(e) => setFormEmail(e.target.value)}
-                  placeholder="ex: a.diallo@transitpro.ml"
+                  placeholder="ex: a.diallo@besttrans.ml"
                   className="mt-1"
                 />
               </div>
@@ -1328,16 +1281,10 @@ function UtilisateursTab() {
                     <SelectValue placeholder="Sélectionner un rôle" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="admin">Administrateur</SelectItem>
-                    <SelectItem value="directeur">Directeur</SelectItem>
-                    <SelectItem value="declarant">Déclarant</SelectItem>
-                    <SelectItem value="agent">Agent de transit</SelectItem>
-                    <SelectItem value="magasinier">Magasinier</SelectItem>
-                    <SelectItem value="transport">Resp. Transport</SelectItem>
-                    <SelectItem value="comptable">Comptable</SelectItem>
-                    <SelectItem value="commercial">Commercial</SelectItem>
-                    <SelectItem value="auditeur">Auditeur</SelectItem>
-                    <SelectItem value="client">Client</SelectItem>
+                    <SelectItem value="super_admin">Super Admin</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="support">Support</SelectItem>
+                    <SelectItem value="finance">Finance</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1382,7 +1329,7 @@ function UtilisateursTab() {
                               <Checkbox
                                 checked={checked}
                                 onCheckedChange={() => togglePermission(permKey)}
-                                className="data-[state=checked]:bg-teal-600 data-[state=checked]:border-teal-600"
+                                className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                               />
                               <span className="text-xs text-[#374151]">{PERM_LABELS[perm]}</span>
                             </label>
@@ -1403,7 +1350,7 @@ function UtilisateursTab() {
             <Button
               onClick={handleSaveUser}
               disabled={saving || (!editingUser && !formPassword)}
-              className="bg-teal-600 hover:bg-teal-700 text-white h-9"
+              className="bg-blue-600 hover:bg-blue-700 text-white h-9"
             >
               {saving ? (
                 <Loader2 className="w-4 h-4 animate-spin mr-1.5" />

@@ -10,7 +10,7 @@ import {
   Loader2,
   Lock,
   User,
-  Users,
+  Car,
   Sparkles,
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -19,7 +19,7 @@ import { getAllDemoUsers, getRoleLabel, getRoleColor } from '@/lib/auth'
 import type { AuthUser } from '@/lib/auth'
 
 const inputClass =
-  'w-full h-12 pl-11 pr-4 rounded-2xl border border-[#E5E7EB]/80 bg-[#F9FAFB]/90 text-[#111827] text-sm placeholder:text-[#9CA3AF] transition-all duration-200 focus:outline-none focus:bg-white focus:border-teal-400/60 focus:ring-4 focus:ring-teal-500/10'
+  'w-full h-12 pl-11 pr-4 rounded-2xl border border-[#E5E7EB]/80 bg-[#F9FAFB]/90 text-[#111827] text-sm placeholder:text-[#9CA3AF] transition-all duration-200 focus:outline-none focus:bg-white focus:border-blue-400/60 focus:ring-4 focus:ring-blue-500/10'
 
 export function LoginForm() {
   const searchParams = useSearchParams()
@@ -34,12 +34,10 @@ export function LoginForm() {
 
   const demoUsers = getAllDemoUsers()
 
-  // When a demo user is selected, auto-fill and focus the password field
   useEffect(() => {
     if (selectedDemo) {
       setIdentifier(selectedDemo)
-      setPassword('transit2026')
-      // Focus the password field after a brief delay for UI update
+      setPassword('besttrans2025')
       const timer = setTimeout(() => {
         const pwdInput = document.getElementById('password')
         pwdInput?.focus()
@@ -86,12 +84,11 @@ export function LoginForm() {
   function handleDemoClick(username: string) {
     setSelectedDemo(username)
     setIdentifier(username)
-    setPassword('transit2026')
+    setPassword('besttrans2025')
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Identifier Input */}
       <div className="space-y-2">
         <label
           htmlFor="identifier"
@@ -103,7 +100,7 @@ export function LoginForm() {
           <User
             className={cn(
               'absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors',
-              focused === 'id' ? 'text-teal-500' : 'text-[#9CA3AF]'
+              focused === 'id' ? 'text-blue-500' : 'text-[#9CA3AF]'
             )}
           />
           <input
@@ -125,7 +122,6 @@ export function LoginForm() {
         </div>
       </div>
 
-      {/* Password Input */}
       <div className="space-y-2">
         <label
           htmlFor="password"
@@ -137,7 +133,7 @@ export function LoginForm() {
           <Lock
             className={cn(
               'absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors',
-              focused === 'pwd' ? 'text-teal-500' : 'text-[#9CA3AF]'
+              focused === 'pwd' ? 'text-blue-500' : 'text-[#9CA3AF]'
             )}
           />
           <input
@@ -163,7 +159,6 @@ export function LoginForm() {
         </div>
       </div>
 
-      {/* Remember + Forgot */}
       <div className="flex items-center justify-between pt-1">
         <label className="flex items-center gap-2.5 cursor-pointer group">
           <span className="relative flex items-center justify-center">
@@ -177,8 +172,8 @@ export function LoginForm() {
               className={cn(
                 'w-[18px] h-[18px] rounded-md border-2 bg-white transition-all flex items-center justify-center',
                 remember
-                  ? 'border-teal-500 bg-teal-500'
-                  : 'border-[#D1D5DB] group-hover:border-teal-300'
+                  ? 'border-blue-500 bg-blue-500'
+                  : 'border-[#D1D5DB] group-hover:border-blue-300'
               )}
             >
               <Check
@@ -196,7 +191,7 @@ export function LoginForm() {
         </label>
         <button
           type="button"
-          className="text-sm text-teal-600 hover:text-teal-700 font-medium transition-colors"
+          className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
           onClick={() =>
             toast.info(
               "Contactez l'administrateur système pour réinitialiser votre mot de passe."
@@ -207,11 +202,10 @@ export function LoginForm() {
         </button>
       </div>
 
-      {/* Submit Button */}
       <button
         type="submit"
         disabled={loading}
-        className="login-btn-shine group w-full h-12 mt-2 rounded-2xl bg-gradient-to-r from-teal-500 via-teal-600 to-cyan-600 text-white font-semibold shadow-lg shadow-teal-500/25 hover:shadow-xl hover:shadow-teal-500/30 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-200 flex items-center justify-center gap-2"
+        className="group w-full h-12 mt-2 rounded-2xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white font-semibold shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-200 flex items-center justify-center gap-2"
       >
         {loading ? (
           <>
@@ -226,20 +220,19 @@ export function LoginForm() {
         )}
       </button>
 
-      {/* Demo Accounts Section */}
       <div className="pt-3">
-        <div className="rounded-2xl border border-teal-200/60 bg-gradient-to-b from-teal-50/60 to-teal-50/30 px-4 py-4">
+        <div className="rounded-2xl border border-blue-200/60 bg-gradient-to-b from-blue-50/60 to-blue-50/30 px-4 py-4">
           <div className="flex items-center justify-center gap-2 mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-teal-500" />
-            <p className="text-xs font-semibold text-teal-700 uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+            <p className="text-xs font-semibold text-blue-700 uppercase tracking-wider">
               Comptes de démonstration
             </p>
-            <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+            <Sparkles className="w-3.5 h-3.5 text-blue-500" />
           </div>
-          <p className="text-[11px] text-teal-600/70 text-center mb-3">
+          <p className="text-[11px] text-blue-600/70 text-center mb-3">
             Cliquez sur un rôle pour remplir automatiquement les identifiants
           </p>
-          <div className="grid grid-cols-1 gap-1.5 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
+          <div className="grid grid-cols-1 gap-1.5 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
             {demoUsers.map((du) => {
               const roleColor = getRoleColor(du.role)
               const roleLabel = getRoleLabel(du.role)
@@ -254,58 +247,36 @@ export function LoginForm() {
                     'w-full flex items-center gap-2.5 px-3 py-2 rounded-xl border text-left transition-all duration-200',
                     'hover:shadow-sm hover:scale-[1.01] active:scale-[0.99]',
                     isSelected
-                      ? 'border-teal-300 bg-teal-100/80 shadow-sm ring-1 ring-teal-400/30'
+                      ? 'border-blue-300 bg-blue-100/80 shadow-sm ring-1 ring-blue-400/30'
                       : cn(
                           roleColor.border,
                           roleColor.bg,
-                          'hover:border-teal-300/60'
+                          'hover:border-blue-300/60'
                         )
                   )}
                 >
-                  {/* Role color dot */}
                   <span
                     className={cn(
                       'shrink-0 w-2.5 h-2.5 rounded-full',
-                      du.role === 'admin'
+                      du.role === 'super_admin'
                         ? 'bg-rose-500'
-                        : du.role === 'directeur'
-                          ? 'bg-teal-500'
-                          : du.role === 'declarant'
+                        : du.role === 'admin'
+                          ? 'bg-blue-500'
+                          : du.role === 'support'
                             ? 'bg-amber-500'
-                            : du.role === 'agent'
-                              ? 'bg-sky-500'
-                              : du.role === 'magasinier'
-                                ? 'bg-violet-500'
-                                : du.role === 'transport'
-                                  ? 'bg-orange-500'
-                                  : du.role === 'comptable'
-                                    ? 'bg-emerald-500'
-                                    : du.role === 'commercial'
-                                      ? 'bg-pink-500'
-                                      : 'bg-gray-500'
+                            : 'bg-emerald-500'
                     )}
                   />
-                  {/* Role label */}
-                  <span
-                    className={cn(
-                      'text-xs font-semibold shrink-0',
-                      roleColor.text
-                    )}
-                  >
+                  <span className={cn('text-xs font-semibold shrink-0', roleColor.text)}>
                     {roleLabel}
                   </span>
-                  {/* Separator */}
-                  <span className="text-teal-300/60 text-[10px]">•</span>
-                  {/* Name */}
-                  <span className="text-xs text-[#6B7280] truncate flex-1">
-                    {du.name}
-                  </span>
-                  {/* Username badge */}
+                  <span className="text-blue-300/60 text-[10px]">•</span>
+                  <span className="text-xs text-[#6B7280] truncate flex-1">{du.name}</span>
                   <code
                     className={cn(
                       'text-[10px] font-mono px-1.5 py-0.5 rounded-md shrink-0 border',
                       isSelected
-                        ? 'bg-teal-100 border-teal-300 text-teal-700'
+                        ? 'bg-blue-100 border-blue-300 text-blue-700'
                         : 'bg-white/80 border-[#E5E7EB] text-[#6B7280]'
                     )}
                   >
@@ -315,8 +286,8 @@ export function LoginForm() {
               )
             })}
           </div>
-          <p className="text-[10px] text-teal-500/60 text-center mt-2.5">
-            Mot de passe commun : <code className="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-teal-100 text-[#6B7280]">transit2026</code>
+          <p className="text-[10px] text-blue-500/60 text-center mt-2.5">
+            Mot de passe commun : <code className="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-blue-100 text-[#6B7280]">besttrans2025</code>
           </p>
         </div>
       </div>

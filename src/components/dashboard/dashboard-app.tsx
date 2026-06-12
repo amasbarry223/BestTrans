@@ -6,34 +6,40 @@ import { DashboardHeader } from '@/components/dashboard/header'
 import { DashboardProvider, useDashboard } from '@/components/dashboard/dashboard-context'
 import { type ViewKey } from '@/components/dashboard/navigation'
 import { DashboardView } from '@/components/dashboard/views/dashboard-view'
-import { DossiersView } from '@/components/dashboard/views/dossiers-view'
-import { DossierDetailView } from '@/components/dashboard/views/dossier-detail-view'
-import { ClientsView } from '@/components/dashboard/views/clients-view'
-import { TransportView } from '@/components/dashboard/views/transport-view'
-import { DepotsView } from '@/components/dashboard/views/depots-view'
-import { FacturationView } from '@/components/dashboard/views/facturation-view'
-import { GedView } from '@/components/dashboard/views/ged-view'
-import { CorridorsView } from '@/components/dashboard/views/corridors-view'
-import { CalculatriceView } from '@/components/dashboard/views/calculatrice-view'
-import { SurestariesView } from '@/components/dashboard/views/surestaries-view'
-import { SecuriteView } from '@/components/dashboard/views/securite-view'
-import { NotificationsView } from '@/components/dashboard/views/notifications-view'
+import { PassagersView } from '@/components/dashboard/views/passagers-view'
+import { ChauffeursView } from '@/components/dashboard/views/chauffeurs-view'
+import { ChauffeurDetailView } from '@/components/dashboard/views/chauffeur-detail-view'
+import { KycValidationView } from '@/components/dashboard/views/kyc-validation-view'
+import { CoursesView } from '@/components/dashboard/views/courses-view'
+import { CourseDetailView } from '@/components/dashboard/views/course-detail-view'
+import { CarteOperationsView } from '@/components/dashboard/views/carte-operations-view'
+import { TransactionsView } from '@/components/dashboard/views/transactions-view'
+import { RevenusChauffeursView } from '@/components/dashboard/views/revenus-chauffeurs-view'
+import { SyntheseFinanceView } from '@/components/dashboard/views/synthese-finance-view'
+import { TicketsView } from '@/components/dashboard/views/tickets-view'
+import { TicketDetailView } from '@/components/dashboard/views/ticket-detail-view'
+import { FaqView } from '@/components/dashboard/views/faq-view'
+import { RapportsView } from '@/components/dashboard/views/rapports-view'
 import { ParametresView } from '@/components/dashboard/views/parametres-view'
+import { NotificationsView } from '@/components/dashboard/views/notifications-view'
 
 const viewComponents: Record<Exclude<ViewKey, 'dashboard'>, React.ComponentType> = {
-  dossiers: DossiersView,
-  'dossier-detail': DossierDetailView,
-  clients: ClientsView,
-  transport: TransportView,
-  depots: DepotsView,
-  facturation: FacturationView,
-  ged: GedView,
-  corridors: CorridorsView,
-  calculatrice: CalculatriceView,
-  surestaries: SurestariesView,
-  securite: SecuriteView,
-  notifications: NotificationsView,
+  passagers: PassagersView,
+  chauffeurs: ChauffeursView,
+  'chauffeur-detail': ChauffeurDetailView,
+  'kyc-validation': KycValidationView,
+  courses: CoursesView,
+  'course-detail': CourseDetailView,
+  'carte-operations': CarteOperationsView,
+  transactions: TransactionsView,
+  'revenus-chauffeurs': RevenusChauffeursView,
+  'synthese-finance': SyntheseFinanceView,
+  tickets: TicketsView,
+  'ticket-detail': TicketDetailView,
+  faq: FaqView,
+  rapports: RapportsView,
   parametres: ParametresView,
+  notifications: NotificationsView,
 }
 
 export function DashboardLoading() {
@@ -42,7 +48,7 @@ export function DashboardLoading() {
       className="h-screen flex bg-[#F9FAFB] overflow-hidden"
       suppressHydrationWarning
     >
-      <aside className="hidden lg:block w-[260px] min-w-[260px] border-r border-[#E5E7EB] bg-white" />
+      <aside className="hidden lg:block w-[250px] min-w-[250px] border-r border-[#E5E7EB] bg-white" />
       <div className="flex-1 flex flex-col min-w-0">
         <header className="h-[73px] border-b border-[#F3F4F6] bg-white" />
         <main className="flex-1 bg-[#F9FAFB]" />

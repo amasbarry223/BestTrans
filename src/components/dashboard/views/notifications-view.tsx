@@ -7,17 +7,16 @@ import {
   CheckCircle2,
   Clock,
   Info,
-  FolderOpen,
-  Receipt,
-  Warehouse,
-  Truck,
+  Map,
+  CreditCard,
+  Car,
+  Shield,
   FileText,
-  Filter,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 type NotifType = 'alerte' | 'info' | 'succès' | 'rappel'
-type NotifCategory = 'dossier' | 'facturation' | 'dépôt' | 'transport' | 'système'
+type NotifCategory = 'course' | 'paiement' | 'chauffeur' | 'kyc' | 'système'
 
 const notifTypeStyle: Record<NotifType, { bg: string; text: string; icon: React.ElementType; iconColor: string }> = {
   'alerte': { bg: 'bg-rose-50', text: 'text-rose-700', icon: AlertTriangle, iconColor: 'text-rose-500' },
@@ -27,24 +26,24 @@ const notifTypeStyle: Record<NotifType, { bg: string; text: string; icon: React.
 }
 
 const categoryIcon: Record<NotifCategory, React.ElementType> = {
-  'dossier': FolderOpen,
-  'facturation': Receipt,
-  'dépôt': Warehouse,
-  'transport': Truck,
+  'course': Map,
+  'paiement': CreditCard,
+  'chauffeur': Car,
+  'kyc': Shield,
   'système': FileText,
 }
 
 const mockNotifications = [
-  { id: '1', type: 'alerte' as NotifType, category: 'dépôt' as NotifCategory, title: 'Franchise dépassée', message: 'Le dossier TRS-2026-0137 a dépassé la franchise de 21 jours au dépôt. Frais de magasinage en cours.', time: 'Il y a 2h', read: false },
-  { id: '2', type: 'alerte' as NotifType, category: 'facturation' as NotifCategory, title: 'Facture en retard', message: 'La facture FAC-2026-0083 (BRAMALI SA) est en retard de paiement depuis le 04/03/2026.', time: 'Il y a 3h', read: false },
-  { id: '3', type: 'rappel' as NotifType, category: 'dossier' as NotifCategory, title: 'Échéance déclaration', message: 'Le dossier TRS-2026-0140 doit faire l\'objet d\'une déclaration en douane avant le 12/03/2026.', time: 'Il y a 5h', read: false },
-  { id: '4', type: 'succès' as NotifType, category: 'transport' as NotifCategory, title: 'Mission livrée', message: 'La mission MSN-2026-0043 (Ibrahim Traoré, corridor Abidjan-Bamako) a été livrée avec succès.', time: 'Hier 16:30', read: true },
-  { id: '5', type: 'info' as NotifType, category: 'dépôt' as NotifCategory, title: 'Nouveau conteneur entré', message: 'Le conteneur MSKU-1234567 (40\' HC) a été enregistré au parc à conteneurs de Sénou.', time: 'Hier 14:00', read: true },
-  { id: '6', type: 'rappel' as NotifType, category: 'transport' as NotifCategory, title: 'Visite technique expirée', message: 'La visite technique du véhicule ML-3456-GH a expiré. Planifiez une révision.', time: 'Hier 09:00', read: true },
-  { id: '7', type: 'succès' as NotifType, category: 'facturation' as NotifCategory, title: 'Paiement reçu', message: 'Règlement de 4 100 000 FCFA reçu de TOTAL MALI (chèque). Facture FAC-2026-0084 soldée.', time: '05/03/2026', read: true },
+  { id: '1', type: 'alerte' as NotifType, category: 'kyc' as NotifCategory, title: 'Chauffeur en attente de validation', message: 'Le chauffeur Oumar Dembélé a soumis ses documents KYC pour validation.', time: 'Il y a 2h', read: false },
+  { id: '2', type: 'alerte' as NotifType, category: 'course' as NotifCategory, title: 'Course annulée', message: 'La course CRS-2025-0234 a été annulée par le passager. Remboursement en attente.', time: 'Il y a 3h', read: false },
+  { id: '3', type: 'alerte' as NotifType, category: 'paiement' as NotifCategory, title: 'Paiement échoué', message: 'Le paiement Mobile Money de 3 200 FCFA pour la course CRS-2025-0231 a échoué.', time: 'Il y a 5h', read: false },
+  { id: '4', type: 'succès' as NotifType, category: 'course' as NotifCategory, title: 'Course terminée', message: 'La course CRS-2025-0229 a été complétée avec succès. Note passager: 5/5.', time: 'Hier 16:30', read: true },
+  { id: '5', type: 'info' as NotifType, category: 'chauffeur' as NotifCategory, title: 'Nouveau passager inscrit', message: 'Fatoumata Traoré s\'est inscrit sur la plateforme BestTrans.', time: 'Hier 14:00', read: true },
+  { id: '6', type: 'rappel' as NotifType, category: 'kyc' as NotifCategory, title: 'Document KYC rejeté', message: 'Le permis de conduire de Ibrahim Keita a été rejeté. Mot: Photo illisible.', time: 'Hier 09:00', read: true },
+  { id: '7', type: 'succès' as NotifType, category: 'paiement' as NotifCategory, title: 'Paiement reçu', message: 'Versement de 1 200 000 FCFA effectué vers le compte du chauffeur Amadou Coulibaly.', time: '05/03/2026', read: true },
   { id: '8', type: 'info' as NotifType, category: 'système' as NotifCategory, title: 'Sauvegarde effectuée', message: 'La sauvegarde quotidienne des données a été effectuée avec succès.', time: '05/03/2026', read: true },
-  { id: '9', type: 'alerte' as NotifType, category: 'dépôt' as NotifCategory, title: 'Surestaries conteneur', message: 'Le conteneur CMAU-2345678 est en surestaries. Des frais de demurrage s\'appliquent.', time: '04/03/2026', read: true },
-  { id: '10', type: 'rappel' as NotifType, category: 'dossier' as NotifCategory, title: 'BAE disponible', message: 'Le Bon à Enlever pour le dossier TRS-2026-0136 (BRAMALI SA) est disponible. Enlèvement possible.', time: '04/03/2026', read: true },
+  { id: '9', type: 'alerte' as NotifType, category: 'chauffeur' as NotifCategory, title: 'Paiement en retard', message: 'Le chauffeur Moussa Keita a un solde en attente de 450 000 FCFA depuis 7 jours.', time: '04/03/2026', read: true },
+  { id: '10', type: 'rappel' as NotifType, category: 'course' as NotifCategory, title: 'Ticket support escaladé', message: 'Le ticket TK-2025-0087 a été escaladé par l\'agent Ibrahim Sidibé.', time: '04/03/2026', read: true },
 ]
 
 export function NotificationsView() {
@@ -73,7 +72,7 @@ export function NotificationsView() {
         </div>
         <button
           onClick={markAllRead}
-          className="text-sm font-medium text-teal-600 hover:text-teal-700 transition-colors"
+          className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
         >
           Tout marquer comme lu
         </button>
@@ -88,7 +87,7 @@ export function NotificationsView() {
             className={cn(
               'px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border',
               filterType === type
-                ? 'border-teal-300 bg-teal-50 text-teal-700'
+                ? 'border-blue-300 bg-blue-50 text-blue-700'
                 : 'border-[#E5E7EB] text-[#6B7280] hover:bg-gray-50'
             )}
           >
@@ -109,7 +108,7 @@ export function NotificationsView() {
                 key={notif.id}
                 className={cn(
                   'bg-white border rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer',
-                  notif.read ? 'border-[#E5E7EB]' : 'border-teal-200 bg-teal-50/30'
+                  notif.read ? 'border-[#E5E7EB]' : 'border-blue-200 bg-blue-50/30'
                 )}
               >
                 <div className="flex gap-3">
@@ -119,7 +118,7 @@ export function NotificationsView() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
                       <p className={cn('text-sm font-semibold', notif.read ? 'text-[#374151]' : 'text-[#111827]')}>
-                        {!notif.read && <span className="inline-block w-2 h-2 rounded-full bg-teal-500 mr-2" />}
+                        {!notif.read && <span className="inline-block w-2 h-2 rounded-full bg-blue-500 mr-2" />}
                         {notif.title}
                       </p>
                       <span className="text-[10px] text-[#9CA3AF] shrink-0 ml-2">{notif.time}</span>

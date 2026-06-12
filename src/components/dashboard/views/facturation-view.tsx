@@ -14,8 +14,29 @@ import {
   AlertTriangle,
   TrendingUp,
   Phone,
+  MoreHorizontal,
+  Eye,
+  Pencil,
+  Trash2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 type InvoiceType = 'Honoraire' | 'Débour' | 'Magasinage' | 'Transport'
 type InvoiceStatus = 'Payée' | 'En attente' | 'En retard'
@@ -58,8 +79,32 @@ const reglStats = [
   { label: 'DSO moyen', value: '32 jours', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
 ]
 
+type DeleteItemType = { id: string; number: string; type: 'invoice' | 'payment' }
+type EditItemType = { id: string; number: string; type: 'invoice' | 'payment'; client: string; montant: string }
+
 export function FacturationView() {
   const [activeTab, setActiveTab] = useState<'facturation' | 'reglements' | 'comptabilite'>('facturation')
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState<DeleteItemType | null>(null)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [itemToEdit, setItemToEdit] = useState<EditItemType | null>(null)
+  const [editForm, setEditForm] = useState({ client: '', montant: '' })
+
+  const handleDelete = (item: DeleteItemType) => {
+    setItemToDelete(item)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleEdit = (item: EditItemType) => {
+    setItemToEdit(item)
+    setEditForm({ client: item.client, montant: item.montant })
+    setEditDialogOpen(true)
+  }
+
+  const handleView = (item: { id: string; number: string; type: 'invoice' | 'payment' }) => {
+    // Navigate or show details - placeholder
+    console.log('View', item)
+  }
 
   return (
     <div className="h-full flex flex-col gap-5">
@@ -128,6 +173,7 @@ export function FacturationView() {
                     <th className="py-2.5 px-3 text-center text-[10px] font-semibold text-[#9CA3AF] uppercase">Statut</th>
                     <th className="py-2.5 px-3 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase">Émission</th>
                     <th className="py-2.5 px-3 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase">Échéance</th>
+                    <th className="py-2.5 px-3 text-center text-[10px] font-semibold text-[#9CA3AF] uppercase">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -152,6 +198,27 @@ export function FacturationView() {
                         </td>
                         <td className="py-3 px-3 text-xs text-[#6B7280]">{inv.dateEmission}</td>
                         <td className="py-3 px-3 text-xs text-[#6B7280]">{inv.echeance}</td>
+                        <td className="py-3 px-3 text-center">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button className="inline-flex items-center justify-center w-7 h-7 rounded-md hover:bg-gray-100 transition-colors">
+                                <MoreHorizontal className="w-4 h-4 text-[#6B7280]" />
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-44">
+                              <DropdownMenuItem onClick={() => handleView({ id: inv.id, number: inv.number, type: 'invoice' })}>
+                                <Eye className="w-4 h-4 mr-2" /> Voir
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleEdit({ id: inv.id, number: inv.number, type: 'invoice', client: inv.client, montant: inv.montant })}>
+                                <Pencil className="w-4 h-4 mr-2" /> Modifier
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem variant="destructive" onClick={() => handleDelete({ id: inv.id, number: inv.number, type: 'invoice' })}>
+                                <Trash2 className="w-4 h-4 mr-2" /> Supprimer
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </td>
                       </tr>
                     )
                   })}
@@ -193,6 +260,7 @@ export function FacturationView() {
                     <th className="py-2.5 px-3 text-right text-[10px] font-semibold text-[#9CA3AF] uppercase">Montant</th>
                     <th className="py-2.5 px-3 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase">Factures</th>
                     <th className="py-2.5 px-3 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase">Date</th>
+                    <th className="py-2.5 px-3 text-center text-[10px] font-semibold text-[#9CA3AF] uppercase">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -209,6 +277,27 @@ export function FacturationView() {
                       <td className="py-3 px-3 text-right text-xs font-bold text-emerald-600">{p.montant}</td>
                       <td className="py-3 px-3 text-xs font-mono text-[#6B7280]">{p.factures}</td>
                       <td className="py-3 px-3 text-xs text-[#6B7280]">{p.date}</td>
+                      <td className="py-3 px-3 text-center">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="inline-flex items-center justify-center w-7 h-7 rounded-md hover:bg-gray-100 transition-colors">
+                              <MoreHorizontal className="w-4 h-4 text-[#6B7280]" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-44">
+                            <DropdownMenuItem onClick={() => handleView({ id: p.id, number: p.ref, type: 'payment' })}>
+                              <Eye className="w-4 h-4 mr-2" /> Voir
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleEdit({ id: p.id, number: p.ref, type: 'payment', client: p.client, montant: p.montant })}>
+                              <Pencil className="w-4 h-4 mr-2" /> Modifier
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem variant="destructive" onClick={() => handleDelete({ id: p.id, number: p.ref, type: 'payment' })}>
+                              <Trash2 className="w-4 h-4 mr-2" /> Supprimer
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -269,6 +358,79 @@ export function FacturationView() {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+            <AlertDialogDescription>
+              Êtes-vous sûr de vouloir supprimer {itemToDelete?.type === 'invoice' ? 'la facture' : 'le règlement'}{' '}
+              <span className="font-semibold text-[#111827]">{itemToDelete?.number}</span> ? Cette action est irréversible.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-rose-600 hover:bg-rose-700 text-white"
+              onClick={() => {
+                // Delete logic placeholder
+                setDeleteDialogOpen(false)
+                setItemToDelete(null)
+              }}
+            >
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Edit Dialog */}
+      <AlertDialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Modifier {itemToEdit?.type === 'invoice' ? 'la facture' : 'le règlement'} {itemToEdit?.number}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Modifiez les informations ci-dessous et enregistrez vos changements.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-[#374151]">Client</label>
+              <input
+                type="text"
+                value={editForm.client}
+                onChange={(e) => setEditForm({ ...editForm, client: e.target.value })}
+                className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-[#374151]">Montant</label>
+              <input
+                type="text"
+                value={editForm.montant}
+                onChange={(e) => setEditForm({ ...editForm, montant: e.target.value })}
+                className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              />
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => { setEditDialogOpen(false); setItemToEdit(null) }}>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-teal-600 hover:bg-teal-700 text-white"
+              onClick={() => {
+                // Save edit logic placeholder
+                setEditDialogOpen(false)
+                setItemToEdit(null)
+              }}
+            >
+              Enregistrer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

@@ -12,7 +12,28 @@ import {
   FileCheck,
   AlertCircle,
   ChevronDown,
+  Eye,
+  Pencil,
+  Trash2,
+  MoreHorizontal,
 } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { cn } from '@/lib/utils'
 import { NewDossierDialog } from '@/components/dashboard/new-dossier-dialog'
 import { useDashboard, type TransitDossier } from '@/components/dashboard/dashboard-context'
@@ -65,6 +86,10 @@ export function DossiersView() {
   const [filterType, setFilterType] = useState<string>('all')
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [showFilters, setShowFilters] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [dossierToDelete, setDossierToDelete] = useState<typeof mockDossiers[number] | null>(null)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [dossierToEdit, setDossierToEdit] = useState<typeof mockDossiers[number] | null>(null)
 
   const filtered = mockDossiers.filter((d) => {
     const matchSearch = searchTerm === '' ||
@@ -76,7 +101,7 @@ export function DossiersView() {
     return matchSearch && matchType && matchStatus
   })
 
-  const handleDossierClick = (d: typeof mockDossiers[number]) => {
+  const handleViewDossier = (d: typeof mockDossiers[number]) => {
     const dossier: TransitDossier = {
       id: d.id,
       number: d.number,
@@ -84,7 +109,7 @@ export function DossiersView() {
       client: d.client,
       regime: d.regime,
       bl: d.bl,
-      bureau: 'Bamako-Sénou',
+      bureau: d.bureau,
       merchandise: d.merchandise,
       status: d.status,
       honoraires: d.honoraires,
@@ -93,6 +118,22 @@ export function DossiersView() {
       corridor: 'Dakar-Bamako',
     }
     navigateToDossierDetail(dossier)
+  }
+
+  const handleEditDossier = (d: typeof mockDossiers[number]) => {
+    setDossierToEdit(d)
+    setEditDialogOpen(true)
+  }
+
+  const handleDeleteDossier = (d: typeof mockDossiers[number]) => {
+    setDossierToDelete(d)
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = () => {
+    // In a real app, this would call an API to delete the dossier
+    setDeleteDialogOpen(false)
+    setDossierToDelete(null)
   }
 
   return (
@@ -197,6 +238,7 @@ export function DossiersView() {
                 <th className="py-2.5 px-3 text-right text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Honoraires</th>
                 <th className="py-2.5 px-3 text-center text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Statut</th>
                 <th className="py-2.5 px-3 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Date</th>
+                <th className="py-2.5 px-3 text-center text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -204,9 +246,11 @@ export function DossiersView() {
                 const sty = statusStyle[d.status]
                 const tsty = typeStyle[d.type]
                 return (
-                  <tr key={d.id} onClick={() => handleDossierClick(d)} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors cursor-pointer group">
+                  <tr key={d.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors group">
                     <td className="py-3 px-4">
-                      <span className="font-mono text-xs font-semibold text-teal-700">{d.number}</span>
+                      <button onClick={() => handleViewDossier(d)} className="font-mono text-xs font-semibold text-teal-700 hover:text-teal-900 hover:underline transition-colors">
+                        {d.number}
+                      </button>
                     </td>
                     <td className="py-3 px-3">
                       <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded', tsty.bg, tsty.text)}>{d.type}</span>
@@ -223,6 +267,30 @@ export function DossiersView() {
                       </span>
                     </td>
                     <td className="py-3 px-3 text-xs text-[#6B7280]">{d.date}</td>
+                    <td className="py-3 px-3 text-center" onClick={(e) => e.stopPropagation()}>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors text-[#9CA3AF] hover:text-[#374151]">
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuItem onClick={() => handleViewDossier(d)} className="gap-2 cursor-pointer">
+                            <Eye className="w-4 h-4 text-teal-600" />
+                            <span>Voir les détails</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleEditDossier(d)} className="gap-2 cursor-pointer">
+                            <Pencil className="w-4 h-4 text-amber-600" />
+                            <span>Modifier</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => handleDeleteDossier(d)} className="gap-2 cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50">
+                            <Trash2 className="w-4 h-4" />
+                            <span>Supprimer</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
                   </tr>
                 )
               })}
@@ -238,13 +306,39 @@ export function DossiersView() {
             const sty = statusStyle[d.status]
             const tsty = typeStyle[d.type]
             return (
-              <div key={d.id} onClick={() => handleDossierClick(d)} className="bg-white border border-[#E5E7EB] rounded-xl p-4 cursor-pointer hover:shadow-md transition-shadow">
+              <div key={d.id} className="bg-white border border-[#E5E7EB] rounded-xl p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-sm font-semibold text-teal-700">{d.number}</span>
-                  <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold', sty.bg, sty.text)}>
-                    <span className={cn('w-1.5 h-1.5 rounded-full', sty.dot)} />
-                    {d.status}
-                  </span>
+                  <button onClick={() => handleViewDossier(d)} className="font-mono text-sm font-semibold text-teal-700 hover:text-teal-900 hover:underline">
+                    {d.number}
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold', sty.bg, sty.text)}>
+                      <span className={cn('w-1.5 h-1.5 rounded-full', sty.dot)} />
+                      {d.status}
+                    </span>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="p-1 rounded-lg hover:bg-gray-100 transition-colors text-[#9CA3AF]">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem onClick={() => handleViewDossier(d)} className="gap-2 cursor-pointer">
+                          <Eye className="w-4 h-4 text-teal-600" />
+                          <span>Voir</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleEditDossier(d)} className="gap-2 cursor-pointer">
+                          <Pencil className="w-4 h-4 text-amber-600" />
+                          <span>Modifier</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleDeleteDossier(d)} className="gap-2 cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50">
+                          <Trash2 className="w-4 h-4" />
+                          <span>Supprimer</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded', tsty.bg, tsty.text)}>{d.type}</span>
@@ -261,6 +355,101 @@ export function DossiersView() {
           })}
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Supprimer le dossier</AlertDialogTitle>
+            <AlertDialogDescription>
+              Êtes-vous sûr de vouloir supprimer le dossier <span className="font-mono font-semibold text-[#111827]">{dossierToDelete?.number}</span> ?
+              Cette action est irréversible et toutes les données associées seront perdues.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700 text-white">
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Edit Dialog */}
+      <AlertDialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <AlertDialogContent className="max-w-lg">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Modifier le dossier {dossierToEdit?.number}</AlertDialogTitle>
+            <AlertDialogDescription>
+              Modifiez les informations du dossier ci-dessous.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="grid grid-cols-2 gap-3 py-2">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-[#6B7280]">N° Dossier</label>
+              <input className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg bg-gray-50 text-[#9CA3AF]" value={dossierToEdit?.number || ''} disabled />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-[#6B7280]">Type</label>
+              <select className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg" defaultValue={dossierToEdit?.type}>
+                <option>Import</option>
+                <option>Export</option>
+                <option>Transit</option>
+                <option>Réexport.</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-[#6B7280]">Client</label>
+              <input className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg" defaultValue={dossierToEdit?.client} />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-[#6B7280]">Régime</label>
+              <select className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg" defaultValue={dossierToEdit?.regime}>
+                <option>Consommation</option>
+                <option>Entrepôt</option>
+                <option>Transit T1</option>
+                <option>AT</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-[#6B7280]">BL / LTA</label>
+              <input className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg font-mono" defaultValue={dossierToEdit?.bl} />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-[#6B7280]">Statut</label>
+              <select className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg" defaultValue={dossierToEdit?.status}>
+                <option>Ouvert</option>
+                <option>Docs reçus</option>
+                <option>Déclaration</option>
+                <option>Liquidation</option>
+                <option>Paiement</option>
+                <option>BAE</option>
+                <option>Enlèvement</option>
+                <option>Livré</option>
+                <option>Clôturé</option>
+              </select>
+            </div>
+            <div className="col-span-2 space-y-1">
+              <label className="text-xs font-medium text-[#6B7280]">Marchandise</label>
+              <input className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg" defaultValue={dossierToEdit?.merchandise} />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-[#6B7280]">Honoraires</label>
+              <input className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg" defaultValue={dossierToEdit?.honoraires} />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-[#6B7280]">Droits & Taxes</label>
+              <input className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg" defaultValue={dossierToEdit?.droitsTaxes} />
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={() => setEditDialogOpen(false)} className="bg-teal-600 hover:bg-teal-700 text-white">
+              Enregistrer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

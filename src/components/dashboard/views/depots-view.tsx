@@ -14,12 +14,60 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
+  MoreHorizontal,
+  Eye,
+  Pencil,
+  Trash2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 type MoveType = 'Entrée' | 'Sortie' | 'Transfert'
 type ContainerStatus = 'Plein' | 'Vide'
 type ContainerType = "20'" | "40'" | "40' HC" | 'Reefer'
+
+type MovementItem = {
+  id: string
+  ref: string
+  type: MoveType
+  depot: string
+  dossier: string
+  merchandise: string
+  colis: number
+  poids: string
+  container: string | null
+  date: string
+  dureeSejour: string
+  fraisMag: string
+  observations: string
+}
+
+type ContainerItem = {
+  id: string
+  number: string
+  type: ContainerType
+  status: ContainerStatus
+  scelle: string
+  depot: string
+  surestaries: boolean
+  dossier: string
+}
 
 const moveTypeStyle: Record<MoveType, { bg: string; text: string; icon: React.ElementType }> = {
   'Entrée':    { bg: 'bg-emerald-50', text: 'text-emerald-700', icon: ArrowDownToLine },
@@ -33,21 +81,21 @@ const depots = [
   { id: '3', name: 'Entrepôt réel', location: 'Kayes', capacity: 300, used: 135, containers: 0, type: 'Entrepôt réel' },
 ]
 
-const mockMovements = [
-  { id: '1', ref: 'MVT-2026-0234', type: 'Entrée' as MoveType, depot: 'Magasin sous douane', dossier: 'TRS-2026-0142', merchandise: 'Matériel agricole', colis: 120, poids: '8,5 T', container: null, date: '08/03/2026 09:30', dureeSejour: '2j', fraisMag: '0 FCFA', observations: 'Franchise en cours' },
-  { id: '2', ref: 'MVT-2026-0233', type: 'Entrée' as MoveType, depot: 'Parc à conteneurs', dossier: 'TRS-2026-0139', merchandise: 'Conteneurs 40\' HC', colis: 4, poids: '32 T', container: 'MSKU-1234567', date: '06/03/2026 14:00', dureeSejour: '4j', fraisMag: '0 FCFA', observations: 'Franchise en cours' },
-  { id: '3', ref: 'MVT-2026-0232', type: 'Sortie' as MoveType, depot: 'Magasin sous douane', dossier: 'TRS-2026-0138', merchandise: 'Produits pharmaceutiques', colis: 45, poids: '3,2 T', container: null, date: '06/03/2026 08:15', dureeSejour: '18j', fraisMag: '0 FCFA', observations: 'BAE présenté' },
-  { id: '4', ref: 'MVT-2026-0231', type: 'Transfert' as MoveType, depot: 'Parc à conteneurs → Entrepôt réel', dossier: 'TRS-2026-0137', merchandise: 'Équipements pétroliers', colis: 8, poids: '12 T', container: 'CMAU-2345678', date: '05/03/2026 11:45', dureeSejour: '25j', fraisMag: '20 000 FCFA', observations: 'Franchise dépassée (+4j)' },
-  { id: '5', ref: 'MVT-2026-0230', type: 'Entrée' as MoveType, depot: 'Magasin sous douane', dossier: 'TRS-2026-0136', merchandise: 'Ciments & matériaux', colis: 300, poids: '15 T', container: null, date: '05/03/2026 07:00', dureeSejour: '5j', fraisMag: '0 FCFA', observations: 'Franchise en cours' },
+const mockMovements: MovementItem[] = [
+  { id: '1', ref: 'MVT-2026-0234', type: 'Entrée', depot: 'Magasin sous douane', dossier: 'TRS-2026-0142', merchandise: 'Matériel agricole', colis: 120, poids: '8,5 T', container: null, date: '08/03/2026 09:30', dureeSejour: '2j', fraisMag: '0 FCFA', observations: 'Franchise en cours' },
+  { id: '2', ref: 'MVT-2026-0233', type: 'Entrée', depot: 'Parc à conteneurs', dossier: 'TRS-2026-0139', merchandise: 'Conteneurs 40\' HC', colis: 4, poids: '32 T', container: 'MSKU-1234567', date: '06/03/2026 14:00', dureeSejour: '4j', fraisMag: '0 FCFA', observations: 'Franchise en cours' },
+  { id: '3', ref: 'MVT-2026-0232', type: 'Sortie', depot: 'Magasin sous douane', dossier: 'TRS-2026-0138', merchandise: 'Produits pharmaceutiques', colis: 45, poids: '3,2 T', container: null, date: '06/03/2026 08:15', dureeSejour: '18j', fraisMag: '0 FCFA', observations: 'BAE présenté' },
+  { id: '4', ref: 'MVT-2026-0231', type: 'Transfert', depot: 'Parc à conteneurs → Entrepôt réel', dossier: 'TRS-2026-0137', merchandise: 'Équipements pétroliers', colis: 8, poids: '12 T', container: 'CMAU-2345678', date: '05/03/2026 11:45', dureeSejour: '25j', fraisMag: '20 000 FCFA', observations: 'Franchise dépassée (+4j)' },
+  { id: '5', ref: 'MVT-2026-0230', type: 'Entrée', depot: 'Magasin sous douane', dossier: 'TRS-2026-0136', merchandise: 'Ciments & matériaux', colis: 300, poids: '15 T', container: null, date: '05/03/2026 07:00', dureeSejour: '5j', fraisMag: '0 FCFA', observations: 'Franchise en cours' },
 ]
 
-const mockContainers = [
-  { id: '1', number: 'MSKU-1234567', type: "40' HC" as ContainerType, status: 'Plein' as ContainerStatus, scelle: 'PLB-789456', depot: 'Parc à conteneurs', surestaries: false, dossier: 'TRS-2026-0139' },
-  { id: '2', number: 'CMAU-2345678', type: "20'" as ContainerType, status: 'Plein' as ContainerStatus, scelle: 'PLB-456123', depot: 'Parc à conteneurs', surestaries: true, dossier: 'TRS-2026-0137' },
-  { id: '3', number: 'OOLU-3456789', type: "40'" as ContainerType, status: 'Plein' as ContainerStatus, scelle: 'PLB-321654', depot: 'Parc à conteneurs', surestaries: false, dossier: 'TRS-2026-0142' },
-  { id: '4', number: 'TCLU-4567890', type: "40' HC" as ContainerType, status: 'Vide' as ContainerStatus, scelle: '—', depot: 'Parc à conteneurs', surestaries: false, dossier: '—' },
-  { id: '5', number: 'FCIU-5678901', type: "20'" as ContainerType, status: 'Plein' as ContainerStatus, scelle: 'PLB-654987', depot: 'Parc à conteneurs', surestaries: true, dossier: 'TRS-2026-0135' },
-  { id: '6', number: 'HLXU-6789012', type: 'Reefer' as ContainerType, status: 'Plein' as ContainerStatus, scelle: 'PLB-987321', depot: 'Parc à conteneurs', surestaries: false, dossier: 'TRS-2026-0136' },
+const mockContainers: ContainerItem[] = [
+  { id: '1', number: 'MSKU-1234567', type: "40' HC", status: 'Plein', scelle: 'PLB-789456', depot: 'Parc à conteneurs', surestaries: false, dossier: 'TRS-2026-0139' },
+  { id: '2', number: 'CMAU-2345678', type: "20'", status: 'Plein', scelle: 'PLB-456123', depot: 'Parc à conteneurs', surestaries: true, dossier: 'TRS-2026-0137' },
+  { id: '3', number: 'OOLU-3456789', type: "40'", status: 'Plein', scelle: 'PLB-321654', depot: 'Parc à conteneurs', surestaries: false, dossier: 'TRS-2026-0142' },
+  { id: '4', number: 'TCLU-4567890', type: "40' HC", status: 'Vide', scelle: '—', depot: 'Parc à conteneurs', surestaries: false, dossier: '—' },
+  { id: '5', number: 'FCIU-5678901', type: "20'", status: 'Plein', scelle: 'PLB-654987', depot: 'Parc à conteneurs', surestaries: true, dossier: 'TRS-2026-0135' },
+  { id: '6', number: 'HLXU-6789012', type: 'Reefer', status: 'Plein', scelle: 'PLB-987321', depot: 'Parc à conteneurs', surestaries: false, dossier: 'TRS-2026-0136' },
 ]
 
 const globalStats = [
@@ -60,9 +108,42 @@ const globalStats = [
 export function DepotsView() {
   const [selectedDepot, setSelectedDepot] = useState(depots[0].id)
   const [activeSection, setActiveSection] = useState<'mouvements' | 'conteneurs'>('mouvements')
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState<{ type: 'movement' | 'container'; item: MovementItem | ContainerItem } | null>(null)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [itemToEdit, setItemToEdit] = useState<{ type: 'movement' | 'container'; item: MovementItem | ContainerItem } | null>(null)
 
   const currentDepot = depots.find(d => d.id === selectedDepot)!
   const occupancyPct = Math.round((currentDepot.used / currentDepot.capacity) * 100)
+
+  const handleView = (type: 'movement' | 'container', item: MovementItem | ContainerItem) => {
+    // View action placeholder
+    console.log('View', type, item)
+  }
+
+  const handleEdit = (type: 'movement' | 'container', item: MovementItem | ContainerItem) => {
+    setItemToEdit({ type, item })
+    setEditDialogOpen(true)
+  }
+
+  const handleDelete = (type: 'movement' | 'container', item: MovementItem | ContainerItem) => {
+    setItemToDelete({ type, item })
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = () => {
+    // Delete action placeholder
+    console.log('Delete confirmed', itemToDelete)
+    setDeleteDialogOpen(false)
+    setItemToDelete(null)
+  }
+
+  const confirmEdit = () => {
+    // Edit action placeholder
+    console.log('Edit confirmed', itemToEdit)
+    setEditDialogOpen(false)
+    setItemToEdit(null)
+  }
 
   return (
     <div className="h-full flex flex-col gap-5">
@@ -164,6 +245,7 @@ export function DepotsView() {
                   <th className="py-2.5 px-3 text-center text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Séjour</th>
                   <th className="py-2.5 px-3 text-right text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Magasinage</th>
                   <th className="py-2.5 px-3 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Obs.</th>
+                  <th className="py-2.5 px-3 text-center text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -171,7 +253,7 @@ export function DepotsView() {
                   const sty = moveTypeStyle[m.type]
                   const Icon = sty.icon
                   return (
-                    <tr key={m.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors cursor-pointer">
+                    <tr key={m.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors">
                       <td className="py-3 px-4 font-mono text-xs font-semibold text-teal-700">{m.ref}</td>
                       <td className="py-3 px-3">
                         <span className={cn('inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded', sty.bg, sty.text)}>
@@ -185,6 +267,30 @@ export function DepotsView() {
                       <td className="py-3 px-3 text-center text-xs font-semibold text-[#111827]">{m.dureeSejour}</td>
                       <td className="py-3 px-3 text-right text-xs font-bold text-[#111827]">{m.fraisMag}</td>
                       <td className="py-3 px-3 text-xs text-[#6B7280] truncate max-w-[100px]">{m.observations}</td>
+                      <td className="py-3 px-3 text-center">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="inline-flex items-center justify-center w-7 h-7 rounded-md hover:bg-gray-100 transition-colors text-[#6B7280] hover:text-[#111827]">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-44">
+                            <DropdownMenuItem onClick={() => handleView('movement', m)} className="cursor-pointer gap-2 text-teal-700 focus:text-teal-700 focus:bg-teal-50">
+                              <Eye className="w-4 h-4 text-teal-600" />
+                              Voir
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleEdit('movement', m)} className="cursor-pointer gap-2 text-amber-700 focus:text-amber-700 focus:bg-amber-50">
+                              <Pencil className="w-4 h-4 text-amber-600" />
+                              Modifier
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleDelete('movement', m)} className="cursor-pointer gap-2 text-red-600 focus:text-red-600 focus:bg-red-50">
+                              <Trash2 className="w-4 h-4 text-red-500" />
+                              Supprimer
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
                     </tr>
                   )
                 })}
@@ -199,9 +305,33 @@ export function DepotsView() {
               <div key={c.id} className={cn('border rounded-xl p-4', c.surestaries ? 'border-rose-200 bg-rose-50/30' : 'border-[#E5E7EB]')}>
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-sm font-bold text-[#111827]">{c.number}</span>
-                  <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded', c.status === 'Plein' ? 'bg-amber-50 text-amber-700' : 'bg-gray-100 text-gray-600')}>
-                    {c.status}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded', c.status === 'Plein' ? 'bg-amber-50 text-amber-700' : 'bg-gray-100 text-gray-600')}>
+                      {c.status}
+                    </span>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="inline-flex items-center justify-center w-6 h-6 rounded-md hover:bg-gray-100 transition-colors text-[#6B7280] hover:text-[#111827]">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-44">
+                        <DropdownMenuItem onClick={() => handleView('container', c)} className="cursor-pointer gap-2 text-teal-700 focus:text-teal-700 focus:bg-teal-50">
+                          <Eye className="w-4 h-4 text-teal-600" />
+                          Voir
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleEdit('container', c)} className="cursor-pointer gap-2 text-amber-700 focus:text-amber-700 focus:bg-amber-50">
+                          <Pencil className="w-4 h-4 text-amber-600" />
+                          Modifier
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleDelete('container', c)} className="cursor-pointer gap-2 text-red-600 focus:text-red-600 focus:bg-red-50">
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                          Supprimer
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
                 <div className="space-y-1 text-xs text-[#6B7280]">
                   <div className="flex justify-between"><span>Type</span><span className="font-medium text-[#111827]">{c.type}</span></div>
@@ -219,6 +349,68 @@ export function DepotsView() {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation AlertDialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+            <AlertDialogDescription>
+              {itemToDelete?.type === 'movement' ? (
+                <>
+                  Êtes-vous sûr de vouloir supprimer le mouvement <span className="font-mono font-semibold text-[#111827]">{(itemToDelete.item as MovementItem).ref}</span> ?
+                  Cette action est irréversible.
+                </>
+              ) : (
+                <>
+                  Êtes-vous sûr de vouloir supprimer le conteneur <span className="font-mono font-semibold text-[#111827]">{(itemToDelete?.item as ContainerItem)?.number}</span> ?
+                  Cette action est irréversible.
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => { setDeleteDialogOpen(false); setItemToDelete(null) }}>
+              Annuler
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700 focus:ring-red-600">
+              <Trash2 className="w-4 h-4 mr-2" />
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Edit Confirmation AlertDialog */}
+      <AlertDialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Modifier {itemToEdit?.type === 'movement' ? 'le mouvement' : 'le conteneur'}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {itemToEdit?.type === 'movement' ? (
+                <>
+                  Vous êtes sur le point de modifier le mouvement <span className="font-mono font-semibold text-[#111827]">{(itemToEdit.item as MovementItem).ref}</span>.
+                  Les modifications seront appliquées après validation.
+                </>
+              ) : (
+                <>
+                  Vous êtes sur le point de modifier le conteneur <span className="font-mono font-semibold text-[#111827]">{(itemToEdit?.item as ContainerItem)?.number}</span>.
+                  Les modifications seront appliquées après validation.
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => { setEditDialogOpen(false); setItemToEdit(null) }}>
+              Annuler
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmEdit} className="bg-amber-600 hover:bg-amber-700 focus:ring-amber-600">
+              <Pencil className="w-4 h-4 mr-2" />
+              Modifier
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

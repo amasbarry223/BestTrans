@@ -29,3 +29,23 @@ Stage Summary:
 - 10 demo users across 9 roles seeded in database
 - 25 audit log entries seeded for testing
 - APIs verified working: login (admin001/transit2026), users (10 total), audit-logs (25 total)
+
+---
+Task ID: 10
+Agent: Main Orchestrator
+Task: Add Actions column (Voir, Modifier, Supprimer) to all datatables
+
+Work Log:
+- Added Actions column to Dossiers datatable with DropdownMenu (Eye/Pencil/Trash2 icons), AlertDialog for delete confirmation, and edit dialog with full form fields
+- Added Actions dropdown to Clients view cards with DropdownMenu, delete confirmation AlertDialog, and edit dialog with Name/NIF/RCCM/Contact/Phone/Email/Type/Plafond fields
+- Added Actions dropdown to Transport view (vehicle cards + mission cards) with View/Edit/Delete dialogs including vehicle-specific and mission-specific form fields
+- Added Actions column to Dépôts view (Mouvements table + Container cards) with DropdownMenu, delete and edit AlertDialogs
+- Added Actions column to Facturation view (Invoices table + Payments table) with DropdownMenu, delete confirmation, and edit dialog with Client/Montant fields
+- Ran lint check: 0 errors
+- Verified all 5 views in browser with VLM screenshots confirming Actions columns/buttons are visible
+
+Stage Summary:
+- All 5 main datatables now have Actions column with Voir (Eye, teal), Modifier (Pencil, amber), Supprimer (Trash2, red) dropdown menu items
+- Delete confirmation dialogs show item identifier and have Annuler/Supprimer buttons
+- Edit dialogs provide form fields appropriate to each data type
+- Consistent UI pattern across all views using shadcn/ui DropdownMenu + AlertDialog components

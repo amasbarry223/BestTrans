@@ -13,11 +13,47 @@ import {
   CreditCard,
   TrendingUp,
   Shield,
+  MoreHorizontal,
+  Eye,
+  Pencil,
+  Trash2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 type ClientType = 'Importateur' | 'Exportateur' | 'Transitaire'
 type ClientStatus = 'Actif' | 'Inactif'
+
+interface Client {
+  id: string
+  name: string
+  nif: string
+  rccm: string
+  contact: string
+  phone: string
+  email: string
+  type: ClientType
+  encours: string
+  plafond: string
+  dossiers: number
+  status: ClientStatus
+}
 
 const typeStyle: Record<ClientType, { bg: string; text: string }> = {
   'Importateur': { bg: 'bg-teal-50', text: 'text-teal-700' },
@@ -25,15 +61,15 @@ const typeStyle: Record<ClientType, { bg: string; text: string }> = {
   'Transitaire': { bg: 'bg-amber-50',text: 'text-amber-700' },
 }
 
-const mockClients = [
-  { id: '1', name: 'SCOPEX Mali', nif: 'NIF-08-12-3456-A', rccm: 'RCCM-BKO-2018-4521', contact: 'Amadou Diallo', phone: '+223 70 12 34 56', email: 'contact@scopex.ml', type: 'Importateur' as ClientType, encours: '15 200 000 FCFA', plafond: '25 000 000 FCFA', dossiers: 34, status: 'Actif' as ClientStatus },
-  { id: '2', name: 'MALI TEXTILES SA', nif: 'NIF-06-08-1234-B', rccm: 'RCCM-BKO-2015-1234', contact: 'Fatoumata Traoré', phone: '+223 96 55 44 33', email: 'info@malitextiles.ml', type: 'Importateur' as ClientType, encours: '8 500 000 FCFA', plafond: '20 000 000 FCFA', dossiers: 22, status: 'Actif' as ClientStatus },
-  { id: '3', name: 'SOMADIA', nif: 'NIF-04-15-5678-C', rccm: 'RCCM-BKO-2012-5678', contact: 'Ibrahim Keita', phone: '+223 95 88 77 66', email: 'somadia@orange.ml', type: 'Exportateur' as ClientType, encours: '3 200 000 FCFA', plafond: '10 000 000 FCFA', dossiers: 8, status: 'Actif' as ClientStatus },
-  { id: '4', name: 'CMA CGM Mali', nif: 'NIF-09-22-9012-D', rccm: 'RCCM-BKO-2020-9012', contact: 'Jean-Pierre Martin', phone: '+223 97 33 22 11', email: 'jp.martin@cma-cgm.ml', type: 'Transitaire' as ClientType, encours: '22 000 000 FCFA', plafond: '50 000 000 FCFA', dossiers: 56, status: 'Actif' as ClientStatus },
-  { id: '5', name: 'PHARMACIE POPULAIRE', nif: 'NIF-07-30-3456-E', rccm: 'RCCM-BKO-2016-3456', contact: 'Dr. Aminata Coulibaly', phone: '+223 96 11 22 33', email: 'pharmacie.pop@orange.ml', type: 'Importateur' as ClientType, encours: '6 800 000 FCFA', plafond: '15 000 000 FCFA', dossiers: 15, status: 'Actif' as ClientStatus },
-  { id: '6', name: 'TOTAL MALI', nif: 'NIF-01-05-7890-F', rccm: 'RCCM-BKO-2005-7890', contact: 'Moussa Sissoko', phone: '+223 95 44 55 66', email: 'm.sissoko@total.ml', type: 'Importateur' as ClientType, encours: '12 400 000 FCFA', plafond: '30 000 000 FCFA', dossiers: 41, status: 'Actif' as ClientStatus },
-  { id: '7', name: 'BRAMALI SA', nif: 'NIF-03-18-2345-G', rccm: 'RCCM-BKO-2010-2345', contact: 'Seydou Diabaté', phone: '+223 70 99 88 77', email: 'bramali@malinet.ml', type: 'Importateur' as ClientType, encours: '4 100 000 FCFA', plafond: '12 000 000 FCFA', dossiers: 12, status: 'Actif' as ClientStatus },
-  { id: '8', name: 'MAERSK MALI', nif: 'NIF-10-25-6789-H', rccm: 'RCCM-BKO-2021-6789', contact: 'Lars Andersen', phone: '+223 97 66 55 44', email: 'l.andersen@maersk.ml', type: 'Transitaire' as ClientType, encours: '18 000 000 FCFA', plafond: '40 000 000 FCFA', dossiers: 48, status: 'Actif' as ClientStatus },
+const mockClients: Client[] = [
+  { id: '1', name: 'SCOPEX Mali', nif: 'NIF-08-12-3456-A', rccm: 'RCCM-BKO-2018-4521', contact: 'Amadou Diallo', phone: '+223 70 12 34 56', email: 'contact@scopex.ml', type: 'Importateur', encours: '15 200 000 FCFA', plafond: '25 000 000 FCFA', dossiers: 34, status: 'Actif' },
+  { id: '2', name: 'MALI TEXTILES SA', nif: 'NIF-06-08-1234-B', rccm: 'RCCM-BKO-2015-1234', contact: 'Fatoumata Traoré', phone: '+223 96 55 44 33', email: 'info@malitextiles.ml', type: 'Importateur', encours: '8 500 000 FCFA', plafond: '20 000 000 FCFA', dossiers: 22, status: 'Actif' },
+  { id: '3', name: 'SOMADIA', nif: 'NIF-04-15-5678-C', rccm: 'RCCM-BKO-2012-5678', contact: 'Ibrahim Keita', phone: '+223 95 88 77 66', email: 'somadia@orange.ml', type: 'Exportateur', encours: '3 200 000 FCFA', plafond: '10 000 000 FCFA', dossiers: 8, status: 'Actif' },
+  { id: '4', name: 'CMA CGM Mali', nif: 'NIF-09-22-9012-D', rccm: 'RCCM-BKO-2020-9012', contact: 'Jean-Pierre Martin', phone: '+223 97 33 22 11', email: 'jp.martin@cma-cgm.ml', type: 'Transitaire', encours: '22 000 000 FCFA', plafond: '50 000 000 FCFA', dossiers: 56, status: 'Actif' },
+  { id: '5', name: 'PHARMACIE POPULAIRE', nif: 'NIF-07-30-3456-E', rccm: 'RCCM-BKO-2016-3456', contact: 'Dr. Aminata Coulibaly', phone: '+223 96 11 22 33', email: 'pharmacie.pop@orange.ml', type: 'Importateur', encours: '6 800 000 FCFA', plafond: '15 000 000 FCFA', dossiers: 15, status: 'Actif' },
+  { id: '6', name: 'TOTAL MALI', nif: 'NIF-01-05-7890-F', rccm: 'RCCM-BKO-2005-7890', contact: 'Moussa Sissoko', phone: '+223 95 44 55 66', email: 'm.sissoko@total.ml', type: 'Importateur', encours: '12 400 000 FCFA', plafond: '30 000 000 FCFA', dossiers: 41, status: 'Actif' },
+  { id: '7', name: 'BRAMALI SA', nif: 'NIF-03-18-2345-G', rccm: 'RCCM-BKO-2010-2345', contact: 'Seydou Diabaté', phone: '+223 70 99 88 77', email: 'bramali@malinet.ml', type: 'Importateur', encours: '4 100 000 FCFA', plafond: '12 000 000 FCFA', dossiers: 12, status: 'Actif' },
+  { id: '8', name: 'MAERSK MALI', nif: 'NIF-10-25-6789-H', rccm: 'RCCM-BKO-2021-6789', contact: 'Lars Andersen', phone: '+223 97 66 55 44', email: 'l.andersen@maersk.ml', type: 'Transitaire', encours: '18 000 000 FCFA', plafond: '40 000 000 FCFA', dossiers: 48, status: 'Actif' },
 ]
 
 const miniStats = [
@@ -46,8 +82,25 @@ const miniStats = [
 export function ClientsView() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState<string>('all')
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [clientToDelete, setClientToDelete] = useState<Client | null>(null)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [clientToEdit, setClientToEdit] = useState<Client | null>(null)
+  const [clients, setClients] = useState<Client[]>(mockClients)
 
-  const filtered = mockClients.filter((c) => {
+  // Edit form state
+  const [editForm, setEditForm] = useState({
+    name: '',
+    nif: '',
+    rccm: '',
+    contact: '',
+    phone: '',
+    email: '',
+    type: '' as ClientType | '',
+    plafond: '',
+  })
+
+  const filtered = clients.filter((c) => {
     const matchSearch = searchTerm === '' ||
       c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.nif.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -55,6 +108,63 @@ export function ClientsView() {
     const matchType = filterType === 'all' || c.type === filterType
     return matchSearch && matchType
   })
+
+  const handleViewClient = (client: Client) => {
+    // Navigate to client detail view (placeholder)
+    alert(`Voir le client : ${client.name}`)
+  }
+
+  const handleEditClient = (client: Client) => {
+    setClientToEdit(client)
+    setEditForm({
+      name: client.name,
+      nif: client.nif,
+      rccm: client.rccm,
+      contact: client.contact,
+      phone: client.phone,
+      email: client.email,
+      type: client.type,
+      plafond: client.plafond,
+    })
+    setEditDialogOpen(true)
+  }
+
+  const handleDeleteClient = (client: Client) => {
+    setClientToDelete(client)
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = () => {
+    if (clientToDelete) {
+      setClients((prev) => prev.filter((c) => c.id !== clientToDelete.id))
+      setClientToDelete(null)
+      setDeleteDialogOpen(false)
+    }
+  }
+
+  const handleSaveEdit = () => {
+    if (clientToEdit) {
+      setClients((prev) =>
+        prev.map((c) =>
+          c.id === clientToEdit.id
+            ? {
+                ...c,
+                name: editForm.name,
+                nif: editForm.nif,
+                rccm: editForm.rccm,
+                contact: editForm.contact,
+                phone: editForm.phone,
+                email: editForm.email,
+                type: editForm.type as ClientType,
+                plafond: editForm.plafond,
+              }
+            : c
+        )
+      )
+      setClientToEdit(null)
+      setEditDialogOpen(false)
+    }
+  }
 
   return (
     <div className="h-full flex flex-col gap-5">
@@ -132,9 +242,33 @@ export function ClientsView() {
                       <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded', tsty.bg, tsty.text)}>{c.type}</span>
                     </div>
                   </div>
-                  <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded', c.status === 'Actif' ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-500')}>
-                    {c.status}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded', c.status === 'Actif' ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-500')}>
+                      {c.status}
+                    </span>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="p-1 rounded-md hover:bg-gray-100 transition-colors">
+                          <MoreHorizontal className="w-4 h-4 text-[#6B7280]" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-44">
+                        <DropdownMenuItem onClick={() => handleViewClient(c)} className="cursor-pointer">
+                          <Eye className="w-4 h-4 mr-2 text-teal-600" />
+                          <span className="text-teal-700">Voir</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleEditClient(c)} className="cursor-pointer">
+                          <Pencil className="w-4 h-4 mr-2 text-amber-600" />
+                          <span className="text-amber-700">Modifier</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleDeleteClient(c)} className="cursor-pointer">
+                          <Trash2 className="w-4 h-4 mr-2 text-rose-600" />
+                          <span className="text-rose-700">Supprimer</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
 
                 <div className="space-y-1.5 mb-3">
@@ -179,6 +313,125 @@ export function ClientsView() {
           })}
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+            <AlertDialogDescription>
+              Êtes-vous sûr de vouloir supprimer le client <strong>{clientToDelete?.name}</strong> ? Cette action est irréversible.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteDialogOpen(false)}>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-rose-600 hover:bg-rose-700 text-white">
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Edit Client Dialog */}
+      <AlertDialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <AlertDialogContent className="max-w-lg">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Modifier le client</AlertDialogTitle>
+            <AlertDialogDescription>
+              Modifiez les informations du client <strong>{clientToEdit?.name}</strong>.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="grid gap-4 py-2 max-h-[60vh] overflow-y-auto pr-1">
+            <div className="grid gap-2">
+              <label className="text-sm font-medium text-[#374151]">Name</label>
+              <input
+                type="text"
+                value={editForm.name}
+                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="grid gap-2">
+                <label className="text-sm font-medium text-[#374151]">NIF</label>
+                <input
+                  type="text"
+                  value={editForm.nif}
+                  onChange={(e) => setEditForm({ ...editForm, nif: e.target.value })}
+                  className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+              <div className="grid gap-2">
+                <label className="text-sm font-medium text-[#374151]">RCCM</label>
+                <input
+                  type="text"
+                  value={editForm.rccm}
+                  onChange={(e) => setEditForm({ ...editForm, rccm: e.target.value })}
+                  className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <label className="text-sm font-medium text-[#374151]">Contact</label>
+              <input
+                type="text"
+                value={editForm.contact}
+                onChange={(e) => setEditForm({ ...editForm, contact: e.target.value })}
+                className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="grid gap-2">
+                <label className="text-sm font-medium text-[#374151]">Phone</label>
+                <input
+                  type="text"
+                  value={editForm.phone}
+                  onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                  className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+              <div className="grid gap-2">
+                <label className="text-sm font-medium text-[#374151]">Email</label>
+                <input
+                  type="text"
+                  value={editForm.email}
+                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                  className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="grid gap-2">
+                <label className="text-sm font-medium text-[#374151]">Type</label>
+                <select
+                  value={editForm.type}
+                  onChange={(e) => setEditForm({ ...editForm, type: e.target.value as ClientType })}
+                  className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                >
+                  <option value="Importateur">Importateur</option>
+                  <option value="Exportateur">Exportateur</option>
+                  <option value="Transitaire">Transitaire</option>
+                </select>
+              </div>
+              <div className="grid gap-2">
+                <label className="text-sm font-medium text-[#374151]">Plafond</label>
+                <input
+                  type="text"
+                  value={editForm.plafond}
+                  onChange={(e) => setEditForm({ ...editForm, plafond: e.target.value })}
+                  className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setEditDialogOpen(false)}>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={handleSaveEdit} className="bg-teal-600 hover:bg-teal-700 text-white">
+              Enregistrer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

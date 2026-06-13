@@ -140,11 +140,11 @@
 .login-page-bg {
   background: linear-gradient(
     135deg,
-    #f0fdfa 0%,
-    #ccfbf1 25%,
-    #e0f2fe 50%,
-    #f0fdfa 75%,
-    #ecfdf5 100%
+    #fff7ed 0%,
+    #ffedd5 25%,
+    #f1f0fb 50%,
+    #fff7ed 75%,
+    #fef3c7 100%
   );
   background-size: 300% 300%;
   animation: login-gradient-flow 14s ease infinite;
@@ -163,7 +163,7 @@
   height: min(420px, 70vw);
   top: -10%;
   left: -5%;
-  background: radial-gradient(circle, #2dd4bf 0%, transparent 70%);
+  background: radial-gradient(circle, #f97316 0%, transparent 70%);
   animation: login-orb-drift-1 18s ease-in-out infinite;
 }
 
@@ -172,7 +172,7 @@
   height: min(380px, 65vw);
   bottom: -8%;
   right: -5%;
-  background: radial-gradient(circle, #2dd4bf 0%, transparent 70%);
+  background: radial-gradient(circle, #fb923c 0%, transparent 70%);
   animation: login-orb-drift-2 22s ease-in-out infinite;
 }
 
@@ -182,7 +182,7 @@
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, #38bdf8 0%, transparent 70%);
+  background: radial-gradient(circle, #1A1A2E 0%, transparent 70%);
   animation: login-orb-drift-3 20s ease-in-out infinite;
 }
 
@@ -208,10 +208,10 @@
   border-radius: inherit;
   background: linear-gradient(
     135deg,
-    rgba(20, 184, 166, 0.7),
-    rgba(45, 212, 191, 0.5),
-    rgba(56, 189, 248, 0.4),
-    rgba(13, 148, 136, 0.7)
+    rgba(249, 115, 22, 0.7),
+    rgba(251, 146, 60, 0.5),
+    rgba(26, 26, 46, 0.4),
+    rgba(234, 88, 12, 0.7)
   );
   background-size: 300% 300%;
   animation: login-gradient-flow 10s ease infinite;
@@ -257,12 +257,12 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(20, 184, 166, 0.25);
+  background: rgba(249, 115, 22, 0.25);
   border-radius: 9999px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(20, 184, 166, 0.4);
+  background: rgba(249, 115, 22, 0.4);
 }
 
 @media (prefers-reduced-motion: reduce) {

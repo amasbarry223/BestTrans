@@ -39,7 +39,7 @@ const faqCategories: FaqCategory[] = [
     id: 'compte',
     label: 'Compte',
     icon: UserCircle,
-    color: { bg: 'bg-blue-50', text: 'text-blue-600' },
+    color: { bg: 'bg-orange-50', text: 'text-orange-600' },
     entries: [
       {
         question: 'Comment créer un compte BestTrans ?',
@@ -57,7 +57,7 @@ const faqCategories: FaqCategory[] = [
     id: 'courses',
     label: 'Courses',
     icon: Car,
-    color: { bg: 'bg-blue-100', text: 'text-blue-700' },
+    color: { bg: 'bg-orange-100', text: 'text-orange-700' },
     entries: [
       {
         question: 'Comment réserver une course ?',
@@ -80,7 +80,7 @@ const faqCategories: FaqCategory[] = [
     id: 'paiements',
     label: 'Paiements',
     icon: CreditCard,
-    color: { bg: 'bg-blue-50', text: 'text-blue-600' },
+    color: { bg: 'bg-orange-50', text: 'text-orange-600' },
     entries: [
       {
         question: 'Quels modes de paiement sont acceptés ?',
@@ -98,7 +98,7 @@ const faqCategories: FaqCategory[] = [
     id: 'technique',
     label: 'Technique',
     icon: Settings,
-    color: { bg: 'bg-blue-100', text: 'text-blue-700' },
+    color: { bg: 'bg-orange-100', text: 'text-orange-700' },
     entries: [
       {
         question: 'L\'application ne fonctionne pas, que faire ?',
@@ -186,7 +186,7 @@ export function FaqView() {
           </p>
         </div>
         <Button
-          className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
+          className="bg-orange-600 hover:bg-orange-700 text-white gap-1.5"
           onClick={() =>
             toast.info('Fonctionnalité à venir', {
               description: 'L\'ajout de nouvelles questions sera bientôt disponible.',
@@ -211,7 +211,7 @@ export function FaqView() {
         </div>
         <div className="flex items-center gap-3 text-xs text-[#6B7280]">
           <span className="flex items-center gap-1">
-            <HelpCircle className="w-3.5 h-3.5 text-blue-600" />
+            <HelpCircle className="w-3.5 h-3.5 text-orange-600" />
             {totalEntries} questions
           </span>
           <span>{faqCategories.length} catégories</span>
@@ -232,7 +232,7 @@ export function FaqView() {
               <button
                 type="button"
                 onClick={() => toggleCategory(cat.id)}
-                className="w-full px-5 py-4 flex items-center justify-between hover:bg-blue-50/30 transition-colors"
+                className="w-full px-5 py-4 flex items-center justify-between hover:bg-orange-50/30 transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -274,9 +274,9 @@ export function FaqView() {
                         <button
                           type="button"
                           onClick={() => toggleQuestion(qKey)}
-                          className="w-full px-5 py-3.5 flex items-start justify-between gap-3 hover:bg-blue-50/20 transition-colors text-left"
+                          className="w-full px-5 py-3.5 flex items-start justify-between gap-3 hover:bg-orange-50/20 transition-colors text-left"
                         >
-                          <span className="text-sm font-medium text-[#111827] group-hover:text-blue-700">
+                          <span className="text-sm font-medium text-[#111827] group-hover:text-orange-700">
                             {entry.question}
                           </span>
                           <ChevronDown
@@ -288,7 +288,7 @@ export function FaqView() {
                         </button>
                         {isQExpanded && (
                           <div className="px-5 pb-4">
-                            <div className="bg-blue-50/50 border border-blue-100 rounded-lg p-4">
+                            <div className="bg-orange-50/50 border border-orange-100 rounded-lg p-4">
                               <p className="text-sm text-[#374151] leading-relaxed">
                                 {entry.answer}
                               </p>
@@ -306,8 +306,8 @@ export function FaqView() {
 
         {filteredCategories.length === 0 && (
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-8 flex flex-col items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
-              <Search className="w-6 h-6 text-blue-300" />
+            <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center">
+              <Search className="w-6 h-6 text-orange-300" />
             </div>
             <p className="text-sm text-[#6B7280]">
               Aucune question ne correspond à votre recherche

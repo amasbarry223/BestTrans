@@ -113,7 +113,7 @@ export function CourseDetailView() {
         <p className="text-sm">Aucune course sélectionnée</p>
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-orange-600 border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Retour aux courses
         </button>
@@ -158,7 +158,7 @@ export function CourseDetailView() {
             </button>
           )}
           {!isCancelled && !isCompleted && (
-            <button className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors">
+            <button className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-orange-600 border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors">
               <Navigation className="w-4 h-4" /> Réaffecter
             </button>
           )}
@@ -181,13 +181,13 @@ export function CourseDetailView() {
                 <div className={cn(
                   'w-8 h-8 rounded-full flex items-center justify-center',
                   step.status === 'done' ? 'bg-emerald-100' :
-                  step.status === 'current' ? 'bg-blue-100 ring-2 ring-blue-400' :
+                  step.status === 'current' ? 'bg-orange-100 ring-2 ring-orange-400' :
                   'bg-gray-100'
                 )}>
                   {step.status === 'done' ? (
                     <CheckCircle2 className="w-4.5 h-4.5 text-emerald-600" />
                   ) : step.status === 'current' ? (
-                    <div className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse" />
                   ) : (
                     <div className="w-2 h-2 rounded-full bg-gray-300" />
                   )}
@@ -205,7 +205,7 @@ export function CourseDetailView() {
                 <p className={cn(
                   'text-sm font-medium',
                   step.status === 'done' ? 'text-emerald-700' :
-                  step.status === 'current' ? 'text-blue-700' :
+                  step.status === 'current' ? 'text-orange-700' :
                   'text-[#9CA3AF]'
                 )}>
                   {step.label}
@@ -213,7 +213,7 @@ export function CourseDetailView() {
                 <span className={cn(
                   'text-xs',
                   step.status === 'done' ? 'text-emerald-600 font-medium' :
-                  step.status === 'current' ? 'text-blue-600 font-semibold' :
+                  step.status === 'current' ? 'text-orange-600 font-semibold' :
                   'text-[#9CA3AF]'
                 )}>
                   {step.time}
@@ -231,11 +231,11 @@ export function CourseDetailView() {
           {/* Passager info */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
             <h3 className="text-sm font-semibold text-[#111827] mb-4 flex items-center gap-2">
-              <User className="w-4 h-4 text-blue-600" /> Passager
+              <User className="w-4 h-4 text-orange-600" /> Passager
             </h3>
             <dl className="grid grid-cols-1 gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 font-bold text-sm shrink-0">
+                <div className="w-9 h-9 rounded-full bg-orange-50 flex items-center justify-center text-orange-700 font-bold text-sm shrink-0">
                   {course.passager.split(' ').map(w => w[0]).join('').slice(0, 2)}
                 </div>
                 <div>
@@ -253,7 +253,7 @@ export function CourseDetailView() {
           {/* Chauffeur info */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
             <h3 className="text-sm font-semibold text-[#111827] mb-4 flex items-center gap-2">
-              <Car className="w-4 h-4 text-blue-600" /> Chauffeur
+              <Car className="w-4 h-4 text-orange-600" /> Chauffeur
             </h3>
             <dl className="grid grid-cols-1 gap-3">
               <div className="flex items-center gap-3">
@@ -279,11 +279,11 @@ export function CourseDetailView() {
           {/* Trajet */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
             <h3 className="text-sm font-semibold text-[#111827] mb-4 flex items-center gap-2">
-              <Route className="w-4 h-4 text-blue-600" /> Trajet
+              <Route className="w-4 h-4 text-orange-600" /> Trajet
             </h3>
             <div className="flex items-start gap-3">
               <div className="flex flex-col items-center shrink-0 pt-0.5">
-                <div className="w-3 h-3 rounded-full bg-blue-500 ring-2 ring-blue-200" />
+                <div className="w-3 h-3 rounded-full bg-orange-500 ring-2 ring-orange-200" />
                 <div className="w-0.5 h-8 bg-gray-200" />
                 <div className="w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-emerald-200" />
               </div>
@@ -306,7 +306,7 @@ export function CourseDetailView() {
           {/* Financial info */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
             <h3 className="text-sm font-semibold text-[#111827] mb-4 flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-blue-600" /> Prix & Paiement
+              <DollarSign className="w-4 h-4 text-orange-600" /> Prix & Paiement
             </h3>
             <dl className="grid grid-cols-2 gap-x-4 gap-y-3">
               <div>
@@ -317,7 +317,7 @@ export function CourseDetailView() {
                 <dt className="text-[10px] text-[#9CA3AF] uppercase">Prix final</dt>
                 <dd className={cn(
                   'text-sm font-bold',
-                  isCompleted ? 'text-blue-700' : 'text-[#111827]'
+                  isCompleted ? 'text-orange-700' : 'text-[#111827]'
                 )}>
                   {isCompleted ? course.prix : '—'}
                 </dd>
@@ -344,7 +344,7 @@ export function CourseDetailView() {
           {/* Date & Duration */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
             <h3 className="text-sm font-semibold text-[#111827] mb-4 flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-blue-600" /> Date & Durée
+              <Calendar className="w-4 h-4 text-orange-600" /> Date & Durée
             </h3>
             <dl className="grid grid-cols-1 gap-3">
               <div className="flex items-center gap-2 text-sm">
@@ -370,13 +370,13 @@ export function CourseDetailView() {
           {/* Map placeholder */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
             <h3 className="text-sm font-semibold text-[#111827] mb-4 flex items-center gap-2">
-              <Map className="w-4 h-4 text-blue-600" /> Carte du trajet
+              <Map className="w-4 h-4 text-orange-600" /> Carte du trajet
             </h3>
-            <div className="h-48 bg-gradient-to-br from-blue-50 to-sky-50 border-2 border-dashed border-blue-200 rounded-xl flex flex-col items-center justify-center gap-2">
-              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                <MapPin className="w-6 h-6 text-blue-500" />
+            <div className="h-48 bg-gradient-to-br from-orange-50 to-sky-50 border-2 border-dashed border-orange-200 rounded-xl flex flex-col items-center justify-center gap-2">
+              <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
+                <MapPin className="w-6 h-6 text-orange-500" />
               </div>
-              <p className="text-sm font-medium text-blue-600">Carte du trajet</p>
+              <p className="text-sm font-medium text-orange-600">Carte du trajet</p>
               <p className="text-[10px] text-[#9CA3AF]">Intégration Google Maps</p>
             </div>
           </div>
@@ -386,17 +386,17 @@ export function CourseDetailView() {
       {/* ── Notes ── */}
       <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
         <h3 className="text-sm font-semibold text-[#111827] mb-4 flex items-center gap-2">
-          <MessageSquare className="w-4 h-4 text-blue-600" /> Notes et commentaires
+          <MessageSquare className="w-4 h-4 text-orange-600" /> Notes et commentaires
         </h3>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Ajouter une note ou un commentaire sur cette course..."
           rows={3}
-          className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
         />
         <div className="flex justify-end mt-2">
-          <button className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+          <button className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-colors">
             Enregistrer
           </button>
         </div>

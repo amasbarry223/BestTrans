@@ -50,9 +50,9 @@ const activeDrivers = [
 
 const statusStyles: Record<string, { bg: string; text: string; dot: string }> = {
   'En course': {
-    bg: 'bg-blue-100',
-    text: 'text-blue-700',
-    dot: 'bg-blue-500',
+    bg: 'bg-orange-100',
+    text: 'text-orange-700',
+    dot: 'bg-orange-500',
   },
   'En attente': {
     bg: 'bg-amber-100',
@@ -89,30 +89,30 @@ export function CarteOperationsView() {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 flex items-center gap-4 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-            <Car className="w-6 h-6 text-blue-600" />
+          <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+            <Car className="w-6 h-6 text-orange-600" />
           </div>
           <div>
             <p className="text-sm text-[#6B7280]">Chauffeurs en ligne</p>
-            <p className="text-2xl font-bold text-blue-700">132</p>
+            <p className="text-2xl font-bold text-orange-700">132</p>
           </div>
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 flex items-center gap-4 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
-            <Activity className="w-6 h-6 text-blue-600" />
+          <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center shrink-0">
+            <Activity className="w-6 h-6 text-orange-600" />
           </div>
           <div>
             <p className="text-sm text-[#6B7280]">Courses en cours</p>
-            <p className="text-2xl font-bold text-blue-700">47</p>
+            <p className="text-2xl font-bold text-orange-700">47</p>
           </div>
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 flex items-center gap-4 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-            <MapPin className="w-6 h-6 text-blue-700" />
+          <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+            <MapPin className="w-6 h-6 text-orange-700" />
           </div>
           <div>
             <p className="text-sm text-[#6B7280]">Zone la plus active</p>
-            <p className="text-2xl font-bold text-blue-700">Kalaban-Coura</p>
+            <p className="text-2xl font-bold text-orange-700">Kalaban-Coura</p>
           </div>
         </div>
       </div>
@@ -130,24 +130,24 @@ export function CarteOperationsView() {
           {Array.from({ length: 10 }).map((_, i) => (
             <div
               key={`h-${i}`}
-              className="absolute left-0 right-0 border-t border-blue-400"
+              className="absolute left-0 right-0 border-t border-orange-400"
               style={{ top: `${(i + 1) * 10}%` }}
             />
           ))}
           {Array.from({ length: 12 }).map((_, i) => (
             <div
               key={`v-${i}`}
-              className="absolute top-0 bottom-0 border-l border-blue-400"
+              className="absolute top-0 bottom-0 border-l border-orange-400"
               style={{ left: `${(i + 1) * 8.33}%` }}
             />
           ))}
         </div>
 
         {/* Decorative road-like elements */}
-        <div className="absolute top-[30%] left-0 right-0 h-[3px] bg-blue-400/30" />
-        <div className="absolute top-[60%] left-0 right-0 h-[2px] bg-blue-400/20" />
-        <div className="absolute top-0 bottom-0 left-[25%] w-[3px] bg-blue-400/30" />
-        <div className="absolute top-0 bottom-0 left-[70%] w-[2px] bg-blue-400/20" />
+        <div className="absolute top-[30%] left-0 right-0 h-[3px] bg-orange-400/30" />
+        <div className="absolute top-[60%] left-0 right-0 h-[2px] bg-orange-400/20" />
+        <div className="absolute top-0 bottom-0 left-[25%] w-[3px] bg-orange-400/30" />
+        <div className="absolute top-0 bottom-0 left-[70%] w-[2px] bg-orange-400/20" />
 
         {/* Decorative "pins" on the map */}
         {[
@@ -159,7 +159,7 @@ export function CarteOperationsView() {
         ].map((pos, i) => (
           <div
             key={i}
-            className="absolute w-3 h-3 bg-blue-600 rounded-full border-2 border-white shadow-lg animate-pulse"
+            className="absolute w-3 h-3 bg-orange-600 rounded-full border-2 border-white shadow-lg animate-pulse"
             style={{ top: pos.top, left: pos.left }}
           />
         ))}
@@ -167,18 +167,18 @@ export function CarteOperationsView() {
         {/* Center label */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-8 py-6 shadow-xl flex flex-col items-center gap-3">
-            <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center">
-              <Map className="w-7 h-7 text-blue-600" />
+            <div className="w-14 h-14 rounded-xl bg-orange-100 flex items-center justify-center">
+              <Map className="w-7 h-7 text-orange-600" />
             </div>
-            <p className="text-base font-semibold text-blue-700 text-center">
+            <p className="text-base font-semibold text-orange-700 text-center">
               Carte opérations en temps réel
             </p>
-            <p className="text-xs text-blue-500 text-center max-w-[280px]">
+            <p className="text-xs text-orange-500 text-center max-w-[280px]">
               Intégration Google Maps / Mapbox
             </p>
             <div className="flex items-center gap-2 mt-1">
-              <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-              <span className="text-[10px] text-blue-600 font-medium">
+              <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+              <span className="text-[10px] text-orange-600 font-medium">
                 132 chauffeurs en ligne
               </span>
             </div>
@@ -190,13 +190,13 @@ export function CarteOperationsView() {
       <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden flex flex-col">
         <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Navigation className="w-4 h-4 text-blue-600" />
+            <Navigation className="w-4 h-4 text-orange-600" />
             <h2 className="text-sm font-semibold text-[#111827]">
               Chauffeurs actifs à proximité
             </h2>
             <Badge
               variant="secondary"
-              className="bg-blue-50 text-blue-700 text-xs"
+              className="bg-orange-50 text-orange-700 text-xs"
             >
               {activeDrivers.length}
             </Badge>
@@ -235,18 +235,18 @@ export function CarteOperationsView() {
                 return (
                   <tr
                     key={driver.id}
-                    className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-blue-50/30 transition-colors group"
+                    className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-orange-50/30 transition-colors group"
                   >
                     <td className="py-3 px-5">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-semibold text-xs shrink-0">
                           {driver.name
                             .split(' ')
                             .map((n) => n[0])
                             .join('')}
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-[#111827] group-hover:text-blue-700 transition-colors">
+                          <p className="text-sm font-medium text-[#111827] group-hover:text-orange-700 transition-colors">
                             {driver.name}
                           </p>
                           <p className="text-[10px] text-[#9CA3AF]">
@@ -257,7 +257,7 @@ export function CarteOperationsView() {
                     </td>
                     <td className="py-3 px-3">
                       <div className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-blue-500" />
+                        <MapPin className="w-3.5 h-3.5 text-orange-500" />
                         <span className="text-sm text-[#111827]">
                           {driver.location}
                         </span>
@@ -287,7 +287,7 @@ export function CarteOperationsView() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700 text-xs gap-1.5"
+                        className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 text-xs gap-1.5"
                       >
                         <Map className="w-3.5 h-3.5" />
                         Voir course
@@ -310,7 +310,7 @@ export function CarteOperationsView() {
             }
             return (
               <div key={driver.id} className="px-4 py-3 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-xs shrink-0">
+                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-semibold text-xs shrink-0">
                   {driver.name
                     .split(' ')
                     .map((n) => n[0])
@@ -338,7 +338,7 @@ export function CarteOperationsView() {
                     </span>
                   </div>
                   <div className="flex items-center gap-1 mt-0.5">
-                    <MapPin className="w-3 h-3 text-blue-400" />
+                    <MapPin className="w-3 h-3 text-orange-400" />
                     <span className="text-xs text-[#6B7280] truncate">
                       {driver.location} · {driver.vehicle}
                     </span>
@@ -347,7 +347,7 @@ export function CarteOperationsView() {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="text-blue-600 border-blue-200 hover:bg-blue-50 text-xs gap-1 h-7 px-2 shrink-0"
+                  className="text-orange-600 border-orange-200 hover:bg-orange-50 text-xs gap-1 h-7 px-2 shrink-0"
                 >
                   <Map className="w-3 h-3" />
                 </Button>

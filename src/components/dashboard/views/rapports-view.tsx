@@ -86,7 +86,7 @@ const dailyCoursesData = [
 ]
 
 const dailyCoursesConfig: ChartConfig = {
-  courses: { label: 'Courses', color: '#2563eb' },
+  courses: { label: 'Courses', color: '#f97316' },
 }
 
 // Zone activity data
@@ -99,7 +99,7 @@ const zoneData = [
 ]
 
 const zoneBarConfig: ChartConfig = {
-  courses: { label: 'Courses', color: '#2563eb' },
+  courses: { label: 'Courses', color: '#f97316' },
 }
 
 // Activity tab stats
@@ -169,7 +169,7 @@ export function RapportsView() {
                 className={cn(
                   'flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex-1 justify-center',
                   isActive
-                    ? 'bg-blue-50 text-blue-700 shadow-sm'
+                    ? 'bg-orange-50 text-orange-700 shadow-sm'
                     : 'text-[#6B7280] hover:bg-[#F9FAFB] hover:text-[#111827]'
                 )}
               >
@@ -206,8 +206,8 @@ function ActiviteTab() {
               className="bg-white border border-[#E5E7EB] rounded-xl p-5 flex flex-col gap-3 hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-orange-600" />
                 </div>
                 <span
                   className={cn(
@@ -227,7 +227,7 @@ function ActiviteTab() {
               </div>
               <div>
                 <p className="text-sm text-[#6B7280]">{stat.label}</p>
-                <p className="text-xl font-bold text-blue-700">{stat.value}</p>
+                <p className="text-xl font-bold text-orange-700">{stat.value}</p>
               </div>
             </div>
           )
@@ -238,7 +238,7 @@ function ActiviteTab() {
       <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Activity className="w-4.5 h-4.5 text-blue-600" />
+            <Activity className="w-4.5 h-4.5 text-orange-600" />
             <h2 className="text-sm font-semibold text-[#111827]">
               Courses quotidiennes
             </h2>
@@ -253,8 +253,8 @@ function ActiviteTab() {
           <AreaChart data={dailyCoursesData}>
             <defs>
               <linearGradient id="coursesGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#2563eb" stopOpacity={0.25} />
-                <stop offset="95%" stopColor="#2563eb" stopOpacity={0.02} />
+                <stop offset="5%" stopColor="#f97316" stopOpacity={0.25} />
+                <stop offset="95%" stopColor="#f97316" stopOpacity={0.02} />
               </linearGradient>
             </defs>
             <CartesianGrid vertical={false} stroke="#E5E7EB" strokeDasharray="3 3" />
@@ -274,7 +274,7 @@ function ActiviteTab() {
             <Area
               type="monotone"
               dataKey="courses"
-              stroke="#2563eb"
+              stroke="#f97316"
               strokeWidth={2.5}
               fill="url(#coursesGradient)"
             />
@@ -285,7 +285,7 @@ function ActiviteTab() {
         <div className="grid grid-cols-4 gap-3 mt-4 pt-4 border-t border-[#E5E7EB]">
           <div>
             <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Meilleur jour</p>
-            <p className="text-sm font-bold text-blue-700">J29</p>
+            <p className="text-sm font-bold text-orange-700">J29</p>
             <p className="text-xs text-[#6B7280]">221 courses</p>
           </div>
           <div>
@@ -320,11 +320,11 @@ function ZonesTab() {
       <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
         <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-blue-600" />
+            <MapPin className="w-4 h-4 text-orange-600" />
             <h2 className="text-sm font-semibold text-[#111827]">
               Zones les plus actives
             </h2>
-            <Badge variant="secondary" className="bg-blue-50 text-blue-700 text-xs">
+            <Badge variant="secondary" className="bg-orange-50 text-orange-700 text-xs">
               Top 5
             </Badge>
           </div>
@@ -334,17 +334,17 @@ function ZonesTab() {
           {zoneData.map((zone, i) => (
             <div
               key={zone.zone}
-              className="px-5 py-4 flex items-center gap-4 hover:bg-blue-50/30 transition-colors"
+              className="px-5 py-4 flex items-center gap-4 hover:bg-orange-50/30 transition-colors"
             >
               <span
                 className={cn(
                   'w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
                   i === 0
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-orange-600 text-white'
                     : i === 1
-                      ? 'bg-blue-100 text-blue-700'
+                      ? 'bg-orange-100 text-orange-700'
                       : i === 2
-                        ? 'bg-blue-50 text-blue-600'
+                        ? 'bg-orange-50 text-orange-600'
                         : 'bg-[#F3F4F6] text-[#6B7280]'
                 )}
               >
@@ -366,12 +366,12 @@ function ZonesTab() {
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
                 <div
-                  className="h-2 rounded-full bg-blue-600"
+                  className="h-2 rounded-full bg-orange-600"
                   style={{
                     width: `${Math.max(20, (zone.courses / zoneData[0].courses) * 120)}px`,
                   }}
                 />
-                <span className="text-xs font-medium text-blue-700 w-10 text-right">
+                <span className="text-xs font-medium text-orange-700 w-10 text-right">
                   {Math.round((zone.courses / zoneData[0].courses) * 100)}%
                 </span>
               </div>
@@ -384,7 +384,7 @@ function ZonesTab() {
       <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-4.5 h-4.5 text-blue-600" />
+            <BarChart3 className="w-4.5 h-4.5 text-orange-600" />
             <h2 className="text-sm font-semibold text-[#111827]">
               Courses par zone
             </h2>
@@ -443,7 +443,7 @@ function ExportTab() {
       {/* Date Range Selector */}
       <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
         <h2 className="text-sm font-semibold text-[#111827] mb-4 flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-blue-600" />
+          <Calendar className="w-4 h-4 text-orange-600" />
           Période d&apos;export
         </h2>
         <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
@@ -480,13 +480,13 @@ function ExportTab() {
           tabIndex={0}
           onClick={() => handleExport('PDF')}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleExport('PDF') }}
-          className="bg-white border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-center gap-4 hover:border-blue-200 hover:shadow-md transition-all group cursor-pointer"
+          className="bg-white border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-center gap-4 hover:border-orange-200 hover:shadow-md transition-all group cursor-pointer"
         >
           <div className="w-14 h-14 rounded-xl bg-red-50 group-hover:bg-red-100 flex items-center justify-center transition-colors">
             <FileText className="w-7 h-7 text-red-600" />
           </div>
           <div className="text-center">
-            <p className="text-sm font-semibold text-[#111827] group-hover:text-blue-700 transition-colors">
+            <p className="text-sm font-semibold text-[#111827] group-hover:text-orange-700 transition-colors">
               Export PDF
             </p>
             <p className="text-xs text-[#9CA3AF] mt-0.5">
@@ -494,7 +494,7 @@ function ExportTab() {
             </p>
           </div>
           <span
-            className="inline-flex items-center justify-center gap-1.5 w-full h-8 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 w-full h-8 rounded-md bg-orange-600 hover:bg-orange-700 text-white text-xs font-medium px-3 transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
             Télécharger PDF
@@ -507,13 +507,13 @@ function ExportTab() {
           tabIndex={0}
           onClick={() => handleExport('CSV')}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleExport('CSV') }}
-          className="bg-white border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-center gap-4 hover:border-blue-200 hover:shadow-md transition-all group cursor-pointer"
+          className="bg-white border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-center gap-4 hover:border-orange-200 hover:shadow-md transition-all group cursor-pointer"
         >
           <div className="w-14 h-14 rounded-xl bg-green-50 group-hover:bg-green-100 flex items-center justify-center transition-colors">
             <FileText className="w-7 h-7 text-green-600" />
           </div>
           <div className="text-center">
-            <p className="text-sm font-semibold text-[#111827] group-hover:text-blue-700 transition-colors">
+            <p className="text-sm font-semibold text-[#111827] group-hover:text-orange-700 transition-colors">
               Export CSV
             </p>
             <p className="text-xs text-[#9CA3AF] mt-0.5">
@@ -521,7 +521,7 @@ function ExportTab() {
             </p>
           </div>
           <span
-            className="inline-flex items-center justify-center gap-1.5 w-full h-8 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 w-full h-8 rounded-md bg-orange-600 hover:bg-orange-700 text-white text-xs font-medium px-3 transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
             Télécharger CSV
@@ -534,13 +534,13 @@ function ExportTab() {
           tabIndex={0}
           onClick={() => handleExport('Excel')}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleExport('Excel') }}
-          className="bg-white border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-center gap-4 hover:border-blue-200 hover:shadow-md transition-all group cursor-pointer"
+          className="bg-white border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-center gap-4 hover:border-orange-200 hover:shadow-md transition-all group cursor-pointer"
         >
-          <div className="w-14 h-14 rounded-xl bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center transition-colors">
-            <FileText className="w-7 h-7 text-blue-600" />
+          <div className="w-14 h-14 rounded-xl bg-orange-50 group-hover:bg-orange-100 flex items-center justify-center transition-colors">
+            <FileText className="w-7 h-7 text-orange-600" />
           </div>
           <div className="text-center">
-            <p className="text-sm font-semibold text-[#111827] group-hover:text-blue-700 transition-colors">
+            <p className="text-sm font-semibold text-[#111827] group-hover:text-orange-700 transition-colors">
               Export Excel
             </p>
             <p className="text-xs text-[#9CA3AF] mt-0.5">
@@ -548,7 +548,7 @@ function ExportTab() {
             </p>
           </div>
           <span
-            className="inline-flex items-center justify-center gap-1.5 w-full h-8 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 w-full h-8 rounded-md bg-orange-600 hover:bg-orange-700 text-white text-xs font-medium px-3 transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
             Télécharger Excel
@@ -559,7 +559,7 @@ function ExportTab() {
       {/* Recent Exports */}
       <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
         <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center gap-2">
-          <Clock className="w-4 h-4 text-blue-600" />
+          <Clock className="w-4 h-4 text-orange-600" />
           <h2 className="text-sm font-semibold text-[#111827]">
             Exports récents
           </h2>
@@ -572,11 +572,11 @@ function ExportTab() {
           ].map((file) => (
             <div
               key={file.name}
-              className="px-5 py-3 flex items-center justify-between hover:bg-blue-50/30 transition-colors"
+              className="px-5 py-3 flex items-center justify-between hover:bg-orange-50/30 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                  <FileText className="w-4 h-4 text-blue-600" />
+                <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-orange-600" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-[#111827]">
@@ -590,7 +590,7 @@ function ExportTab() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 text-xs gap-1"
+                className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 text-xs gap-1"
                 onClick={() => toast.success('Téléchargement lancé', { description: file.name })}
               >
                 <Download className="w-3.5 h-3.5" />

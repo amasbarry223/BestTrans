@@ -37,16 +37,16 @@ const summaryCards = [
     label: 'CA total période',
     value: '142,5M FCFA',
     icon: DollarSign,
-    color: 'text-blue-600',
-    bg: 'bg-blue-50',
+    color: 'text-orange-600',
+    bg: 'bg-orange-50',
     sub: '+14% vs période préc.',
   },
   {
     label: 'Commission plateforme',
     value: '21,4M FCFA',
     icon: TrendingUp,
-    color: 'text-blue-600',
-    bg: 'bg-blue-50',
+    color: 'text-orange-600',
+    bg: 'bg-orange-50',
     sub: '15% du CA',
   },
   {
@@ -73,18 +73,18 @@ const monthlyCAData = [
 ]
 
 const monthlyCAConfig: ChartConfig = {
-  ca:           { label: 'CA total',          color: '#2563eb' },
+  ca:           { label: 'CA total',          color: '#f97316' },
   commission:   { label: 'Commission',        color: '#60a5fa' },
   reversements: { label: 'Reversements',      color: '#93c5fd' },
 }
 
 const repartitionData = [
-  { name: 'Commission plateforme', value: 15, color: '#2563eb' },
+  { name: 'Commission plateforme', value: 15, color: '#f97316' },
   { name: 'Reversements chauffeurs', value: 85, color: '#93c5fd' },
 ]
 
 const repartitionConfig: ChartConfig = {
-  'Commission plateforme':  { label: 'Commission (15%)', color: '#2563eb' },
+  'Commission plateforme':  { label: 'Commission (15%)', color: '#f97316' },
   'Reversements chauffeurs': { label: 'Reversements (85%)', color: '#93c5fd' },
 }
 
@@ -179,7 +179,7 @@ export function SyntheseFinanceView() {
         <div className="lg:col-span-3 bg-white border border-[#E5E7EB] rounded-xl p-5 flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Activity className="w-4.5 h-4.5 text-blue-600" />
+              <Activity className="w-4.5 h-4.5 text-orange-600" />
               <h2 className="text-sm font-semibold text-[#111827]">Évolution mensuelle du CA</h2>
             </div>
             <div className="flex items-center gap-1 text-xs text-[#9CA3AF]">
@@ -193,8 +193,8 @@ export function SyntheseFinanceView() {
               <AreaChart data={monthlyCAData}>
                 <defs>
                   <linearGradient id="caGradientBlue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0.02} />
+                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#f97316" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid vertical={false} stroke="#E5E7EB" strokeDasharray="3 3" />
@@ -207,7 +207,7 @@ export function SyntheseFinanceView() {
                   width={40}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Area type="monotone" dataKey="ca" stroke="#2563eb" strokeWidth={2.5} fill="url(#caGradientBlue)" />
+                <Area type="monotone" dataKey="ca" stroke="#f97316" strokeWidth={2.5} fill="url(#caGradientBlue)" />
               </AreaChart>
             </ChartContainer>
           </div>
@@ -220,11 +220,11 @@ export function SyntheseFinanceView() {
             </div>
             <div>
               <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Meilleur mois</p>
-              <p className="text-sm font-bold text-blue-600">Mars 2026</p>
+              <p className="text-sm font-bold text-orange-600">Mars 2026</p>
             </div>
             <div>
               <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Croissance</p>
-              <p className="text-sm font-bold text-blue-600">+62,6%</p>
+              <p className="text-sm font-bold text-orange-600">+62,6%</p>
               <p className="text-[10px] text-[#9CA3AF]">Oct → Mar</p>
             </div>
           </div>
@@ -234,7 +234,7 @@ export function SyntheseFinanceView() {
         <div className="lg:col-span-2 bg-white border border-[#E5E7EB] rounded-xl p-5 flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <PieChartIcon className="w-4.5 h-4.5 text-blue-600" />
+              <PieChartIcon className="w-4.5 h-4.5 text-orange-600" />
               <h2 className="text-sm font-semibold text-[#111827]">Répartition CA</h2>
             </div>
           </div>
@@ -285,7 +285,7 @@ export function SyntheseFinanceView() {
             <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-[#E5E7EB] w-full">
               <div>
                 <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Commission</p>
-                <p className="text-sm font-bold text-[#2563eb]">21,4M FCFA</p>
+                <p className="text-sm font-bold text-[#f97316]">21,4M FCFA</p>
               </div>
               <div>
                 <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Reversements</p>
@@ -301,9 +301,9 @@ export function SyntheseFinanceView() {
         {/* Table Header */}
         <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-blue-600" />
+            <BarChart3 className="w-4 h-4 text-orange-600" />
             <h2 className="text-sm font-semibold text-[#111827]">Détails financiers mensuels</h2>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-50 text-orange-700">
               {financialDetails.length}
             </span>
           </div>
@@ -328,9 +328,9 @@ export function SyntheseFinanceView() {
                   key={i}
                   className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors group"
                 >
-                  <td className="py-3 px-5 text-xs font-semibold text-[#111827] group-hover:text-blue-700 transition-colors">{row.mois}</td>
+                  <td className="py-3 px-5 text-xs font-semibold text-[#111827] group-hover:text-orange-700 transition-colors">{row.mois}</td>
                   <td className="py-3 px-3 text-right font-bold text-xs text-[#111827] whitespace-nowrap">{row.ca}</td>
-                  <td className="py-3 px-3 text-right text-xs font-medium text-[#2563eb] whitespace-nowrap">{row.commission}</td>
+                  <td className="py-3 px-3 text-right text-xs font-medium text-[#f97316] whitespace-nowrap">{row.commission}</td>
                   <td className="py-3 px-3 text-right text-xs font-medium text-[#374151] whitespace-nowrap">{row.reversements}</td>
                   <td className="py-3 px-3 text-right text-xs text-[#374151]">{row.courses.toLocaleString()}</td>
                   <td className="py-3 px-3 text-right text-xs font-medium text-[#6B7280] whitespace-nowrap">{row.panierMoyen}</td>
@@ -352,7 +352,7 @@ export function SyntheseFinanceView() {
                 <div className="grid grid-cols-3 gap-2 mt-1.5">
                   <div>
                     <p className="text-[10px] text-[#9CA3AF]">Commission</p>
-                    <p className="text-xs font-semibold text-blue-600">{row.commission}</p>
+                    <p className="text-xs font-semibold text-orange-600">{row.commission}</p>
                   </div>
                   <div>
                     <p className="text-[10px] text-[#9CA3AF]">Reversements</p>

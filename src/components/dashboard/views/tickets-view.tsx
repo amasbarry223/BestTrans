@@ -45,18 +45,18 @@ type TicketStatus = 'Ouvert' | 'En cours' | 'Résolu'
 const priorityStyle: Record<TicketPriority, { bg: string; text: string; dot: string }> = {
   'Haute':  { bg: 'bg-rose-50',   text: 'text-rose-700',   dot: 'bg-rose-500' },
   'Moyenne': { bg: 'bg-amber-50', text: 'text-amber-700',  dot: 'bg-amber-500' },
-  'Basse':  { bg: 'bg-blue-50',   text: 'text-blue-700',   dot: 'bg-blue-500' },
+  'Basse':  { bg: 'bg-orange-50',   text: 'text-orange-700',   dot: 'bg-orange-500' },
 }
 
 const statusStyle: Record<TicketStatus, { bg: string; text: string; dot: string }> = {
   'Ouvert':    { bg: 'bg-rose-50',   text: 'text-rose-700',   dot: 'bg-rose-500' },
-  'En cours':  { bg: 'bg-blue-50',   text: 'text-blue-700',   dot: 'bg-blue-500' },
+  'En cours':  { bg: 'bg-orange-50',   text: 'text-orange-700',   dot: 'bg-orange-500' },
   'Résolu':    { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
 }
 
 const typeStyle: Record<TicketType, { bg: string; text: string }> = {
   'Réclamation':  { bg: 'bg-rose-50',    text: 'text-rose-700' },
-  'Technique':    { bg: 'bg-blue-50',    text: 'text-blue-700' },
+  'Technique':    { bg: 'bg-orange-50',    text: 'text-orange-700' },
   'Remboursement': { bg: 'bg-amber-50',  text: 'text-amber-700' },
   'Autre':        { bg: 'bg-gray-100',   text: 'text-gray-700' },
 }
@@ -67,9 +67,9 @@ const typeStyle: Record<TicketType, { bg: string; text: string }> = {
 
 const kpiCards = [
   { label: 'Tickets ouverts', value: '23', icon: Ticket, color: 'text-rose-600', bg: 'bg-rose-50' },
-  { label: 'En cours', value: '15', icon: Clock, color: 'text-blue-600', bg: 'bg-blue-50' },
+  { label: 'En cours', value: '15', icon: Clock, color: 'text-orange-600', bg: 'bg-orange-50' },
   { label: 'Résolus aujourd\'hui', value: '8', icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-  { label: 'Temps moyen', value: '2,4h', icon: Timer, color: 'text-blue-600', bg: 'bg-blue-50' },
+  { label: 'Temps moyen', value: '2,4h', icon: Timer, color: 'text-orange-600', bg: 'bg-orange-50' },
 ]
 
 interface SupportTicket {
@@ -196,13 +196,13 @@ export function TicketsView() {
                 placeholder="Rechercher par N°, personne, assigné..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="all">Tous statuts</option>
               <option value="Ouvert">Ouvert</option>
@@ -212,7 +212,7 @@ export function TicketsView() {
             <select
               value={filterPriority}
               onChange={(e) => setFilterPriority(e.target.value)}
-              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="all">Toutes priorités</option>
               <option value="Haute">Haute</option>
@@ -222,7 +222,7 @@ export function TicketsView() {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="all">Tous types</option>
               <option value="Réclamation">Réclamation</option>
@@ -242,9 +242,9 @@ export function TicketsView() {
         {/* Table Header */}
         <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Ticket className="w-4 h-4 text-blue-600" />
+            <Ticket className="w-4 h-4 text-orange-600" />
             <h2 className="text-sm font-semibold text-[#111827]">Liste des tickets</h2>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-50 text-orange-700">
               {filtered.length}
             </span>
           </div>
@@ -276,7 +276,7 @@ export function TicketsView() {
                     className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors group"
                   >
                     <td className="py-3 px-5">
-                      <span className="font-mono text-xs font-semibold text-blue-700 group-hover:text-blue-800 transition-colors">
+                      <span className="font-mono text-xs font-semibold text-orange-700 group-hover:text-orange-800 transition-colors">
                         {t.numero}
                       </span>
                     </td>
@@ -284,11 +284,11 @@ export function TicketsView() {
                       <div className="flex items-center gap-2">
                         <div className={cn(
                           'w-6 h-6 rounded-full flex items-center justify-center shrink-0',
-                          t.personneRole === 'Passager' ? 'bg-blue-100' : 'bg-sky-100'
+                          t.personneRole === 'Passager' ? 'bg-orange-100' : 'bg-sky-100'
                         )}>
                           <User className={cn(
                             'w-3 h-3',
-                            t.personneRole === 'Passager' ? 'text-blue-600' : 'text-sky-600'
+                            t.personneRole === 'Passager' ? 'text-orange-600' : 'text-sky-600'
                           )} />
                         </div>
                         <div className="min-w-0">
@@ -325,8 +325,8 @@ export function TicketsView() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-44">
                           <DropdownMenuItem onClick={() => handleView(t)} className="cursor-pointer">
-                            <Eye className="w-4 h-4 mr-2 text-blue-600" />
-                            <span className="text-blue-700">Voir</span>
+                            <Eye className="w-4 h-4 mr-2 text-orange-600" />
+                            <span className="text-orange-700">Voir</span>
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleEscalate(t)} className="cursor-pointer">
                             <ArrowUpRight className="w-4 h-4 mr-2 text-amber-600" />
@@ -398,7 +398,7 @@ export function TicketsView() {
             <AlertDialogTitle>Escalader le ticket</AlertDialogTitle>
             <AlertDialogDescription>
               Vous êtes sur le point d&apos;escalader le ticket{' '}
-              <strong className="text-blue-700">{selectedTicket?.numero}</strong>.
+              <strong className="text-orange-700">{selectedTicket?.numero}</strong>.
               Cette action augmentera sa priorité et notifiera l&apos;équipe de supervision.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -439,7 +439,7 @@ export function TicketsView() {
             <AlertDialogTitle>Clôturer le ticket</AlertDialogTitle>
             <AlertDialogDescription>
               Vous êtes sur le point de clôturer le ticket{' '}
-              <strong className="text-blue-700">{selectedTicket?.numero}</strong>.
+              <strong className="text-orange-700">{selectedTicket?.numero}</strong>.
               Cette action est irréversible. Le ticket sera marqué comme résolu.
             </AlertDialogDescription>
           </AlertDialogHeader>

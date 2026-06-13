@@ -109,7 +109,7 @@ export function getRoleLabel(role: string): string {
 export function getRoleColor(role: string): { bg: string; text: string; border: string } {
   const colors: Record<string, { bg: string; text: string; border: string }> = {
     super_admin: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
-    admin: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+    admin: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200' },
     support: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
     finance: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
   }

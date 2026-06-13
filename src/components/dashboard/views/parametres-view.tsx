@@ -229,7 +229,7 @@ function InitialsAvatar({ initials, name, size = 'md' }: { initials: string; nam
   }
   return (
     <div
-      className={cn('rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold shrink-0', sizeClasses[size])}
+      className={cn('rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold shrink-0', sizeClasses[size])}
       title={name}
     >
       {initials}
@@ -249,7 +249,7 @@ export function ParametresView() {
           <TabsTrigger
             value="profil"
             className={cn(
-              'flex-1 min-w-0 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm',
+              'flex-1 min-w-0 data-[state=active]:bg-orange-50 data-[state=active]:text-orange-700 data-[state=active]:shadow-sm',
               'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
             )}
           >
@@ -259,7 +259,7 @@ export function ParametresView() {
           <TabsTrigger
             value="entreprise"
             className={cn(
-              'flex-1 min-w-0 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm',
+              'flex-1 min-w-0 data-[state=active]:bg-orange-50 data-[state=active]:text-orange-700 data-[state=active]:shadow-sm',
               'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
             )}
           >
@@ -269,7 +269,7 @@ export function ParametresView() {
           <TabsTrigger
             value="notifications"
             className={cn(
-              'flex-1 min-w-0 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm',
+              'flex-1 min-w-0 data-[state=active]:bg-orange-50 data-[state=active]:text-orange-700 data-[state=active]:shadow-sm',
               'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
             )}
           >
@@ -279,7 +279,7 @@ export function ParametresView() {
           <TabsTrigger
             value="securite"
             className={cn(
-              'flex-1 min-w-0 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm',
+              'flex-1 min-w-0 data-[state=active]:bg-orange-50 data-[state=active]:text-orange-700 data-[state=active]:shadow-sm',
               'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
             )}
           >
@@ -289,7 +289,7 @@ export function ParametresView() {
           <TabsTrigger
             value="historique"
             className={cn(
-              'flex-1 min-w-0 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm',
+              'flex-1 min-w-0 data-[state=active]:bg-orange-50 data-[state=active]:text-orange-700 data-[state=active]:shadow-sm',
               'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
             )}
           >
@@ -299,7 +299,7 @@ export function ParametresView() {
           <TabsTrigger
             value="utilisateurs"
             className={cn(
-              'flex-1 min-w-0 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm',
+              'flex-1 min-w-0 data-[state=active]:bg-orange-50 data-[state=active]:text-orange-700 data-[state=active]:shadow-sm',
               'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
             )}
           >
@@ -362,7 +362,7 @@ function ProfilTab() {
         <div>
           <p className="font-semibold text-[#111827]">Amadou Diallo</p>
           <p className="text-sm text-[#6B7280]">Super Admin</p>
-          <button className="text-xs text-blue-600 font-medium mt-1 hover:underline">
+          <button className="text-xs text-orange-600 font-medium mt-1 hover:underline">
             Changer la photo
           </button>
         </div>
@@ -388,7 +388,7 @@ function ProfilTab() {
       <Button
         onClick={handleSave}
         disabled={saving}
-        className="mt-6 bg-blue-600 hover:bg-blue-700 text-white"
+        className="mt-6 bg-orange-600 hover:bg-orange-700 text-white"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Save className="w-4 h-4 mr-1.5" />}
         Enregistrer
@@ -441,7 +441,7 @@ function EntrepriseTab() {
       <Button
         onClick={handleSave}
         disabled={saving}
-        className="mt-6 bg-blue-600 hover:bg-blue-700 text-white"
+        className="mt-6 bg-orange-600 hover:bg-orange-700 text-white"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Save className="w-4 h-4 mr-1.5" />}
         Enregistrer
@@ -489,7 +489,7 @@ function NotificationsTab() {
                 onCheckedChange={(checked) =>
                   setPrefs((prev) => ({ ...prev, [item.key]: checked }))
                 }
-                className="data-[state=checked]:bg-blue-600"
+                className="data-[state=checked]:bg-orange-600"
               />
             </div>
             {idx < notifications.length - 1 && <Separator />}
@@ -541,7 +541,7 @@ function SecuriteTab() {
           <Switch
             checked={twoFA}
             onCheckedChange={setTwoFA}
-            className="data-[state=checked]:bg-blue-600"
+            className="data-[state=checked]:bg-orange-600"
           />
         </div>
         <Separator />
@@ -553,14 +553,14 @@ function SecuriteTab() {
           <Switch
             checked={autoLogout}
             onCheckedChange={setAutoLogout}
-            className="data-[state=checked]:bg-blue-600"
+            className="data-[state=checked]:bg-orange-600"
           />
         </div>
       </div>
       <Button
         onClick={handleSave}
         disabled={saving}
-        className="mt-6 bg-blue-600 hover:bg-blue-700 text-white"
+        className="mt-6 bg-orange-600 hover:bg-orange-700 text-white"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Save className="w-4 h-4 mr-1.5" />}
         Mettre à jour
@@ -1029,7 +1029,7 @@ function UtilisateursTab() {
       <div className="p-4 border-b border-[#E5E7EB] space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-[#111827]">Gestion des utilisateurs</h3>
-          <Button onClick={openNewUserDialog} className="bg-blue-600 hover:bg-blue-700 text-white h-8 text-sm">
+          <Button onClick={openNewUserDialog} className="bg-orange-600 hover:bg-orange-700 text-white h-8 text-sm">
             <Plus className="w-4 h-4 mr-1.5" />
             Nouvel utilisateur
           </Button>
@@ -1127,7 +1127,7 @@ function UtilisateursTab() {
                               return next
                             })
                           }
-                          className="text-xs text-blue-600 font-medium ml-1.5 hover:underline"
+                          className="text-xs text-orange-600 font-medium ml-1.5 hover:underline"
                         >
                           {isExpanded ? 'Masquer' : 'Voir'}
                         </button>
@@ -1333,7 +1333,7 @@ function UtilisateursTab() {
                               <Checkbox
                                 checked={checked}
                                 onCheckedChange={() => togglePermission(permKey)}
-                                className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                                className="data-[state=checked]:bg-orange-600 data-[state=checked]:border-orange-600"
                               />
                               <span className="text-xs text-[#374151]">{PERM_LABELS[perm]}</span>
                             </label>
@@ -1354,7 +1354,7 @@ function UtilisateursTab() {
             <Button
               onClick={handleSaveUser}
               disabled={saving || (!editingUser && !formPassword)}
-              className="bg-blue-600 hover:bg-blue-700 text-white h-9"
+              className="bg-orange-600 hover:bg-orange-700 text-white h-9"
             >
               {saving ? (
                 <Loader2 className="w-4 h-4 animate-spin mr-1.5" />

@@ -84,7 +84,7 @@ const mockPassagers: Passager[] = [
 /* ------------------------------------------------------------------ */
 
 const kpiStats = [
-  { label: 'Passagers inscrits', value: '3 847', icon: Users,     color: 'text-blue-600',   bg: 'bg-blue-50' },
+  { label: 'Passagers inscrits', value: '3 847', icon: Users,     color: 'text-orange-600',   bg: 'bg-orange-50' },
   { label: 'Nouveaux ce mois',   value: '234',   icon: TrendingUp,color: 'text-emerald-600', bg: 'bg-emerald-50' },
   { label: 'Courses totales',    value: '24 516', icon: Map,      color: 'text-amber-600',   bg: 'bg-amber-50' },
   { label: 'Passagers actifs',   value: '1 892', icon: UserCheck, color: 'text-violet-600',  bg: 'bg-violet-50' },
@@ -200,13 +200,13 @@ export function PassagersView() {
                 placeholder="Rechercher par nom, téléphone, email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="all">Tous statuts</option>
               <option value="Actif">Actif</option>
@@ -245,7 +245,7 @@ export function PassagersView() {
                   <tr key={p.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors">
                     <td className="py-3 px-5">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-xs shrink-0">
                           {p.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
                         </div>
                         <span className="font-medium text-[#111827] text-xs">{p.name}</span>
@@ -270,8 +270,8 @@ export function PassagersView() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-44">
                           <DropdownMenuItem onClick={() => handleView(p)} className="cursor-pointer">
-                            <Eye className="w-4 h-4 mr-2 text-blue-600" />
-                            <span className="text-blue-700">Voir</span>
+                            <Eye className="w-4 h-4 mr-2 text-orange-600" />
+                            <span className="text-orange-700">Voir</span>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => handleSuspend(p)} className="cursor-pointer">
@@ -312,7 +312,7 @@ export function PassagersView() {
               <div key={p.id} className="bg-white border border-[#E5E7EB] rounded-xl p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
+                    <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-sm">
                       {p.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
                     </div>
                     <div>
@@ -331,8 +331,8 @@ export function PassagersView() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-44">
                       <DropdownMenuItem onClick={() => handleView(p)} className="cursor-pointer">
-                        <Eye className="w-4 h-4 mr-2 text-blue-600" />
-                        <span className="text-blue-700">Voir</span>
+                        <Eye className="w-4 h-4 mr-2 text-orange-600" />
+                        <span className="text-orange-700">Voir</span>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => handleSuspend(p)} className="cursor-pointer">
@@ -367,7 +367,7 @@ export function PassagersView() {
                     <span>{p.dateInscription}</span>
                   </div>
                   <div className="flex items-center gap-1 text-xs font-semibold text-[#111827]">
-                    <Map className="w-3.5 h-3.5 text-blue-600" />
+                    <Map className="w-3.5 h-3.5 text-orange-600" />
                     <span>{p.courses} courses</span>
                   </div>
                 </div>

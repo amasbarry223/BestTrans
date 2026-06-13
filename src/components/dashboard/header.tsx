@@ -78,10 +78,10 @@ export function DashboardHeader({
       <div className="flex items-center gap-3">
         <button
           onClick={onNotificationClick}
-          className="relative p-2 rounded-lg hover:bg-gray-50 transition-colors"
+          className="relative p-2 rounded-lg hover:bg-orange-50 transition-colors"
         >
           <Bell className="w-5 h-5 text-[#6B7280]" />
-          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
+          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-orange-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
             5
           </span>
         </button>
@@ -89,9 +89,9 @@ export function DashboardHeader({
           <button
             type="button"
             onClick={() => setProfileOpen((v) => !v)}
-            className="flex items-center gap-2.5 bg-[#F9FAFB] hover:bg-gray-50 rounded-xl px-3 py-2 transition-colors"
+            className="flex items-center gap-2.5 bg-[#F9FAFB] hover:bg-orange-50/50 rounded-xl px-3 py-2 transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-xs">
+            <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-semibold text-xs">
               {user?.initials ?? 'SD'}
             </div>
             <div className="text-left">
@@ -118,7 +118,7 @@ export function DashboardHeader({
                   setProfileOpen(false)
                   onNavigate?.('parametres')
                 }}
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#374151] hover:bg-gray-50"
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#374151] hover:bg-orange-50 transition-colors"
               >
                 <Settings className="w-4 h-4 text-[#6B7280]" />
                 Paramètres
@@ -126,7 +126,7 @@ export function DashboardHeader({
               <button
                 type="button"
                 onClick={handleLogout}
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-rose-600 hover:bg-rose-50"
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-rose-600 hover:bg-rose-50 transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 Déconnexion

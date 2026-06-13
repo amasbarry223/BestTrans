@@ -46,9 +46,9 @@ interface Chauffeur {
 }
 
 const kpiCards = [
-  { label: 'Total revenus', value: '98,2M FCFA', icon: DollarSign, color: 'text-blue-600', bg: 'bg-blue-50', trend: '+11%', trendUp: true },
+  { label: 'Total revenus', value: '98,2M FCFA', icon: DollarSign, color: 'text-orange-600', bg: 'bg-orange-50', trend: '+11%', trendUp: true },
   { label: 'Solde en attente', value: '4,8M FCFA', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', trend: '', trendUp: true },
-  { label: 'Versements ce mois', value: '12,3M FCFA', icon: Send, color: 'text-blue-600', bg: 'bg-blue-50', trend: '+6%', trendUp: true },
+  { label: 'Versements ce mois', value: '12,3M FCFA', icon: Send, color: 'text-orange-600', bg: 'bg-orange-50', trend: '+6%', trendUp: true },
 ]
 
 const mockChauffeurs: Chauffeur[] = [
@@ -119,7 +119,7 @@ export function RevenusChauffeursView() {
                   <Icon className={cn('w-5 h-5', kpi.color)} />
                 </div>
                 {kpi.trend && (
-                  <span className="inline-flex items-center gap-0.5 text-xs font-medium px-2 py-0.5 rounded-full text-blue-700 bg-blue-50">
+                  <span className="inline-flex items-center gap-0.5 text-xs font-medium px-2 py-0.5 rounded-full text-orange-700 bg-orange-50">
                     <TrendingUp className="w-3 h-3" />
                     {kpi.trend}
                   </span>
@@ -144,7 +144,7 @@ export function RevenusChauffeursView() {
               placeholder="Rechercher un chauffeur..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
           <button className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors">
@@ -158,9 +158,9 @@ export function RevenusChauffeursView() {
         {/* Table Header */}
         <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-blue-600" />
+            <DollarSign className="w-4 h-4 text-orange-600" />
             <h2 className="text-sm font-semibold text-[#111827]">Revenus par chauffeur</h2>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-50 text-orange-700">
               {filtered.length}
             </span>
           </div>
@@ -187,10 +187,10 @@ export function RevenusChauffeursView() {
                 >
                   <td className="py-3 px-5">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-xs shrink-0">
                         {c.nom.split(' ').map(w => w[0]).join('')}
                       </div>
-                      <span className="text-xs font-semibold text-[#111827] group-hover:text-blue-700 transition-colors">{c.nom}</span>
+                      <span className="text-xs font-semibold text-[#111827] group-hover:text-orange-700 transition-colors">{c.nom}</span>
                     </div>
                   </td>
                   <td className="py-3 px-3 text-right text-xs font-medium text-[#374151]">{c.courses}</td>
@@ -198,7 +198,7 @@ export function RevenusChauffeursView() {
                   <td className="py-3 px-3 text-right">
                     <span className={cn(
                       'text-xs font-bold',
-                      parseInt(c.soldeDisponible.replace(/[^0-9]/g, '')) > 500000 ? 'text-blue-600' : 'text-[#111827]'
+                      parseInt(c.soldeDisponible.replace(/[^0-9]/g, '')) > 500000 ? 'text-orange-600' : 'text-[#111827]'
                     )}>
                       {c.soldeDisponible}
                     </span>
@@ -213,8 +213,8 @@ export function RevenusChauffeursView() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem onClick={() => handleViewDetail(c)} className="cursor-pointer">
-                          <Eye className="w-4 h-4 mr-2 text-blue-600" />
-                          <span className="text-blue-700">Voir détail</span>
+                          <Eye className="w-4 h-4 mr-2 text-orange-600" />
+                          <span className="text-orange-700">Voir détail</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => handleTransfer(c)} className="cursor-pointer">
@@ -235,8 +235,8 @@ export function RevenusChauffeursView() {
           <div className="divide-y divide-[#F3F4F6]">
             {filtered.map((c) => (
               <div key={c.id} className="px-4 py-3 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-                  <User className="w-4.5 h-4.5 text-blue-600" />
+                <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                  <User className="w-4.5 h-4.5 text-orange-600" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
@@ -274,7 +274,7 @@ export function RevenusChauffeursView() {
             <AlertDialogTitle>Confirmer le virement</AlertDialogTitle>
             <AlertDialogDescription>
               Vous êtes sur le point de déclencher un virement de{' '}
-              <strong className="text-blue-700">{selectedChauffeur?.soldeDisponible}</strong> au profit de{' '}
+              <strong className="text-orange-700">{selectedChauffeur?.soldeDisponible}</strong> au profit de{' '}
               <strong>{selectedChauffeur?.nom}</strong>.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -286,7 +286,7 @@ export function RevenusChauffeursView() {
               </div>
               <div>
                 <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Montant</p>
-                <p className="font-bold text-blue-600">{selectedChauffeur?.soldeDisponible}</p>
+                <p className="font-bold text-orange-600">{selectedChauffeur?.soldeDisponible}</p>
               </div>
               <div>
                 <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Courses totales</p>
@@ -300,7 +300,7 @@ export function RevenusChauffeursView() {
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setTransferDialogOpen(false)}>Annuler</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmTransfer} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <AlertDialogAction onClick={confirmTransfer} className="bg-orange-600 hover:bg-orange-700 text-white">
               <Send className="w-4 h-4 mr-2" />
               Confirmer le virement
             </AlertDialogAction>

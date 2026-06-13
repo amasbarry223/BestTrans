@@ -1,6 +1,7 @@
 'use client'
 
 import { Suspense } from 'react'
+import Image from 'next/image'
 import { Car } from 'lucide-react'
 import { LoginForm } from '@/components/auth/login-form'
 
@@ -15,7 +16,7 @@ function LoginFormFallback() {
         <div className="h-3 w-24 bg-[#E5E7EB]/60 rounded" />
         <div className="h-12 bg-[#F3F4F6]/80 rounded-2xl" />
       </div>
-      <div className="h-12 bg-gradient-to-r from-blue-100 to-blue-200 rounded-2xl" />
+      <div className="h-12 bg-gradient-to-r from-orange-100 to-orange-200 rounded-2xl" />
     </div>
   )
 }
@@ -33,27 +34,33 @@ export function LoginView() {
       <div className="login-orb login-orb-3" aria-hidden />
 
       {/* Login Card */}
-      <div className="login-card relative z-10 w-full max-w-[440px] rounded-[28px] p-7 sm:p-9 shadow-2xl shadow-blue-900/10">
+      <div className="login-card relative z-10 w-full max-w-[440px] rounded-[28px] p-7 sm:p-9 shadow-2xl shadow-[#1A1A2E]/10">
         {/* Top decorative line */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-blue-400/60 to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-orange-400/60 to-transparent" />
 
         {/* Logo Section */}
         <div className="flex flex-col items-center text-center">
           <div className="relative mb-4">
-            <div className="absolute inset-0 rounded-2xl bg-blue-400/20 blur-xl scale-150" />
-            <div className="relative flex items-center justify-center w-[72px] h-[72px] rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-lg shadow-blue-500/30 p-1">
-              <Car className="w-10 h-10 text-white" />
+            <div className="absolute inset-0 rounded-2xl bg-orange-400/20 blur-xl scale-150" />
+            <div className="relative flex items-center justify-center w-[72px] h-[72px] rounded-2xl overflow-hidden shadow-lg shadow-orange-500/30">
+              <Image
+                src="/logo-bestTrans.png"
+                alt="BestTrans"
+                width={72}
+                height={72}
+                className="object-cover"
+              />
             </div>
           </div>
 
           {/* Brand Name */}
           <h1 className="text-2xl font-bold text-[#111827] tracking-tight">
-            Best<span className="text-blue-600">Trans</span>
+            Best<span className="text-orange-600">Trans</span>
           </h1>
 
           <div className="flex items-center gap-1.5 mt-1.5">
-            <Car className="w-3 h-3 text-blue-500" />
-            <p className="text-xs font-semibold uppercase tracking-widest text-blue-600/90">
+            <Car className="w-3 h-3 text-orange-500" />
+            <p className="text-xs font-semibold uppercase tracking-widest text-orange-600/90">
               Dashboard Admin
             </p>
           </div>

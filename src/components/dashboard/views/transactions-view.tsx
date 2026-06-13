@@ -33,7 +33,7 @@ type PaymentMode = 'Mobile Money' | 'Cash' | 'Carte' | 'Orange Money' | 'Wave'
 type TxStatus = 'Réussi' | 'En attente' | 'Échoué'
 
 const statusStyle: Record<TxStatus, { bg: string; text: string; dot: string }> = {
-  'Réussi':     { bg: 'bg-blue-50',     text: 'text-blue-700',     dot: 'bg-blue-500' },
+  'Réussi':     { bg: 'bg-orange-50',     text: 'text-orange-700',     dot: 'bg-orange-500' },
   'En attente': { bg: 'bg-amber-50',    text: 'text-amber-700',    dot: 'bg-amber-500' },
   'Échoué':     { bg: 'bg-rose-50',     text: 'text-rose-700',     dot: 'bg-rose-500' },
 }
@@ -47,7 +47,7 @@ const modeIcon: Record<PaymentMode, React.ElementType> = {
 }
 
 const modeStyle: Record<PaymentMode, { bg: string; text: string }> = {
-  'Mobile Money':  { bg: 'bg-blue-50',   text: 'text-blue-700' },
+  'Mobile Money':  { bg: 'bg-orange-50',   text: 'text-orange-700' },
   'Cash':          { bg: 'bg-emerald-50', text: 'text-emerald-700' },
   'Carte':         { bg: 'bg-violet-50',  text: 'text-violet-700' },
   'Orange Money':  { bg: 'bg-orange-50',  text: 'text-orange-700' },
@@ -59,8 +59,8 @@ const modeStyle: Record<PaymentMode, { bg: string; text: string }> = {
 /* ------------------------------------------------------------------ */
 
 const kpiCards = [
-  { label: 'Total transactions', value: '142,5M FCFA', icon: CreditCard, color: 'text-blue-600', bg: 'bg-blue-50', trend: '+14%', trendUp: true },
-  { label: "Aujourd'hui", value: '2,4M FCFA', icon: TrendingUp, color: 'text-blue-600', bg: 'bg-blue-50', trend: '+8%', trendUp: true },
+  { label: 'Total transactions', value: '142,5M FCFA', icon: CreditCard, color: 'text-orange-600', bg: 'bg-orange-50', trend: '+14%', trendUp: true },
+  { label: "Aujourd'hui", value: '2,4M FCFA', icon: TrendingUp, color: 'text-orange-600', bg: 'bg-orange-50', trend: '+8%', trendUp: true },
   { label: 'En attente', value: '850K FCFA', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', trend: '', trendUp: true },
   { label: 'Échouées', value: '12', icon: AlertTriangle, color: 'text-rose-600', bg: 'bg-rose-50', trend: '-3', trendUp: false },
 ]
@@ -144,7 +144,7 @@ export function TransactionsView() {
                   <span
                     className={cn(
                       'inline-flex items-center gap-0.5 text-xs font-medium px-2 py-0.5 rounded-full',
-                      kpi.trendUp ? 'text-blue-700 bg-blue-50' : 'text-rose-700 bg-rose-50'
+                      kpi.trendUp ? 'text-orange-700 bg-orange-50' : 'text-rose-700 bg-rose-50'
                     )}
                   >
                     {kpi.trendUp ? <TrendingUp className="w-3 h-3" /> : <Circle className="w-3 h-3" />}
@@ -172,13 +172,13 @@ export function TransactionsView() {
                 placeholder="Rechercher par N°, passager, course..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="all">Tous statuts</option>
               <option value="Réussi">Réussi</option>
@@ -188,7 +188,7 @@ export function TransactionsView() {
             <select
               value={filterMode}
               onChange={(e) => setFilterMode(e.target.value)}
-              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="all">Tous modes</option>
               <option value="Mobile Money">Mobile Money</option>
@@ -209,9 +209,9 @@ export function TransactionsView() {
         {/* Table Header */}
         <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <CreditCard className="w-4 h-4 text-blue-600" />
+            <CreditCard className="w-4 h-4 text-orange-600" />
             <h2 className="text-sm font-semibold text-[#111827]">Liste des transactions</h2>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-50 text-orange-700">
               {filtered.length}
             </span>
           </div>
@@ -243,7 +243,7 @@ export function TransactionsView() {
                     className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors group"
                   >
                     <td className="py-3 px-5">
-                      <span className="font-mono text-xs font-semibold text-blue-700 group-hover:text-blue-800 transition-colors">
+                      <span className="font-mono text-xs font-semibold text-orange-700 group-hover:text-orange-800 transition-colors">
                         {tx.numero}
                       </span>
                     </td>
@@ -272,8 +272,8 @@ export function TransactionsView() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-44">
                           <DropdownMenuItem onClick={() => handleView(tx)} className="cursor-pointer">
-                            <Eye className="w-4 h-4 mr-2 text-blue-600" />
-                            <span className="text-blue-700">Voir</span>
+                            <Eye className="w-4 h-4 mr-2 text-orange-600" />
+                            <span className="text-orange-700">Voir</span>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => handleRefund(tx)} className="cursor-pointer">

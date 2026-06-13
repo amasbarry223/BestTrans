@@ -108,7 +108,7 @@ const mockKycItems: KycItem[] = [
 /* ------------------------------------------------------------------ */
 
 const kpiStats = [
-  { label: 'Chauffeurs actifs',      value: '312',    icon: Car,  color: 'text-blue-600',   bg: 'bg-blue-50' },
+  { label: 'Chauffeurs actifs',      value: '312',    icon: Car,  color: 'text-orange-600',   bg: 'bg-orange-50' },
   { label: 'En attente validation',  value: '18',     icon: Clock,color: 'text-amber-600',   bg: 'bg-amber-50' },
   { label: 'Note moyenne',           value: '4.5/5',  icon: Star, color: 'text-violet-600',  bg: 'bg-violet-50' },
   { label: "Courses aujourd'hui",    value: '89',     icon: Map,  color: 'text-emerald-600', bg: 'bg-emerald-50' },
@@ -304,7 +304,7 @@ export function ChauffeursView() {
             className={cn(
               'px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px',
               activeTab === 'liste'
-                ? 'border-blue-600 text-blue-700'
+                ? 'border-orange-600 text-orange-700'
                 : 'border-transparent text-[#6B7280] hover:text-[#111827]'
             )}
           >
@@ -318,7 +318,7 @@ export function ChauffeursView() {
             className={cn(
               'px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px',
               activeTab === 'kyc'
-                ? 'border-blue-600 text-blue-700'
+                ? 'border-orange-600 text-orange-700'
                 : 'border-transparent text-[#6B7280] hover:text-[#111827]'
             )}
           >
@@ -346,13 +346,13 @@ export function ChauffeursView() {
                       placeholder="Rechercher par nom, téléphone, véhicule..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                     />
                   </div>
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                   >
                     <option value="all">Tous statuts</option>
                     <option value="Actif">Actif</option>
@@ -393,10 +393,10 @@ export function ChauffeursView() {
                             onClick={() => handleViewProfile(c)}
                             className="flex items-center gap-3 group cursor-pointer"
                           >
-                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-xs shrink-0">
                               {c.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
                             </div>
-                            <span className="font-medium text-[#111827] text-xs group-hover:text-blue-700 transition-colors">
+                            <span className="font-medium text-[#111827] text-xs group-hover:text-orange-700 transition-colors">
                               {c.name}
                             </span>
                           </button>
@@ -422,8 +422,8 @@ export function ChauffeursView() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-48">
                               <DropdownMenuItem onClick={() => handleViewProfile(c)} className="cursor-pointer">
-                                <Eye className="w-4 h-4 mr-2 text-blue-600" />
-                                <span className="text-blue-700">Voir profil</span>
+                                <Eye className="w-4 h-4 mr-2 text-orange-600" />
+                                <span className="text-orange-700">Voir profil</span>
                               </DropdownMenuItem>
                               {c.statut === 'En attente' && (
                                 <DropdownMenuItem onClick={() => handleValidate(c)} className="cursor-pointer">
@@ -472,11 +472,11 @@ export function ChauffeursView() {
                           onClick={() => handleViewProfile(c)}
                           className="flex items-center gap-3 group cursor-pointer"
                         >
-                          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
+                          <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-sm">
                             {c.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
                           </div>
                           <div className="text-left">
-                            <p className="text-sm font-semibold text-[#111827] group-hover:text-blue-700 transition-colors">{c.name}</p>
+                            <p className="text-sm font-semibold text-[#111827] group-hover:text-orange-700 transition-colors">{c.name}</p>
                             <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold mt-0.5', sty.bg, sty.text)}>
                               <span className={cn('w-1.5 h-1.5 rounded-full', sty.dot)} />
                               {c.statut}
@@ -491,8 +491,8 @@ export function ChauffeursView() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48">
                             <DropdownMenuItem onClick={() => handleViewProfile(c)} className="cursor-pointer">
-                              <Eye className="w-4 h-4 mr-2 text-blue-600" />
-                              <span className="text-blue-700">Voir profil</span>
+                              <Eye className="w-4 h-4 mr-2 text-orange-600" />
+                              <span className="text-orange-700">Voir profil</span>
                             </DropdownMenuItem>
                             {c.statut === 'En attente' && (
                               <DropdownMenuItem onClick={() => handleValidate(c)} className="cursor-pointer">
@@ -530,7 +530,7 @@ export function ChauffeursView() {
                       <div className="pt-3 border-t border-[#E5E7EB] flex items-center justify-between">
                         <StarRating rating={c.note} />
                         <div className="flex items-center gap-1 text-xs font-semibold text-[#111827]">
-                          <Map className="w-3.5 h-3.5 text-blue-600" />
+                          <Map className="w-3.5 h-3.5 text-orange-600" />
                           <span>{c.courses} courses</span>
                         </div>
                       </div>
@@ -570,7 +570,7 @@ export function ChauffeursView() {
                       <tr key={item.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors">
                         <td className="py-3 px-5">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-xs shrink-0">
                               {item.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
                             </div>
                             <span className="font-medium text-[#111827] text-xs">{item.name}</span>
@@ -636,7 +636,7 @@ export function ChauffeursView() {
                     <div key={item.id} className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-sm shrink-0">
                             {item.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
                           </div>
                           <div>

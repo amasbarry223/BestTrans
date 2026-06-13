@@ -39,14 +39,14 @@ const statutStyle: Record<CourseStatut, { bg: string; text: string; dot: string 
 }
 
 const paiementStyle: Record<ModePaiement, { bg: string; text: string }> = {
-  'Mobile Money': { bg: 'bg-blue-50', text: 'text-blue-700' },
+  'Mobile Money': { bg: 'bg-orange-50', text: 'text-orange-700' },
   'Cash': { bg: 'bg-emerald-50', text: 'text-emerald-700' },
   'Carte bancaire': { bg: 'bg-violet-50', text: 'text-violet-700' },
 }
 
 /* ──────────── KPI data ──────────── */
 const kpiStats = [
-  { label: "Courses aujourd'hui", value: '189', icon: Map, color: 'text-blue-600', bg: 'bg-blue-50' },
+  { label: "Courses aujourd'hui", value: '189', icon: Map, color: 'text-orange-600', bg: 'bg-orange-50' },
   { label: 'En cours', value: '47', icon: Navigation, color: 'text-emerald-600', bg: 'bg-emerald-50' },
   { label: "Taux d'achèvement", value: '92%', icon: CheckCircle2, color: 'text-violet-600', bg: 'bg-violet-50' },
   { label: 'Prix moyen', value: '3 200 FCFA', icon: DollarSign, color: 'text-amber-600', bg: 'bg-amber-50' },
@@ -133,7 +133,7 @@ export function CoursesView() {
                 placeholder="Rechercher par N°, passager, chauffeur..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
             <button
@@ -141,7 +141,7 @@ export function CoursesView() {
               className={cn(
                 'flex items-center gap-1.5 px-3 py-2 text-sm font-medium border rounded-lg transition-colors',
                 showFilters
-                  ? 'border-blue-300 bg-blue-50 text-blue-700'
+                  ? 'border-orange-300 bg-orange-50 text-orange-700'
                   : 'border-[#E5E7EB] text-[#6B7280] hover:bg-gray-50'
               )}
             >
@@ -168,7 +168,7 @@ export function CoursesView() {
               <select
                 value={filterStatut}
                 onChange={(e) => setFilterStatut(e.target.value)}
-                className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="all">Tous les statuts</option>
                 <option value="En attente">En attente</option>
@@ -183,7 +183,7 @@ export function CoursesView() {
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
             <div className="flex flex-col gap-1">
@@ -192,12 +192,12 @@ export function CoursesView() {
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
             <button
               onClick={() => { setFilterStatut('all'); setDateFrom(''); setDateTo(''); setSearchTerm('') }}
-              className="px-3 py-2 text-sm font-medium text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50"
+              className="px-3 py-2 text-sm font-medium text-orange-600 border border-orange-200 rounded-lg hover:bg-orange-50"
             >
               Réinitialiser
             </button>
@@ -228,11 +228,11 @@ export function CoursesView() {
                 const st = statutStyle[c.statut] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }
                 const mp = paiementStyle[c.modePaiement as ModePaiement] ?? { bg: 'bg-gray-50', text: 'text-gray-700' }
                 return (
-                  <tr key={c.id} className="border-b border-[#F3F4F6] hover:bg-blue-50/40 transition-colors">
+                  <tr key={c.id} className="border-b border-[#F3F4F6] hover:bg-orange-50/40 transition-colors">
                     <td className="py-3 px-4">
                       <button
                         onClick={() => navigateToCourseDetail(c)}
-                        className="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline font-mono"
+                        className="text-sm font-semibold text-orange-600 hover:text-orange-800 hover:underline font-mono"
                       >
                         {c.number}
                       </button>
@@ -259,7 +259,7 @@ export function CoursesView() {
                         <button
                           onClick={() => navigateToCourseDetail(c)}
                           title="Voir détail"
-                          className="p-1.5 rounded-md hover:bg-blue-50 text-blue-600 transition-colors"
+                          className="p-1.5 rounded-md hover:bg-orange-50 text-orange-600 transition-colors"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
@@ -304,7 +304,7 @@ export function CoursesView() {
                 <div className="flex items-center justify-between mb-3">
                   <button
                     onClick={() => navigateToCourseDetail(c)}
-                    className="text-sm font-semibold text-blue-600 hover:text-blue-800 font-mono"
+                    className="text-sm font-semibold text-orange-600 hover:text-orange-800 font-mono"
                   >
                     {c.number}
                   </button>
@@ -348,7 +348,7 @@ export function CoursesView() {
                 <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[#F3F4F6]">
                   <button
                     onClick={() => navigateToCourseDetail(c)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                    className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors"
                   >
                     <Eye className="w-3.5 h-3.5" /> Détail
                   </button>

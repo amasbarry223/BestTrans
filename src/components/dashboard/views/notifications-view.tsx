@@ -72,7 +72,7 @@ export function NotificationsView() {
         </div>
         <button
           onClick={markAllRead}
-          className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+          className="text-sm font-medium text-orange-600 hover:text-orange-700 transition-colors"
         >
           Tout marquer comme lu
         </button>
@@ -87,7 +87,7 @@ export function NotificationsView() {
             className={cn(
               'px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border',
               filterType === type
-                ? 'border-blue-300 bg-blue-50 text-blue-700'
+                ? 'border-orange-300 bg-orange-50 text-orange-700'
                 : 'border-[#E5E7EB] text-[#6B7280] hover:bg-gray-50'
             )}
           >
@@ -108,7 +108,7 @@ export function NotificationsView() {
                 key={notif.id}
                 className={cn(
                   'bg-white border rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer',
-                  notif.read ? 'border-[#E5E7EB]' : 'border-blue-200 bg-blue-50/30'
+                  notif.read ? 'border-[#E5E7EB]' : 'border-orange-200 bg-orange-50/30'
                 )}
               >
                 <div className="flex gap-3">
@@ -118,7 +118,7 @@ export function NotificationsView() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
                       <p className={cn('text-sm font-semibold', notif.read ? 'text-[#374151]' : 'text-[#111827]')}>
-                        {!notif.read && <span className="inline-block w-2 h-2 rounded-full bg-blue-500 mr-2" />}
+                        {!notif.read && <span className="inline-block w-2 h-2 rounded-full bg-orange-500 mr-2" />}
                         {notif.title}
                       </p>
                       <span className="text-[10px] text-[#9CA3AF] shrink-0 ml-2">{notif.time}</span>

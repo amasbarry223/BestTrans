@@ -43,7 +43,7 @@ const kpiCards = [
     sublabel: 'Temps réel',
     value: '47',
     icon: Map,
-    color: 'blue' as const,
+    color: 'orange' as const,
   },
   {
     label: 'Chauffeurs en ligne',
@@ -76,11 +76,11 @@ const kpiCards = [
 ]
 
 const colorMap: Record<string, { bg: string; iconBg: string; iconText: string; border: string }> = {
-  blue:    { bg: 'bg-blue-50',    iconBg: 'bg-blue-100',    iconText: 'text-blue-600',    border: 'border-blue-200' },
-  emerald: { bg: 'bg-emerald-50', iconBg: 'bg-emerald-100', iconText: 'text-emerald-600', border: 'border-emerald-200' },
-  amber:   { bg: 'bg-amber-50',   iconBg: 'bg-amber-100',   iconText: 'text-amber-600',   border: 'border-amber-200' },
-  rose:    { bg: 'bg-rose-50',    iconBg: 'bg-rose-100',    iconText: 'text-rose-600',    border: 'border-rose-200' },
-  violet:  { bg: 'bg-violet-50',  iconBg: 'bg-violet-100',  iconText: 'text-violet-600',  border: 'border-violet-200' },
+  orange:   { bg: 'bg-orange-50',   iconBg: 'bg-orange-100',   iconText: 'text-orange-600',   border: 'border-orange-200' },
+  emerald:  { bg: 'bg-emerald-50',  iconBg: 'bg-emerald-100',  iconText: 'text-emerald-600',  border: 'border-emerald-200' },
+  amber:    { bg: 'bg-amber-50',    iconBg: 'bg-amber-100',    iconText: 'text-amber-600',    border: 'border-amber-200' },
+  rose:     { bg: 'bg-rose-50',     iconBg: 'bg-rose-100',     iconText: 'text-rose-600',     border: 'border-rose-200' },
+  violet:   { bg: 'bg-violet-50',   iconBg: 'bg-violet-100',   iconText: 'text-violet-600',   border: 'border-violet-200' },
 }
 
 /* ------------------------------------------------------------------ */
@@ -113,7 +113,7 @@ const coursesParJourData = [
 ]
 
 const paiementData = [
-  { name: 'Mobile Money', value: 45, color: '#2563eb' },
+  { name: 'Mobile Money', value: 45, color: '#f97316' },
   { name: 'Cash',         value: 30, color: '#10b981' },
   { name: 'Carte',        value: 20, color: '#f59e0b' },
   { name: 'Autre',        value: 5,  color: '#8b5cf6' },
@@ -147,9 +147,9 @@ const activiteHoraireData = [
 type CourseStatus = 'En cours' | 'Terminée' | 'Annulée'
 
 const statusStyle: Record<CourseStatus, { bg: string; text: string; dot: string }> = {
-  'En cours':  { bg: 'bg-blue-50',   text: 'text-blue-700',   dot: 'bg-blue-500' },
-  'Terminée':  { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
-  'Annulée':   { bg: 'bg-rose-50',    text: 'text-rose-700',    dot: 'bg-rose-500' },
+  'En cours':  { bg: 'bg-orange-50',   text: 'text-orange-700',   dot: 'bg-orange-500' },
+  'Terminée':  { bg: 'bg-emerald-50',  text: 'text-emerald-700',  dot: 'bg-emerald-500' },
+  'Annulée':   { bg: 'bg-rose-50',     text: 'text-rose-700',     dot: 'bg-rose-500' },
 }
 
 const recentCourses: {
@@ -262,7 +262,7 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
       {/* ---- Quick Actions ---- */}
       <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
         <div className="flex items-center gap-2 mb-4">
-          <Clock className="w-4 h-4 text-blue-600" />
+          <Clock className="w-4 h-4 text-orange-600" />
           <h2 className="text-sm font-semibold text-[#111827]">Actions rapides</h2>
         </div>
         <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
@@ -273,12 +273,12 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
                 key={action.label}
                 type="button"
                 onClick={() => setActiveView(action.view)}
-                className="flex flex-col items-center gap-2 py-3 px-2 rounded-xl hover:bg-blue-50 transition-colors group"
+                className="flex flex-col items-center gap-2 py-3 px-2 rounded-xl hover:bg-orange-50 transition-colors group"
               >
-                <div className="w-11 h-11 rounded-xl bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <Icon className="w-5 h-5 text-blue-600" />
+                <div className="w-11 h-11 rounded-xl bg-orange-50 group-hover:bg-orange-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Icon className="w-5 h-5 text-orange-600" />
                 </div>
-                <span className="text-[11px] font-medium text-[#6B7280] group-hover:text-blue-700 whitespace-nowrap">
+                <span className="text-[11px] font-medium text-[#6B7280] group-hover:text-orange-700 whitespace-nowrap">
                   {action.label}
                 </span>
               </button>
@@ -293,7 +293,7 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
         <div className="lg:col-span-1 bg-white border border-[#E5E7EB] rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-blue-600" />
+              <TrendingUp className="w-4 h-4 text-orange-600" />
               <h2 className="text-sm font-semibold text-[#111827]">Courses par jour</h2>
             </div>
             <span className="text-[10px] text-[#9CA3AF]">7 derniers jours</span>
@@ -302,15 +302,15 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
             <AreaChart data={coursesParJourData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="courseGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#2563eb" stopOpacity={0.02} />
+                  <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#f97316" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
               <CartesianGrid vertical={false} stroke="#E5E7EB" strokeDasharray="3 3" />
               <XAxis dataKey="day" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
               <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} width={35} />
               <Tooltip content={<CustomTooltip />} />
-              <Area type="monotone" dataKey="courses" name="courses" stroke="#2563eb" strokeWidth={2.5} fill="url(#courseGradient)" />
+              <Area type="monotone" dataKey="courses" name="courses" stroke="#f97316" strokeWidth={2.5} fill="url(#courseGradient)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -319,7 +319,7 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
         <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-blue-600" />
+              <CreditCard className="w-4 h-4 text-orange-600" />
               <h2 className="text-sm font-semibold text-[#111827]">Modes de paiement</h2>
             </div>
             <span className="text-[10px] text-[#9CA3AF]">Répartition</span>
@@ -365,7 +365,7 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
         <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-blue-600" />
+              <BarChart3 className="w-4 h-4 text-orange-600" />
               <h2 className="text-sm font-semibold text-[#111827]">Pic d'activité horaire</h2>
             </div>
             <span className="text-[10px] text-[#9CA3AF]">6h - 23h</span>
@@ -379,7 +379,7 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
               <Bar
                 dataKey="courses"
                 name="courses"
-                fill="#2563eb"
+                fill="#f97316"
                 radius={[3, 3, 0, 0]}
                 maxBarSize={24}
               />
@@ -392,16 +392,16 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
       <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden flex flex-col">
         <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Map className="w-4 h-4 text-blue-600" />
+            <Map className="w-4 h-4 text-orange-600" />
             <h2 className="text-sm font-semibold text-[#111827]">Courses récentes</h2>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-50 text-orange-700">
               {recentCourses.length}
             </span>
           </div>
           <button
             type="button"
             onClick={() => setActiveView('courses')}
-            className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors"
+            className="inline-flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700 transition-colors"
           >
             Voir tout
             <ArrowRight className="w-3.5 h-3.5" />
@@ -432,7 +432,7 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
                     className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors cursor-pointer group"
                   >
                     <td className="py-3 px-5">
-                      <span className="font-mono text-xs font-semibold text-blue-700 group-hover:text-blue-800">{c.number}</span>
+                      <span className="font-mono text-xs font-semibold text-orange-700 group-hover:text-orange-800">{c.number}</span>
                     </td>
                     <td className="py-3 px-3 text-[#374151] text-xs font-medium truncate max-w-[130px]">{c.passager}</td>
                     <td className="py-3 px-3 text-[#6B7280] text-xs truncate max-w-[120px]">{c.chauffeur}</td>
@@ -462,8 +462,8 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
                 onClick={() => handleCourseClick(c)}
                 className="px-4 py-3 flex items-center gap-3 cursor-pointer hover:bg-gray-50 transition-colors"
               >
-                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-                  <Map className="w-4 h-4 text-blue-600" />
+                <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                  <Map className="w-4 h-4 text-orange-600" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">

@@ -91,16 +91,16 @@ export function TicketDetailView() {
             variant="ghost"
             size="icon"
             onClick={() => setActiveView('tickets')}
-            className="shrink-0 hover:bg-blue-50"
+            className="shrink-0 hover:bg-orange-50"
           >
-            <ArrowLeft className="w-5 h-5 text-blue-600" />
+            <ArrowLeft className="w-5 h-5 text-orange-600" />
           </Button>
           <div>
             <h1 className="text-xl font-bold text-[#111827]">
               Ticket #TK-2047
             </h1>
             <div className="flex items-center gap-2 mt-0.5">
-              <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 text-xs">
+              <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 text-xs">
                 En cours
               </Badge>
               <span className="text-xs text-[#9CA3AF]">
@@ -112,7 +112,7 @@ export function TicketDetailView() {
         <div className="flex items-center gap-2 flex-wrap">
           <Button
             size="sm"
-            className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
+            className="bg-orange-600 hover:bg-orange-700 text-white gap-1.5"
             onClick={() => handleAction('Répondre')}
           >
             <Send className="w-3.5 h-3.5" />
@@ -139,7 +139,7 @@ export function TicketDetailView() {
           <Button
             size="sm"
             variant="outline"
-            className="text-blue-600 border-blue-200 hover:bg-blue-50 gap-1.5"
+            className="text-orange-600 border-orange-200 hover:bg-orange-50 gap-1.5"
             onClick={() => handleAction('Rembourser')}
           >
             <DollarSign className="w-3.5 h-3.5" />
@@ -156,7 +156,7 @@ export function TicketDetailView() {
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
           <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Course</p>
-          <p className="text-sm font-medium text-blue-600 mt-0.5">#C-3041</p>
+          <p className="text-sm font-medium text-orange-600 mt-0.5">#C-3041</p>
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
           <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Date de création</p>
@@ -174,7 +174,7 @@ export function TicketDetailView() {
       {/* Conversation */}
       <div className="bg-white border border-[#E5E7EB] rounded-xl flex flex-col flex-1 min-h-0">
         <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center gap-2">
-          <MessageSquare className="w-4 h-4 text-blue-600" />
+          <MessageSquare className="w-4 h-4 text-orange-600" />
           <h2 className="text-sm font-semibold text-[#111827]">Conversation</h2>
         </div>
 
@@ -194,8 +194,8 @@ export function TicketDetailView() {
                   className={cn(
                     'w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-semibold',
                     isAgent
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'bg-blue-50 text-blue-600'
+                      ? 'bg-orange-100 text-orange-700'
+                      : 'bg-orange-50 text-orange-600'
                   )}
                 >
                   {isAgent ? (
@@ -210,7 +210,7 @@ export function TicketDetailView() {
                   className={cn(
                     'max-w-[80%] rounded-xl px-4 py-3',
                     isAgent
-                      ? 'bg-blue-50 border border-blue-100'
+                      ? 'bg-orange-50 border border-orange-100'
                       : 'bg-[#F3F4F6] border border-[#E5E7EB]'
                   )}
                 >
@@ -218,7 +218,7 @@ export function TicketDetailView() {
                     <span
                       className={cn(
                         'text-xs font-semibold',
-                        isAgent ? 'text-blue-700' : 'text-[#111827]'
+                        isAgent ? 'text-orange-700' : 'text-[#111827]'
                       )}
                     >
                       {msg.name}
@@ -258,7 +258,7 @@ export function TicketDetailView() {
             </Button>
             <Button
               size="sm"
-              className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
+              className="bg-orange-600 hover:bg-orange-700 text-white gap-1.5"
               onClick={() => {
                 if (replyText.trim()) {
                   toast.success('Réponse envoyée')
@@ -274,15 +274,15 @@ export function TicketDetailView() {
       </div>
 
       {/* Development Notice */}
-      <div className="bg-blue-50 border border-blue-100 rounded-xl p-5 flex items-start gap-4">
-        <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
-          <AlertTriangle className="w-5 h-5 text-blue-600" />
+      <div className="bg-orange-50 border border-orange-100 rounded-xl p-5 flex items-start gap-4">
+        <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center shrink-0">
+          <AlertTriangle className="w-5 h-5 text-orange-600" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-blue-700">
+          <p className="text-sm font-semibold text-orange-700">
             Fonctionnalité en cours de développement
           </p>
-          <p className="text-xs text-blue-600 mt-0.5">
+          <p className="text-xs text-orange-600 mt-0.5">
             La messagerie en temps réel et les notifications push pour les tickets
             seront disponibles prochainement. Les actions actuelles sont
             simulant le comportement final.

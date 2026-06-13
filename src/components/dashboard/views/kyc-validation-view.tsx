@@ -103,10 +103,10 @@ const docTypeIcon: Record<string, React.ElementType> = {
 }
 
 const docTypeColor: Record<string, { bg: string; text: string }> = {
-  'Permis de conduire': { bg: 'bg-blue-100', text: 'text-blue-600' },
-  'Carte grise': { bg: 'bg-blue-50', text: 'text-blue-700' },
-  'Assurance': { bg: 'bg-blue-100', text: 'text-blue-600' },
-  "Pièce d'identité": { bg: 'bg-blue-50', text: 'text-blue-700' },
+  'Permis de conduire': { bg: 'bg-orange-100', text: 'text-orange-600' },
+  'Carte grise': { bg: 'bg-orange-50', text: 'text-orange-700' },
+  'Assurance': { bg: 'bg-orange-100', text: 'text-orange-600' },
+  "Pièce d'identité": { bg: 'bg-orange-50', text: 'text-orange-700' },
 }
 
 /* ------------------------------------------------------------------ */
@@ -182,12 +182,12 @@ export function KycValidationView() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 flex items-center gap-4 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-            <Clock className="w-6 h-6 text-blue-600" />
+          <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+            <Clock className="w-6 h-6 text-orange-600" />
           </div>
           <div>
             <p className="text-sm text-[#6B7280]">En attente</p>
-            <p className="text-2xl font-bold text-blue-700">18</p>
+            <p className="text-2xl font-bold text-orange-700">18</p>
           </div>
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 flex items-center gap-4 hover:shadow-md transition-shadow">
@@ -214,13 +214,13 @@ export function KycValidationView() {
       <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden flex flex-col">
         <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4 text-blue-600" />
+            <FileText className="w-4 h-4 text-orange-600" />
             <h2 className="text-sm font-semibold text-[#111827]">
               Documents en attente
             </h2>
             <Badge
               variant="secondary"
-              className="bg-blue-50 text-blue-700 text-xs"
+              className="bg-orange-50 text-orange-700 text-xs"
             >
               {filteredDocs.length}
             </Badge>
@@ -253,24 +253,24 @@ export function KycValidationView() {
               {filteredDocs.map((doc) => {
                 const Icon = docTypeIcon[doc.documentType] || FileText
                 const colors = docTypeColor[doc.documentType] || {
-                  bg: 'bg-blue-50',
-                  text: 'text-blue-600',
+                  bg: 'bg-orange-50',
+                  text: 'text-orange-600',
                 }
                 return (
                   <tr
                     key={doc.id}
-                    className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-blue-50/30 transition-colors group"
+                    className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-orange-50/30 transition-colors group"
                   >
                     <td className="py-3 px-5">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-semibold text-xs shrink-0">
                           {doc.driverName
                             .split(' ')
                             .map((n) => n[0])
                             .join('')}
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-[#111827] group-hover:text-blue-700 transition-colors">
+                          <p className="text-sm font-medium text-[#111827] group-hover:text-orange-700 transition-colors">
                             {doc.driverName}
                           </p>
                           <p className="text-[10px] text-[#9CA3AF]">
@@ -305,7 +305,7 @@ export function KycValidationView() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 gap-1.5"
+                        className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 gap-1.5"
                       >
                         <Eye className="w-4 h-4" />
                         Aperçu
@@ -315,7 +315,7 @@ export function KycValidationView() {
                       <div className="flex items-center justify-end gap-2">
                         <Button
                           size="sm"
-                          className="bg-blue-600 hover:bg-blue-700 text-white text-xs gap-1.5"
+                          className="bg-orange-600 hover:bg-orange-700 text-white text-xs gap-1.5"
                           onClick={() => openValidateDialog(doc)}
                         >
                           <CheckCircle2 className="w-3.5 h-3.5" />
@@ -344,13 +344,13 @@ export function KycValidationView() {
           {filteredDocs.map((doc) => {
             const Icon = docTypeIcon[doc.documentType] || FileText
             const colors = docTypeColor[doc.documentType] || {
-              bg: 'bg-blue-50',
-              text: 'text-blue-600',
+              bg: 'bg-orange-50',
+              text: 'text-orange-600',
             }
             return (
               <div key={doc.id} className="px-4 py-4 flex flex-col gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-xs shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-semibold text-xs shrink-0">
                     {doc.driverName
                       .split(' ')
                       .map((n) => n[0])
@@ -387,13 +387,13 @@ export function KycValidationView() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 gap-1 h-7 px-2"
+                      className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 gap-1 h-7 px-2"
                     >
                       <Eye className="w-3.5 h-3.5" />
                     </Button>
                     <Button
                       size="sm"
-                      className="bg-blue-600 hover:bg-blue-700 text-white text-xs gap-1 h-7 px-2.5"
+                      className="bg-orange-600 hover:bg-orange-700 text-white text-xs gap-1 h-7 px-2.5"
                       onClick={() => openValidateDialog(doc)}
                     >
                       <CheckCircle2 className="w-3 h-3" />
@@ -477,7 +477,7 @@ export function KycValidationView() {
               onClick={handleConfirm}
               className={
                 dialogState.mode === 'validate'
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                  ? 'bg-orange-600 hover:bg-orange-700 text-white'
                   : 'bg-red-600 hover:bg-red-700 text-white'
               }
             >

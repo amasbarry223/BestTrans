@@ -475,10 +475,12 @@ function ExportTab() {
       {/* Export Buttons */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* PDF Export */}
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={0}
           onClick={() => handleExport('PDF')}
-          className="bg-white border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-center gap-4 hover:border-blue-200 hover:shadow-md transition-all group"
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleExport('PDF') }}
+          className="bg-white border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-center gap-4 hover:border-blue-200 hover:shadow-md transition-all group cursor-pointer"
         >
           <div className="w-14 h-14 rounded-xl bg-red-50 group-hover:bg-red-100 flex items-center justify-center transition-colors">
             <FileText className="w-7 h-7 text-red-600" />
@@ -491,20 +493,21 @@ function ExportTab() {
               Rapport formaté avec graphiques
             </p>
           </div>
-          <Button
-            size="sm"
-            className="bg-blue-600 hover:bg-blue-700 text-white text-xs gap-1.5 w-full"
+          <span
+            className="inline-flex items-center justify-center gap-1.5 w-full h-8 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
             Télécharger PDF
-          </Button>
-        </button>
+          </span>
+        </div>
 
         {/* CSV Export */}
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={0}
           onClick={() => handleExport('CSV')}
-          className="bg-white border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-center gap-4 hover:border-blue-200 hover:shadow-md transition-all group"
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleExport('CSV') }}
+          className="bg-white border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-center gap-4 hover:border-blue-200 hover:shadow-md transition-all group cursor-pointer"
         >
           <div className="w-14 h-14 rounded-xl bg-green-50 group-hover:bg-green-100 flex items-center justify-center transition-colors">
             <FileText className="w-7 h-7 text-green-600" />
@@ -517,20 +520,21 @@ function ExportTab() {
               Données brutes compatibles Excel
             </p>
           </div>
-          <Button
-            size="sm"
-            className="bg-blue-600 hover:bg-blue-700 text-white text-xs gap-1.5 w-full"
+          <span
+            className="inline-flex items-center justify-center gap-1.5 w-full h-8 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
             Télécharger CSV
-          </Button>
-        </button>
+          </span>
+        </div>
 
         {/* Excel Export */}
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={0}
           onClick={() => handleExport('Excel')}
-          className="bg-white border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-center gap-4 hover:border-blue-200 hover:shadow-md transition-all group"
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleExport('Excel') }}
+          className="bg-white border border-[#E5E7EB] rounded-xl p-6 flex flex-col items-center gap-4 hover:border-blue-200 hover:shadow-md transition-all group cursor-pointer"
         >
           <div className="w-14 h-14 rounded-xl bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center transition-colors">
             <FileText className="w-7 h-7 text-blue-600" />
@@ -543,14 +547,13 @@ function ExportTab() {
               Tableur avec mise en forme
             </p>
           </div>
-          <Button
-            size="sm"
-            className="bg-blue-600 hover:bg-blue-700 text-white text-xs gap-1.5 w-full"
+          <span
+            className="inline-flex items-center justify-center gap-1.5 w-full h-8 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
             Télécharger Excel
-          </Button>
-        </button>
+          </span>
+        </div>
       </div>
 
       {/* Recent Exports */}

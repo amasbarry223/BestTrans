@@ -31,6 +31,7 @@ import {
   Clock,
 } from 'lucide-react'
 import { useDashboard } from '@/components/dashboard/dashboard-context'
+import { type ViewKey } from '@/components/dashboard/navigation'
 import { cn } from '@/lib/utils'
 
 /* ------------------------------------------------------------------ */
@@ -213,7 +214,7 @@ function PieCustomLabel(props: Record<string, unknown>) {
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
-export function DashboardView({ setActiveView }: { setActiveView: (view: string) => void }) {
+export function DashboardView({ setActiveView }: { setActiveView: (view: ViewKey) => void }) {
   const { navigateToCourseDetail } = useDashboard()
 
   const handleCourseClick = (course: typeof recentCourses[number]) => {
@@ -234,24 +235,24 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
   return (
     <div className="h-full w-full flex flex-col gap-5">
       {/* ---- KPI Cards ---- */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         {kpiCards.map((kpi) => {
           const colors = colorMap[kpi.color]
           const Icon = kpi.icon
           return (
             <div
               key={kpi.label}
-              className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex flex-col gap-3 hover:shadow-md transition-shadow"
+              className="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 flex flex-col gap-2.5 sm:gap-3 hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between">
-                <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', colors.iconBg)}>
-                  <Icon className={cn('w-5 h-5', colors.iconText)} />
+                <div className={cn('w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center', colors.iconBg)}>
+                  <Icon className={cn('w-4 h-4 sm:w-5 sm:h-5', colors.iconText)} />
                 </div>
                 <TrendingUp className="w-4 h-4 text-[#9CA3AF]" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[#111827]">{kpi.value}</p>
-                <p className="text-xs text-[#6B7280] mt-0.5">{kpi.label}</p>
+                <p className="text-sm sm:text-base font-bold text-[#111827]">{kpi.value}</p>
+                <p className="text-[11px] sm:text-xs font-medium text-[#6B7280] mt-0.5">{kpi.label}</p>
                 <p className="text-[10px] text-[#9CA3AF]">{kpi.sublabel}</p>
               </div>
             </div>
@@ -260,12 +261,12 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
       </div>
 
       {/* ---- Quick Actions ---- */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 sm:p-5">
         <div className="flex items-center gap-2 mb-4">
           <Clock className="w-4 h-4 text-orange-600" />
           <h2 className="text-sm font-semibold text-[#111827]">Actions rapides</h2>
         </div>
-        <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
+        <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-8 gap-2 sm:gap-3">
           {quickActionItems.map((action) => {
             const Icon = action.icon
             return (
@@ -273,12 +274,12 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
                 key={action.label}
                 type="button"
                 onClick={() => setActiveView(action.view)}
-                className="flex flex-col items-center gap-2 py-3 px-2 rounded-xl hover:bg-orange-50 transition-colors group"
+                className="flex flex-col items-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 px-1 sm:px-2 rounded-xl hover:bg-orange-50 transition-colors group"
               >
-                <div className="w-11 h-11 rounded-xl bg-orange-50 group-hover:bg-orange-100 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <Icon className="w-5 h-5 text-orange-600" />
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-orange-50 group-hover:bg-orange-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
                 </div>
-                <span className="text-[11px] font-medium text-[#6B7280] group-hover:text-orange-700 whitespace-nowrap">
+                <span className="text-[10px] sm:text-[11px] font-medium text-[#6B7280] group-hover:text-orange-700 text-center leading-tight">
                   {action.label}
                 </span>
               </button>
@@ -288,17 +289,17 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
       </div>
 
       {/* ---- Charts Section ---- */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
         {/* Area Chart - Courses par jour */}
-        <div className="lg:col-span-1 bg-white border border-[#E5E7EB] rounded-xl p-5">
-          <div className="flex items-center justify-between mb-4">
+        <div className="md:col-span-2 xl:col-span-1 bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-orange-600" />
-              <h2 className="text-sm font-semibold text-[#111827]">Courses par jour</h2>
+              <TrendingUp className="w-5 h-5 text-orange-600" />
+              <h2 className="text-base font-bold text-[#111827]">Courses par jour</h2>
             </div>
-            <span className="text-[10px] text-[#9CA3AF]">7 derniers jours</span>
+            <span className="text-xs text-[#9CA3AF]">7 derniers jours</span>
           </div>
-          <ResponsiveContainer width="100%" height={220}>
+          <ResponsiveContainer width="100%" height={260}>
             <AreaChart data={coursesParJourData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="courseGradient" x1="0" y1="0" x2="0" y2="1">
@@ -306,34 +307,34 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
                   <stop offset="95%" stopColor="#f97316" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <CartesianGrid vertical={false} stroke="#E5E7EB" strokeDasharray="3 3" />
+              <CartesianGrid vertical={false} stroke="#F3F4F6" strokeDasharray="3 3" />
               <XAxis dataKey="day" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
               <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} width={35} />
               <Tooltip content={<CustomTooltip />} />
-              <Area type="monotone" dataKey="courses" name="courses" stroke="#f97316" strokeWidth={2.5} fill="url(#courseGradient)" />
+              <Area type="monotone" dataKey="courses" name="courses" stroke="#f97316" strokeWidth={3} fill="url(#courseGradient)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
         {/* Pie Chart - Modes de paiement */}
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
-          <div className="flex items-center justify-between mb-4">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-orange-600" />
-              <h2 className="text-sm font-semibold text-[#111827]">Modes de paiement</h2>
+              <CreditCard className="w-5 h-5 text-orange-600" />
+              <h2 className="text-base font-bold text-[#111827]">Modes de paiement</h2>
             </div>
-            <span className="text-[10px] text-[#9CA3AF]">Répartition</span>
+            <span className="text-xs text-[#9CA3AF]">Répartition</span>
           </div>
           <div className="flex flex-col items-center">
-            <ResponsiveContainer width="100%" height={180}>
+            <ResponsiveContainer width="100%" height={220}>
               <PieChart>
                 <Pie
                   data={paiementData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
-                  paddingAngle={3}
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={5}
                   dataKey="value"
                   labelLine={false}
                   label={PieCustomLabel as unknown as boolean}
@@ -344,17 +345,17 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value: number, name: string) => [`${value}%`, name]}
-                  contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', fontSize: '12px' }}
+                  formatter={(value, name) => [`${value ?? ''}%`, String(name)] as [string, string]}
+                  contentStyle={{ borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', fontSize: '12px' }}
                 />
               </PieChart>
             </ResponsiveContainer>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-3 w-full">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-2 mt-4 w-full">
               {paiementData.map((item) => (
-                <div key={item.name} className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-                  <span className="text-[11px] text-[#6B7280] truncate">{item.name}</span>
-                  <span className="text-[11px] font-semibold text-[#111827] ml-auto">{item.value}%</span>
+                <div key={item.name} className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                  <span className="text-xs text-[#6B7280] truncate">{item.name}</span>
+                  <span className="text-xs font-bold text-[#111827] ml-auto">{item.value}%</span>
                 </div>
               ))}
             </div>
@@ -362,26 +363,26 @@ export function DashboardView({ setActiveView }: { setActiveView: (view: string)
         </div>
 
         {/* Bar Chart - Pic d'activité horaire */}
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
-          <div className="flex items-center justify-between mb-4">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-orange-600" />
-              <h2 className="text-sm font-semibold text-[#111827]">Pic d'activité horaire</h2>
+              <BarChart3 className="w-5 h-5 text-orange-600" />
+              <h2 className="text-base font-bold text-[#111827]">Activité horaire</h2>
             </div>
-            <span className="text-[10px] text-[#9CA3AF]">6h - 23h</span>
+            <span className="text-xs text-[#9CA3AF]">6h - 23h</span>
           </div>
-          <ResponsiveContainer width="100%" height={220}>
+          <ResponsiveContainer width="100%" height={260}>
             <BarChart data={activiteHoraireData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-              <CartesianGrid vertical={false} stroke="#E5E7EB" strokeDasharray="3 3" />
-              <XAxis dataKey="heure" tickLine={false} axisLine={false} tick={{ fontSize: 10, fill: '#9CA3AF' }} interval={1} />
+              <CartesianGrid vertical={false} stroke="#F3F4F6" strokeDasharray="3 3" />
+              <XAxis dataKey="heure" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} interval={1} />
               <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} width={30} />
               <Tooltip content={<CustomTooltip />} />
               <Bar
                 dataKey="courses"
                 name="courses"
                 fill="#f97316"
-                radius={[3, 3, 0, 0]}
-                maxBarSize={24}
+                radius={[4, 4, 0, 0]}
+                maxBarSize={30}
               />
             </BarChart>
           </ResponsiveContainer>

@@ -14,6 +14,13 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 
@@ -125,6 +132,7 @@ const faqCategories: FaqCategory[] = [
 
 export function FaqView() {
   const [search, setSearch] = useState('')
+  const [categories, setCategories] = useState<FaqCategory[]>(faqCategories)
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
     new Set(['compte'])
   )
@@ -156,8 +164,32 @@ export function FaqView() {
     })
   }
 
+  // Add question dialog state
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [newCategoryId, setNewCategoryId] = useState(categories[0]?.id ?? '')
+  const [newQuestion, setNewQuestion] = useState('')
+  const [newAnswer, setNewAnswer] = useState('')
+
+  const handleAddQuestion = () => {
+    if (!newQuestion.trim() || !newAnswer.trim()) {
+      toast.error('Champs requis', { description: 'La question et la réponse sont obligatoires.' })
+      return
+    }
+    setCategories((prev) =>
+      prev.map((cat) =>
+        cat.id === newCategoryId
+          ? { ...cat, entries: [...cat.entries, { question: newQuestion.trim(), answer: newAnswer.trim() }] }
+          : cat
+      )
+    )
+    toast.success('Question ajoutée', { description: `Ajoutée dans la catégorie sélectionnée.` })
+    setNewQuestion('')
+    setNewAnswer('')
+    setAddDialogOpen(false)
+  }
+
   // Filter entries based on search
-  const filteredCategories = faqCategories
+  const filteredCategories = categories
     .map((cat) => ({
       ...cat,
       entries: cat.entries.filter(
@@ -168,7 +200,7 @@ export function FaqView() {
     }))
     .filter((cat) => cat.entries.length > 0)
 
-  const totalEntries = faqCategories.reduce(
+  const totalEntries = categories.reduce(
     (acc, cat) => acc + cat.entries.length,
     0
   )
@@ -187,11 +219,7 @@ export function FaqView() {
         </div>
         <Button
           className="bg-orange-600 hover:bg-orange-700 text-white gap-1.5"
-          onClick={() =>
-            toast.info('Fonctionnalité à venir', {
-              description: 'L\'ajout de nouvelles questions sera bientôt disponible.',
-            })
-          }
+          onClick={() => setAddDialogOpen(true)}
         >
           <Plus className="w-4 h-4" />
           Ajouter une question
@@ -315,6 +343,74 @@ export function FaqView() {
           </div>
         )}
       </div>
+
+      {/* ---- Add Question Dialog ---- */}
+      <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Plus className="w-4 h-4 text-orange-600" />
+              Ajouter une question
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            {/* Category selector */}
+            <div>
+              <label className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider block mb-1.5">
+                Catégorie
+              </label>
+              <select
+                value={newCategoryId}
+                onChange={(e) => setNewCategoryId(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+              >
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>{cat.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Question */}
+            <div>
+              <label className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider block mb-1.5">
+                Question <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={newQuestion}
+                onChange={(e) => setNewQuestion(e.target.value)}
+                placeholder="Saisissez la question..."
+                className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+
+            {/* Answer */}
+            <div>
+              <label className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider block mb-1.5">
+                Réponse <span className="text-rose-500">*</span>
+              </label>
+              <textarea
+                value={newAnswer}
+                onChange={(e) => setNewAnswer(e.target.value)}
+                placeholder="Saisissez la réponse..."
+                rows={4}
+                className="w-full px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setAddDialogOpen(false)}>Annuler</Button>
+            <Button
+              className="bg-orange-600 hover:bg-orange-700 text-white gap-1.5"
+              onClick={handleAddQuestion}
+            >
+              <Plus className="w-4 h-4" /> Ajouter
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

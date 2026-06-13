@@ -4,6 +4,7 @@ import { Suspense } from 'react'
 import Image from 'next/image'
 import { Car } from 'lucide-react'
 import { LoginForm } from '@/components/auth/login-form'
+import { LoginLottiePanel } from '@/components/auth/login-lottie-panel'
 
 function LoginFormFallback() {
   return (
@@ -24,70 +25,65 @@ function LoginFormFallback() {
 export function LoginView() {
   return (
     <div
-      className="relative min-h-screen flex items-center justify-center overflow-hidden p-4 sm:p-6 md:p-8"
+      className="min-h-screen flex items-center justify-center bg-[#0F172A] p-4 relative overflow-hidden"
       suppressHydrationWarning
     >
-      {/* Animated background */}
-      <div className="login-page-bg absolute inset-0" aria-hidden />
-      <div className="login-orb login-orb-1" aria-hidden />
-      <div className="login-orb login-orb-2" aria-hidden />
-      <div className="login-orb login-orb-3" aria-hidden />
+      {/* Orbes de fond */}
+      <div className="absolute top-1/4 left-1/6 w-96 h-96 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/6 w-72 h-72 rounded-full bg-orange-400/8 blur-2xl pointer-events-none" />
+      <div className="absolute top-3/4 left-1/2 w-56 h-56 rounded-full bg-blue-500/5 blur-3xl pointer-events-none" />
 
-      {/* Login Card */}
-      <div className="login-card relative z-10 w-full max-w-[440px] rounded-[28px] p-7 sm:p-9 shadow-2xl shadow-[#1A1A2E]/10">
-        {/* Top decorative line */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-orange-400/60 to-transparent" />
+      {/* Container centré deux colonnes */}
+      <div className="relative w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl shadow-black/60 grid grid-cols-1 lg:grid-cols-2 min-h-[420px]">
 
-        {/* Logo Section */}
-        <div className="flex flex-col items-center text-center">
-          <div className="relative mb-4">
-            <div className="absolute inset-0 rounded-2xl bg-orange-400/20 blur-xl scale-150" />
-            <div className="relative flex items-center justify-center w-[72px] h-[72px] rounded-2xl overflow-hidden shadow-lg shadow-orange-500/30">
-              <Image
-                src="/logo-bestTrans.png"
-                alt="BestTrans"
-                width={72}
-                height={72}
-                className="object-cover"
-              />
+        {/* ── Colonne gauche : Logo + Formulaire ── */}
+        <div className="bg-white flex flex-col items-center justify-center px-5 py-8 sm:px-8">
+
+          {/* Logo */}
+          <div className="flex flex-col items-center text-center mb-5">
+            <div className="relative mb-3">
+              <div className="absolute inset-0 rounded-2xl bg-orange-400/20 blur-xl scale-150" />
+              <div className="relative flex items-center justify-center w-[68px] h-[68px] rounded-2xl overflow-hidden shadow-md shadow-orange-500/30">
+                <Image
+                  src="/logo-bestTrans.png"
+                  alt="Logo BestTrans"
+                  width={68}
+                  height={68}
+                  className="object-cover"
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-1">
+              <Car className="w-2.5 h-2.5 text-orange-500" />
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-orange-600/90">
+                Dashboard Admin
+              </p>
             </div>
           </div>
 
-          {/* Brand Name */}
-          <h1 className="text-2xl font-bold text-[#111827] tracking-tight">
-            Best<span className="text-orange-600">Trans</span>
-          </h1>
-
-          <div className="flex items-center gap-1.5 mt-1.5">
-            <Car className="w-3 h-3 text-orange-500" />
-            <p className="text-xs font-semibold uppercase tracking-widest text-orange-600/90">
-              Dashboard Admin
+          {/* Titre */}
+          <div className="text-center mb-5 w-full">
+            <h2 className="text-base font-bold text-[#111827]">Bienvenue</h2>
+            <p className="text-xs text-[#6B7280] mt-1 leading-relaxed">
+              Connectez-vous pour accéder au back-office
             </p>
           </div>
-        </div>
 
-        {/* Divider */}
-        <div className="my-7 h-px bg-gradient-to-r from-transparent via-[#E5E7EB] to-transparent" />
+          {/* Formulaire */}
+          <div className="w-full">
+            <Suspense fallback={<LoginFormFallback />}>
+              <LoginForm />
+            </Suspense>
+          </div>
 
-        {/* Welcome Text */}
-        <div className="text-center mb-6">
-          <h2 className="text-lg font-semibold text-[#111827]">Bienvenue</h2>
-          <p className="text-sm text-[#6B7280] mt-1 leading-relaxed">
-            Connectez-vous pour accéder au back-office BestTrans
+          {/* Footer */}
+          <p className="text-[10px] text-[#9CA3AF] mt-5">
+            © 2025 — Bamako, Mali
           </p>
         </div>
 
-        {/* Login Form */}
-        <Suspense fallback={<LoginFormFallback />}>
-          <LoginForm />
-        </Suspense>
-
-        {/* Footer */}
-        <div className="mt-6 pt-4 border-t border-[#F3F4F6] text-center">
-          <p className="text-[11px] text-[#9CA3AF]">
-            © 2025 BestTrans — Bamako, Mali
-          </p>
-        </div>
+        {/* ── Colonne droite : Lottie ── */}
+        <LoginLottiePanel />
       </div>
     </div>
   )

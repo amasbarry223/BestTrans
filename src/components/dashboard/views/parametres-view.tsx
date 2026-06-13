@@ -24,9 +24,21 @@ import {
   ChevronRight,
   Loader2,
   Activity,
+  Tag,
+  Zap,
+  Car,
+  Percent,
+  Ticket,
+  X,
+  Headphones,
+  HelpCircle,
 } from 'lucide-react'
+import { TicketsView } from '@/components/dashboard/views/tickets-view'
+import { FaqView } from '@/components/dashboard/views/faq-view'
+import { mockDb } from '@/lib/mock-db'
 import { cn } from '@/lib/utils'
 import { getRoleLabel, getRoleColor } from '@/lib/auth'
+import { toast } from 'sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -306,6 +318,36 @@ export function ParametresView() {
             <Users className="w-4 h-4 shrink-0" />
             <span className="truncate">Utilisateurs</span>
           </TabsTrigger>
+          <TabsTrigger
+            value="tarification"
+            className={cn(
+              'flex-1 min-w-0 data-[state=active]:bg-orange-50 data-[state=active]:text-orange-700 data-[state=active]:shadow-sm',
+              'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
+            )}
+          >
+            <Tag className="w-4 h-4 shrink-0" />
+            <span className="truncate">Tarification</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="tickets"
+            className={cn(
+              'flex-1 min-w-0 data-[state=active]:bg-orange-50 data-[state=active]:text-orange-700 data-[state=active]:shadow-sm',
+              'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
+            )}
+          >
+            <Headphones className="w-4 h-4 shrink-0" />
+            <span className="truncate">Tickets</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="faq"
+            className={cn(
+              'flex-1 min-w-0 data-[state=active]:bg-orange-50 data-[state=active]:text-orange-700 data-[state=active]:shadow-sm',
+              'rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors'
+            )}
+          >
+            <HelpCircle className="w-4 h-4 shrink-0" />
+            <span className="truncate">FAQ</span>
+          </TabsTrigger>
         </TabsList>
 
         {/* ── Tab 1: Mon Profil ── */}
@@ -336,6 +378,21 @@ export function ParametresView() {
         {/* ── Tab 6: Gestion Utilisateurs ── */}
         <TabsContent value="utilisateurs" className="flex-1 mt-4 min-h-0">
           <UtilisateursTab />
+        </TabsContent>
+
+        {/* ── Tab 7: Tarification ── */}
+        <TabsContent value="tarification" className="flex-1 mt-4 min-h-0 overflow-y-auto">
+          <TarificationTab />
+        </TabsContent>
+
+        {/* ── Tab 8: Tickets Support ── */}
+        <TabsContent value="tickets" className="flex-1 mt-4 min-h-0 overflow-y-auto">
+          <TicketsView />
+        </TabsContent>
+
+        {/* ── Tab 9: FAQ ── */}
+        <TabsContent value="faq" className="flex-1 mt-4 min-h-0 overflow-y-auto">
+          <FaqView />
         </TabsContent>
       </Tabs>
     </div>
@@ -588,53 +645,26 @@ function HistoriqueTab() {
   const [dateTo, setDateTo] = useState('')
   const limit = 20
 
-  const fetchLogs = useCallback(async () => {
-    setLoading(true)
-    try {
-      const params = new URLSearchParams()
-      params.set('limit', String(limit))
-      params.set('offset', String(offset))
-      if (actionFilter !== 'all') params.set('action', actionFilter)
-      if (entityFilter !== 'all') params.set('entity', entityFilter)
-
-      const res = await fetch(`/api/audit-logs?${params.toString()}`)
-      if (res.ok) {
-        const data: AuditLogResponse = await res.json()
-        let filtered = data.logs
-
-        // Client-side search filter
-        if (searchQuery.trim()) {
-          const q = searchQuery.toLowerCase()
-          filtered = filtered.filter(
-            (l) =>
-              l.details?.toLowerCase().includes(q) ||
-              l.user?.name.toLowerCase().includes(q)
-          )
-        }
-
-        // Client-side date filter
-        if (dateFrom) {
-          filtered = filtered.filter((l) => new Date(l.createdAt) >= new Date(dateFrom))
-        }
-        if (dateTo) {
-          const to = new Date(dateTo)
-          to.setHours(23, 59, 59, 999)
-          filtered = filtered.filter((l) => new Date(l.createdAt) <= to)
-        }
-
-        setLogs(filtered)
-        setTotal(data.total)
-      }
-    } catch {
-      // silently fail
-    } finally {
-      setLoading(false)
-    }
-  }, [offset, actionFilter, entityFilter, searchQuery, dateFrom, dateTo])
-
   useEffect(() => {
-    fetchLogs()
-  }, [fetchLogs])
+    setLoading(true)
+    // Simulate slight delay
+    const timer = setTimeout(() => {
+      let allLogs = mockDb.getLogs() as unknown as AuditLogEntry[]
+      
+      // Filter logic
+      if (actionFilter !== 'all') allLogs = allLogs.filter(l => l.action === actionFilter)
+      if (entityFilter !== 'all') allLogs = allLogs.filter(l => l.entity === entityFilter)
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase()
+        allLogs = allLogs.filter(l => l.details.toLowerCase().includes(q))
+      }
+      
+      setTotal(allLogs.length)
+      setLogs(allLogs.slice(offset, offset + limit))
+      setLoading(false)
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [offset, actionFilter, entityFilter, searchQuery, dateFrom, dateTo])
 
   const totalPages = Math.ceil(total / limit)
   const currentPage = Math.floor(offset / limit) + 1
@@ -839,19 +869,12 @@ function UtilisateursTab() {
 
   const fetchUsers = useCallback(async () => {
     setLoading(true)
-    try {
-      const params = new URLSearchParams()
-      if (roleFilter !== 'all') params.set('role', roleFilter)
-      const res = await fetch(`/api/users?${params.toString()}`)
-      if (res.ok) {
-        const data = await res.json()
-        setUsers(data)
-      }
-    } catch {
-      // silently fail
-    } finally {
+    setTimeout(() => {
+      let data = mockDb.getUsers() as unknown as UserEntry[]
+      if (roleFilter !== 'all') data = data.filter(u => u.role === roleFilter)
+      setUsers(data)
       setLoading(false)
-    }
+    }, 400)
   }, [roleFilter])
 
   useEffect(() => {
@@ -913,7 +936,7 @@ function UtilisateursTab() {
   // Save user (create or update)
   const handleSaveUser = async () => {
     setSaving(true)
-    try {
+    setTimeout(() => {
       const computedInitials =
         formInitials ||
         (formName
@@ -927,86 +950,49 @@ function UtilisateursTab() {
           : '??')
 
       if (editingUser) {
-        // Update
-        const body: Record<string, unknown> = {
-          id: editingUser.id,
+        mockDb.updateUser(editingUser.id, {
           name: formName,
           email: formEmail,
           role: formRole,
           permissions: formPermissions,
           phone: formPhone || null,
           initials: computedInitials,
-        }
-        const res = await fetch('/api/users', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
         })
-        if (res.ok) {
-          setDialogOpen(false)
-          fetchUsers()
-        }
+        toast.success('Utilisateur mis à jour avec succès')
       } else {
-        // Create
-        if (!formPassword) {
-          setSaving(false)
-          return
-        }
-        const res = await fetch('/api/users', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: formUsername,
-            name: formName,
-            email: formEmail,
-            password: formPassword,
-            role: formRole,
-            permissions: formPermissions,
-            phone: formPhone || null,
-            initials: computedInitials,
-          }),
+        mockDb.addUser({
+          username: formUsername,
+          name: formName,
+          email: formEmail,
+          role: formRole,
+          permissions: formPermissions,
+          phone: formPhone || null,
+          initials: computedInitials,
+          active: true,
         })
-        if (res.ok) {
-          setDialogOpen(false)
-          fetchUsers()
-        }
+        toast.success('Nouvel utilisateur créé avec succès')
       }
-    } catch {
-      // silently fail
-    } finally {
       setSaving(false)
-    }
+      setDialogOpen(false)
+      fetchUsers()
+    }, 500)
   }
 
   // Toggle user active status
   const toggleUserActive = async (user: UserEntry) => {
-    try {
-      const res = await fetch('/api/users', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: user.id, active: !user.active }),
-      })
-      if (res.ok) {
-        fetchUsers()
-      }
-    } catch {
-      // silently fail
-    }
+    mockDb.updateUser(user.id, { active: !user.active })
+    toast.info(`Utilisateur ${user.active ? 'désactivé' : 'activé'}`)
+    fetchUsers()
   }
 
   // Delete user
   const handleDeleteUser = async () => {
     if (!userToDelete) return
-    try {
-      const res = await fetch(`/api/users?id=${userToDelete.id}`, { method: 'DELETE' })
-      if (res.ok) {
-        setDeleteDialogOpen(false)
-        setUserToDelete(null)
-        fetchUsers()
-      }
-    } catch {
-      // silently fail
-    }
+    mockDb.deleteUser(userToDelete.id)
+    toast.success('Utilisateur supprimé')
+    setDeleteDialogOpen(false)
+    setUserToDelete(null)
+    fetchUsers()
   }
 
   // Open permissions dialog for a user
@@ -1389,6 +1375,299 @@ function UtilisateursTab() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+    </div>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   TARIFICATION TAB
+   ══════════════════════════════════════════════════════════════════ */
+
+type PromoCode = {
+  id: string
+  code: string
+  reduction: string
+  type: 'Pourcentage' | 'Montant fixe'
+  usage: number
+  maxUsage: number
+  expiry: string
+  actif: boolean
+}
+
+const initialPromoCodes: PromoCode[] = [
+  { id: 'PC-001', code: 'BAMAKO10', reduction: '10%',        type: 'Pourcentage', usage: 34,  maxUsage: 100, expiry: '31/07/2026', actif: true },
+  { id: 'PC-002', code: 'BIENVENUE', reduction: '500 FCFA', type: 'Montant fixe', usage: 12,  maxUsage: 50,  expiry: '30/06/2026', actif: true },
+  { id: 'PC-003', code: 'NOEL2026',  reduction: '15%',       type: 'Pourcentage', usage: 200, maxUsage: 200, expiry: '01/01/2026', actif: false },
+]
+
+function TarificationTab() {
+  const [tarif, setTarif] = useState({
+    prixBase:      '500',
+    prixKm:        '250',
+    prixMinute:    '50',
+    surgeMax:      '2.5',
+    surgeHeures:   '07:00-09:00, 17:00-19:00',
+  })
+  const [saved, setSaved] = useState(false)
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>(initialPromoCodes)
+  const [newCode, setNewCode] = useState({ code: '', reduction: '', type: 'Pourcentage' as PromoCode['type'], maxUsage: '100', expiry: '' })
+  const [showNewCode, setShowNewCode] = useState(false)
+
+  function handleSaveTarif() {
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2500)
+  }
+
+  function togglePromo(id: string) {
+    setPromoCodes(prev => prev.map(p => p.id === id ? { ...p, actif: !p.actif } : p))
+  }
+
+  function deletePromo(id: string) {
+    setPromoCodes(prev => prev.filter(p => p.id !== id))
+  }
+
+  function addPromo() {
+    if (!newCode.code || !newCode.reduction) return
+    const entry: PromoCode = {
+      id: `PC-${Date.now()}`,
+      code: newCode.code.toUpperCase(),
+      reduction: newCode.reduction,
+      type: newCode.type,
+      usage: 0,
+      maxUsage: Number(newCode.maxUsage) || 100,
+      expiry: newCode.expiry || '—',
+      actif: true,
+    }
+    setPromoCodes(prev => [...prev, entry])
+    setNewCode({ code: '', reduction: '', type: 'Pourcentage', maxUsage: '100', expiry: '' })
+    setShowNewCode(false)
+  }
+
+  return (
+    <div className="space-y-6 pb-6">
+      {/* ── Prix de base ── */}
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-6">
+        <div className="flex items-center gap-2 mb-5">
+          <Car className="w-4 h-4 text-orange-600" />
+          <h3 className="text-sm font-semibold text-[#111827]">Grille tarifaire</h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
+          {[
+            { label: 'Prix de base', key: 'prixBase',   unit: 'FCFA',      desc: 'Montant forfaitaire à la prise en charge' },
+            { label: 'Prix au km',   key: 'prixKm',     unit: 'FCFA / km', desc: 'Tarif appliqué par kilomètre parcouru' },
+            { label: 'Prix à la min', key: 'prixMinute', unit: 'FCFA / min', desc: 'Tarif appliqué par minute de trajet' },
+          ].map(field => (
+            <div key={field.key} className="space-y-1.5">
+              <Label className="text-xs font-medium text-[#374151]">{field.label}</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  value={tarif[field.key as keyof typeof tarif]}
+                  onChange={e => setTarif(t => ({ ...t, [field.key]: e.target.value }))}
+                  className="text-sm"
+                />
+                <span className="text-xs text-[#9CA3AF] whitespace-nowrap">{field.unit}</span>
+              </div>
+              <p className="text-[11px] text-[#9CA3AF]">{field.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Surge pricing */}
+        <div className="border-t border-[#E5E7EB] pt-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Zap className="w-4 h-4 text-amber-500" />
+            <h4 className="text-sm font-semibold text-[#111827]">Surge pricing (heures de pointe)</h4>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-medium text-[#374151]">Multiplicateur maximum</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  step="0.1"
+                  min="1"
+                  max="5"
+                  value={tarif.surgeMax}
+                  onChange={e => setTarif(t => ({ ...t, surgeMax: e.target.value }))}
+                  className="text-sm"
+                />
+                <span className="text-xs text-[#9CA3AF]">× tarif normal</span>
+              </div>
+              <p className="text-[11px] text-[#9CA3AF]">Ex : 1.8 = tarif ×1,8 aux heures de pointe</p>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-medium text-[#374151]">Plages horaires</Label>
+              <Input
+                value={tarif.surgeHeures}
+                onChange={e => setTarif(t => ({ ...t, surgeHeures: e.target.value }))}
+                placeholder="07:00-09:00, 17:00-19:00"
+                className="text-sm"
+              />
+              <p className="text-[11px] text-[#9CA3AF]">Séparer les plages par une virgule</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end mt-6">
+          <Button
+            onClick={handleSaveTarif}
+            className={cn('flex items-center gap-2 px-5 text-sm', saved ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-orange-600 hover:bg-orange-700')}
+          >
+            <Save className="w-4 h-4" />
+            {saved ? 'Enregistré !' : 'Enregistrer la grille'}
+          </Button>
+        </div>
+      </div>
+
+      {/* ── Codes promo ── */}
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-6">
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2">
+            <Ticket className="w-4 h-4 text-violet-600" />
+            <h3 className="text-sm font-semibold text-[#111827]">Codes promotionnels</h3>
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700">
+              {promoCodes.filter(p => p.actif).length} actifs
+            </span>
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setShowNewCode(v => !v)}
+            className="flex items-center gap-1.5 text-xs border-orange-200 text-orange-700 hover:bg-orange-50"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            Nouveau code
+          </Button>
+        </div>
+
+        {/* New code form */}
+        {showNewCode && (
+          <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 mb-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="space-y-1">
+              <Label className="text-xs font-medium text-[#374151]">Code</Label>
+              <Input
+                value={newCode.code}
+                onChange={e => setNewCode(n => ({ ...n, code: e.target.value }))}
+                placeholder="EX10"
+                className="text-sm uppercase"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs font-medium text-[#374151]">Réduction</Label>
+              <Input
+                value={newCode.reduction}
+                onChange={e => setNewCode(n => ({ ...n, reduction: e.target.value }))}
+                placeholder="10% ou 500"
+                className="text-sm"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs font-medium text-[#374151]">Utilisations max</Label>
+              <Input
+                type="number"
+                value={newCode.maxUsage}
+                onChange={e => setNewCode(n => ({ ...n, maxUsage: e.target.value }))}
+                className="text-sm"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs font-medium text-[#374151]">Expiration</Label>
+              <Input
+                type="date"
+                value={newCode.expiry}
+                onChange={e => setNewCode(n => ({ ...n, expiry: e.target.value }))}
+                className="text-sm"
+              />
+            </div>
+            <div className="col-span-2 sm:col-span-4 flex gap-2 justify-end">
+              <Button size="sm" variant="outline" onClick={() => setShowNewCode(false)} className="text-xs">
+                Annuler
+              </Button>
+              <Button size="sm" onClick={addPromo} className="bg-orange-600 hover:bg-orange-700 text-xs">
+                Créer le code
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Codes table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-[#E5E7EB] text-left">
+                <th className="pb-2.5 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Code</th>
+                <th className="pb-2.5 px-3 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Réduction</th>
+                <th className="pb-2.5 px-3 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Usage</th>
+                <th className="pb-2.5 px-3 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Expiration</th>
+                <th className="pb-2.5 px-3 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Statut</th>
+                <th className="pb-2.5 px-3 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {promoCodes.map(promo => (
+                <tr key={promo.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB]">
+                  <td className="py-3">
+                    <div className="flex items-center gap-2">
+                      <Percent className="w-3.5 h-3.5 text-violet-500 shrink-0" />
+                      <span className="font-mono font-semibold text-[#111827] text-xs tracking-widest">
+                        {promo.code}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-3 px-3">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-violet-50 text-violet-700">
+                      {promo.reduction}
+                    </span>
+                  </td>
+                  <td className="py-3 px-3">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-orange-500 rounded-full"
+                          style={{ width: `${Math.min((promo.usage / promo.maxUsage) * 100, 100)}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-[#6B7280]">{promo.usage}/{promo.maxUsage}</span>
+                    </div>
+                  </td>
+                  <td className="py-3 px-3 text-xs text-[#6B7280]">{promo.expiry}</td>
+                  <td className="py-3 px-3">
+                    <span className={cn(
+                      'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold',
+                      promo.actif ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-500'
+                    )}>
+                      <span className={cn('w-1.5 h-1.5 rounded-full', promo.actif ? 'bg-emerald-500' : 'bg-gray-400')} />
+                      {promo.actif ? 'Actif' : 'Inactif'}
+                    </span>
+                  </td>
+                  <td className="py-3 px-3">
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => togglePromo(promo.id)}
+                        className="p-1.5 rounded-lg hover:bg-orange-50 text-[#9CA3AF] hover:text-orange-600 transition-colors"
+                        title={promo.actif ? 'Désactiver' : 'Activer'}
+                      >
+                        <Zap className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => deletePromo(promo.id)}
+                        className="p-1.5 rounded-lg hover:bg-rose-50 text-[#9CA3AF] hover:text-rose-600 transition-colors"
+                        title="Supprimer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {promoCodes.length === 0 && (
+            <p className="text-center text-sm text-[#9CA3AF] py-8">Aucun code promo pour l&apos;instant.</p>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

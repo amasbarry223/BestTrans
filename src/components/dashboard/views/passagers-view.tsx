@@ -15,7 +15,6 @@ import {
   Phone,
   Mail,
   Calendar,
-  ChevronRight,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
@@ -35,6 +34,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { useDashboard } from '@/components/dashboard/dashboard-context'
+import { exportToCSV } from '@/lib/export-utils'
+import { toast } from 'sonner'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -67,16 +69,16 @@ const statusStyle: Record<PassagerStatus, { bg: string; text: string; dot: strin
 /* ------------------------------------------------------------------ */
 
 const mockPassagers: Passager[] = [
-  { id: '1',  name: 'Amadou Diallo',           phone: '+223 70 12 34 56', email: 'amadou.diallo@orange.ml',       dateInscription: '15 Jan 2025', courses: 42,  status: 'Actif' },
-  { id: '2',  name: 'Fatoumata Traoré',         phone: '+223 96 55 44 33', email: 'f.traore@malinet.ml',           dateInscription: '03 Fév 2025', courses: 28,  status: 'Actif' },
-  { id: '3',  name: 'Ibrahim Keita',            phone: '+223 95 88 77 66', email: 'ibrahim.keita@gmail.com',       dateInscription: '21 Mar 2025', courses: 15,  status: 'Inactif' },
-  { id: '4',  name: 'Aminata Coulibaly',        phone: '+223 97 33 22 11', email: 'a.coulibaly@orange.ml',         dateInscription: '10 Avr 2025', courses: 67,  status: 'Actif' },
-  { id: '5',  name: 'Moussa Sissoko',           phone: '+223 70 99 88 77', email: 'm.sissoko@malinet.ml',          dateInscription: '28 Mai 2025', courses: 5,   status: 'Suspendu' },
-  { id: '6',  name: 'Seydou Diabaté',           phone: '+223 96 11 22 33', email: 'seydou.diabate@gmail.com',      dateInscription: '14 Juin 2025', courses: 33,  status: 'Actif' },
-  { id: '7',  name: 'Oumou Sangaré',            phone: '+223 95 44 55 66', email: 'o.sangare@orange.ml',           dateInscription: '02 Juil 2025', courses: 0,   status: 'Inactif' },
-  { id: '8',  name: 'Boubacar Dembélé',         phone: '+223 97 66 55 44', email: 'b.dembele@malinet.ml',          dateInscription: '19 Aoû 2025', courses: 21,  status: 'Actif' },
-  { id: '9',  name: 'Mariam Cissé',             phone: '+223 70 77 88 99', email: 'mariam.cisse@gmail.com',        dateInscription: '05 Sep 2025', courses: 8,   status: 'Suspendu' },
-  { id: '10', name: 'Abdoulaye Kamissoko',      phone: '+223 96 22 33 44', email: 'a.kamissoko@orange.ml',         dateInscription: '22 Oct 2025', courses: 54,  status: 'Actif' },
+  { id: '1',  name: 'Amadou Diallo',      phone: '+223 70 12 34 56', email: 'amadou.diallo@orange.ml',  dateInscription: '15 Jan 2025', courses: 42,  status: 'Actif' },
+  { id: '2',  name: 'Fatoumata Traoré',   phone: '+223 96 55 44 33', email: 'f.traore@malinet.ml',      dateInscription: '03 Fév 2025', courses: 28,  status: 'Actif' },
+  { id: '3',  name: 'Ibrahim Keita',      phone: '+223 95 88 77 66', email: 'ibrahim.keita@gmail.com',  dateInscription: '21 Mar 2025', courses: 15,  status: 'Inactif' },
+  { id: '4',  name: 'Aminata Coulibaly',  phone: '+223 97 33 22 11', email: 'a.coulibaly@orange.ml',   dateInscription: '10 Avr 2025', courses: 67,  status: 'Actif' },
+  { id: '5',  name: 'Moussa Sissoko',     phone: '+223 70 99 88 77', email: 'm.sissoko@malinet.ml',     dateInscription: '28 Mai 2025', courses: 5,   status: 'Suspendu' },
+  { id: '6',  name: 'Seydou Diabaté',     phone: '+223 96 11 22 33', email: 'seydou.diabate@gmail.com', dateInscription: '14 Juin 2025', courses: 33, status: 'Actif' },
+  { id: '7',  name: 'Oumou Sangaré',      phone: '+223 95 44 55 66', email: 'o.sangare@orange.ml',      dateInscription: '02 Juil 2025', courses: 0,  status: 'Inactif' },
+  { id: '8',  name: 'Boubacar Dembélé',   phone: '+223 97 66 55 44', email: 'b.dembele@malinet.ml',     dateInscription: '19 Aoû 2025', courses: 21,  status: 'Actif' },
+  { id: '9',  name: 'Mariam Cissé',       phone: '+223 70 77 88 99', email: 'mariam.cisse@gmail.com',   dateInscription: '05 Sep 2025', courses: 8,   status: 'Suspendu' },
+  { id: '10', name: 'Abdoulaye Kamissoko',phone: '+223 96 22 33 44', email: 'a.kamissoko@orange.ml',   dateInscription: '22 Oct 2025', courses: 54,  status: 'Actif' },
 ]
 
 /* ------------------------------------------------------------------ */
@@ -84,10 +86,10 @@ const mockPassagers: Passager[] = [
 /* ------------------------------------------------------------------ */
 
 const kpiStats = [
-  { label: 'Passagers inscrits', value: '3 847', icon: Users,     color: 'text-orange-600',   bg: 'bg-orange-50' },
-  { label: 'Nouveaux ce mois',   value: '234',   icon: TrendingUp,color: 'text-emerald-600', bg: 'bg-emerald-50' },
-  { label: 'Courses totales',    value: '24 516', icon: Map,      color: 'text-amber-600',   bg: 'bg-amber-50' },
-  { label: 'Passagers actifs',   value: '1 892', icon: UserCheck, color: 'text-violet-600',  bg: 'bg-violet-50' },
+  { label: 'Passagers inscrits', value: '3 847', icon: Users,     color: 'text-orange-600',  bg: 'bg-orange-50' },
+  { label: 'Nouveaux ce mois',   value: '234',   icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+  { label: 'Courses totales',    value: '24 516', icon: Map,       color: 'text-amber-600',   bg: 'bg-amber-50' },
+  { label: 'Passagers actifs',   value: '1 892', icon: UserCheck,  color: 'text-violet-600',  bg: 'bg-violet-50' },
 ]
 
 /* ------------------------------------------------------------------ */
@@ -95,6 +97,7 @@ const kpiStats = [
 /* ------------------------------------------------------------------ */
 
 export function PassagersView() {
+  const { navigateToPassagerDetail } = useDashboard()
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [passagers, setPassagers] = useState<Passager[]>(mockPassagers)
@@ -118,7 +121,7 @@ export function PassagersView() {
 
   /* ---- Handlers ---- */
   const handleView = (p: Passager) => {
-    alert(`Voir le passager : ${p.name}`)
+    navigateToPassagerDetail(p)
   }
 
   const handleSuspend = (p: Passager) => {
@@ -154,35 +157,33 @@ export function PassagersView() {
   }
 
   const handleExportCSV = () => {
-    const headers = ['Nom', 'Téléphone', 'Email', 'Date inscription', 'Courses', 'Statut']
-    const rows = filtered.map((p) =>
-      [p.name, p.phone, p.email, p.dateInscription, String(p.courses), p.status].join(',')
-    )
-    const csv = [headers.join(','), ...rows].join('\n')
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'passagers.csv'
-    link.click()
-    URL.revokeObjectURL(url)
+    exportToCSV<Passager>(filtered, 'passagers_besttrans', {
+      id: 'ID',
+      name: 'Nom Complet',
+      phone: 'Téléphone',
+      email: 'Email',
+      dateInscription: 'Date Inscription',
+      courses: 'Courses',
+      status: 'Statut',
+    })
+    toast.success('Export CSV généré')
   }
 
   /* ---- Render ---- */
   return (
     <div className="h-full flex flex-col gap-5">
       {/* ---- KPI Stats ---- */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {kpiStats.map((s) => {
           const Icon = s.icon
           return (
-            <div key={s.label} className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3">
-              <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', s.bg)}>
-                <Icon className={cn('w-5 h-5', s.color)} />
+            <div key={s.label} className="bg-white border border-[#E5E7EB] rounded-xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3">
+              <div className={cn('w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0', s.bg)}>
+                <Icon className={cn('w-4 h-4 sm:w-5 sm:h-5', s.color)} />
               </div>
-              <div>
-                <p className="text-xl font-bold text-[#111827]">{s.value}</p>
-                <p className="text-xs text-[#6B7280]">{s.label}</p>
+              <div className="min-w-0">
+                <p className="text-base sm:text-xl font-bold text-[#111827] truncate">{s.value}</p>
+                <p className="text-[10px] sm:text-xs text-[#6B7280] truncate">{s.label}</p>
               </div>
             </div>
           )
@@ -190,14 +191,14 @@ export function PassagersView() {
       </div>
 
       {/* ---- Search & Filter Bar ---- */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
-        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-          <div className="flex flex-1 gap-2 w-full sm:w-auto">
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-3 sm:p-4">
+        <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
+          <div className="flex flex-col sm:flex-row flex-1 gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
               <input
                 type="text"
-                placeholder="Rechercher par nom, téléphone, email..."
+                placeholder="Rechercher..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -206,7 +207,7 @@ export function PassagersView() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
             >
               <option value="all">Tous statuts</option>
               <option value="Actif">Actif</option>
@@ -216,7 +217,7 @@ export function PassagersView() {
           </div>
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
           >
             <Download className="w-4 h-4" /> Export CSV
           </button>
@@ -225,8 +226,8 @@ export function PassagersView() {
 
       {/* ---- Desktop: DataTable ---- */}
       <div className="hidden md:block flex-1 bg-white border border-[#E5E7EB] rounded-xl overflow-hidden min-h-0">
-        <div className="overflow-y-auto max-h-[calc(100vh-360px)]">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-360px)]">
+          <table className="w-full min-w-[600px] text-sm">
             <thead className="sticky top-0 bg-[#F9FAFB] z-10">
               <tr className="border-b border-[#E5E7EB]">
                 <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Nom</th>
@@ -391,13 +392,9 @@ export function PassagersView() {
             </AlertDialogTitle>
             <AlertDialogDescription>
               {passagerToSuspend?.status === 'Suspendu' ? (
-                <>
-                  Êtes-vous sûr de vouloir réactiver le passager <strong>{passagerToSuspend?.name}</strong> ? Il pourra à nouveau réserver des courses.
-                </>
+                <>Êtes-vous sûr de vouloir réactiver <strong>{passagerToSuspend?.name}</strong> ?</>
               ) : (
-                <>
-                  Êtes-vous sûr de vouloir suspendre le passager <strong>{passagerToSuspend?.name}</strong> ? Il ne pourra plus réserver de courses.
-                </>
+                <>Êtes-vous sûr de vouloir suspendre <strong>{passagerToSuspend?.name}</strong> ?</>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -424,7 +421,7 @@ export function PassagersView() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
             <AlertDialogDescription>
-              Êtes-vous sûr de vouloir supprimer le passager <strong>{passagerToDelete?.name}</strong> ? Cette action est irréversible et toutes ses données seront perdues.
+              Êtes-vous sûr de vouloir supprimer <strong>{passagerToDelete?.name}</strong> ? Cette action est irréversible.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -435,6 +432,7 @@ export function PassagersView() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
     </div>
   )
 }

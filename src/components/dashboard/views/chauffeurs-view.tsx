@@ -17,9 +17,15 @@ import {
   Shield,
   FileCheck,
   User,
+  FileText,
+  Calendar,
+  ZoomIn,
+  Hash,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useDashboard, type ChauffeurData } from '@/components/dashboard/dashboard-context'
+import { exportToCSV } from '@/lib/export-utils'
+import { toast } from 'sonner'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,6 +43,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -160,6 +172,14 @@ export function ChauffeursView() {
   const [kycToValidate, setKycToValidate] = useState<KycItem | null>(null)
   const [kycToReject, setKycToReject] = useState<KycItem | null>(null)
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
+  const [kycPreviewItem, setKycPreviewItem] = useState<KycItem | null>(null)
+  const [kycPreviewOpen, setKycPreviewOpen] = useState(false)
+  const [kycFullscreenOpen, setKycFullscreenOpen] = useState(false)
+
+  const openKycPreview = (item: KycItem) => {
+    setKycPreviewItem(item)
+    setKycPreviewOpen(true)
+  }
 
   /* ---- Filtering ---- */
   const filtered = chauffeurs.filter((c) => {
@@ -261,35 +281,34 @@ export function ChauffeursView() {
   }
 
   const handleExportCSV = () => {
-    const headers = ['Nom', 'Téléphone', 'Véhicule', 'Note', 'Statut', 'Courses totales']
-    const rows = filtered.map((c) =>
-      [c.name, c.phone, c.vehicle, String(c.note), c.statut, String(c.courses)].join(',')
-    )
-    const csv = [headers.join(','), ...rows].join('\n')
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'chauffeurs.csv'
-    link.click()
-    URL.revokeObjectURL(url)
+    exportToCSV<ChauffeurData>(filtered, 'chauffeurs_besttrans', {
+      id: 'ID',
+      name: 'Nom Complet',
+      phone: 'Téléphone',
+      vehicle: 'Véhicule',
+      note: 'Note',
+      statut: 'Statut',
+      courses: 'Courses',
+      solde: 'Solde',
+    })
+    toast.success('Export CSV généré')
   }
 
   /* ---- Render ---- */
   return (
     <div className="h-full flex flex-col gap-5">
       {/* ---- KPI Stats ---- */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {kpiStats.map((s) => {
           const Icon = s.icon
           return (
-            <div key={s.label} className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3">
-              <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', s.bg)}>
-                <Icon className={cn('w-5 h-5', s.color)} />
+            <div key={s.label} className="bg-white border border-[#E5E7EB] rounded-xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3">
+              <div className={cn('w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0', s.bg)}>
+                <Icon className={cn('w-4 h-4 sm:w-5 sm:h-5', s.color)} />
               </div>
-              <div>
-                <p className="text-xl font-bold text-[#111827]">{s.value}</p>
-                <p className="text-xs text-[#6B7280]">{s.label}</p>
+              <div className="min-w-0">
+                <p className="text-base sm:text-xl font-bold text-[#111827] truncate">{s.value}</p>
+                <p className="text-[10px] sm:text-xs text-[#6B7280] truncate">{s.label}</p>
               </div>
             </div>
           )
@@ -298,11 +317,11 @@ export function ChauffeursView() {
 
       {/* ---- Tabs ---- */}
       <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden flex flex-col flex-1 min-h-0">
-        <div className="flex items-center border-b border-[#E5E7EB] px-5">
+        <div className="flex items-center border-b border-[#E5E7EB] px-2 sm:px-5 overflow-x-auto scrollbar-hide">
           <button
             onClick={() => setActiveTab('liste')}
             className={cn(
-              'px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px',
+              'px-3 sm:px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px shrink-0',
               activeTab === 'liste'
                 ? 'border-orange-600 text-orange-700'
                 : 'border-transparent text-[#6B7280] hover:text-[#111827]'
@@ -310,13 +329,13 @@ export function ChauffeursView() {
           >
             <div className="flex items-center gap-2">
               <Car className="w-4 h-4" />
-              Liste chauffeurs
+              <span className="whitespace-nowrap">Liste chauffeurs</span>
             </div>
           </button>
           <button
             onClick={() => setActiveTab('kyc')}
             className={cn(
-              'px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px',
+              'px-3 sm:px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px shrink-0',
               activeTab === 'kyc'
                 ? 'border-orange-600 text-orange-700'
                 : 'border-transparent text-[#6B7280] hover:text-[#111827]'
@@ -324,7 +343,7 @@ export function ChauffeursView() {
           >
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4" />
-              Validation KYC
+              <span className="whitespace-nowrap">Validation KYC</span>
               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700">
                 {kycItems.filter((k) => k.status === 'En attente').length}
               </span>
@@ -336,14 +355,14 @@ export function ChauffeursView() {
         {activeTab === 'liste' && (
           <>
             {/* Search & Filter */}
-            <div className="p-4 border-b border-[#E5E7EB]">
-              <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-                <div className="flex flex-1 gap-2 w-full sm:w-auto">
+            <div className="p-3 sm:p-4 border-b border-[#E5E7EB]">
+              <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
+                <div className="flex flex-col sm:flex-row flex-1 gap-2">
                   <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
                     <input
                       type="text"
-                      placeholder="Rechercher par nom, téléphone, véhicule..."
+                      placeholder="Rechercher..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -352,7 +371,7 @@ export function ChauffeursView() {
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
                   >
                     <option value="all">Tous statuts</option>
                     <option value="Actif">Actif</option>
@@ -362,7 +381,7 @@ export function ChauffeursView() {
                 </div>
                 <button
                   onClick={handleExportCSV}
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <Download className="w-4 h-4" /> Export CSV
                 </button>
@@ -370,8 +389,8 @@ export function ChauffeursView() {
             </div>
 
             {/* Desktop: DataTable */}
-            <div className="hidden md:block flex-1 overflow-y-auto min-h-0">
-              <table className="w-full text-sm">
+            <div className="hidden md:block flex-1 overflow-x-auto overflow-y-auto min-h-0">
+              <table className="w-full min-w-[620px] text-sm">
                 <thead className="sticky top-0 bg-[#F9FAFB] z-10">
                   <tr className="border-b border-[#E5E7EB]">
                     <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Nom</th>
@@ -551,8 +570,8 @@ export function ChauffeursView() {
         {activeTab === 'kyc' && (
           <>
             {/* Desktop: KYC Table */}
-            <div className="hidden md:block flex-1 overflow-y-auto min-h-0">
-              <table className="w-full text-sm">
+            <div className="hidden md:block flex-1 overflow-x-auto overflow-y-auto min-h-0">
+              <table className="w-full min-w-[540px] text-sm">
                 <thead className="sticky top-0 bg-[#F9FAFB] z-10">
                   <tr className="border-b border-[#E5E7EB]">
                     <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Nom</th>
@@ -606,10 +625,11 @@ export function ChauffeursView() {
                               </>
                             )}
                             <button
-                              className="p-1.5 rounded-md hover:bg-gray-100 transition-colors"
+                              onClick={() => openKycPreview(item)}
+                              className="p-1.5 rounded-md hover:bg-orange-50 transition-colors"
                               title="Voir document"
                             >
-                              <Eye className="w-4 h-4 text-[#6B7280]" />
+                              <Eye className="w-4 h-4 text-orange-500" />
                             </button>
                           </div>
                         </td>
@@ -647,24 +667,33 @@ export function ChauffeursView() {
                             </span>
                           </div>
                         </div>
-                        {item.status === 'En attente' && (
-                          <div className="flex items-center gap-1">
-                            <button
-                              onClick={() => handleKycApprove(item)}
-                              className="p-1.5 rounded-md hover:bg-emerald-50 transition-colors"
-                              title="Approuver"
-                            >
-                              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                            </button>
-                            <button
-                              onClick={() => handleKycReject(item)}
-                              className="p-1.5 rounded-md hover:bg-rose-50 transition-colors"
-                              title="Rejeter"
-                            >
-                              <Ban className="w-4 h-4 text-rose-600" />
-                            </button>
-                          </div>
-                        )}
+                        <div className="flex items-center gap-1">
+                          {item.status === 'En attente' && (
+                            <>
+                              <button
+                                onClick={() => handleKycApprove(item)}
+                                className="p-1.5 rounded-md hover:bg-emerald-50 transition-colors"
+                                title="Approuver"
+                              >
+                                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                              </button>
+                              <button
+                                onClick={() => handleKycReject(item)}
+                                className="p-1.5 rounded-md hover:bg-rose-50 transition-colors"
+                                title="Rejeter"
+                              >
+                                <Ban className="w-4 h-4 text-rose-600" />
+                              </button>
+                            </>
+                          )}
+                          <button
+                            onClick={() => openKycPreview(item)}
+                            className="p-1.5 rounded-md hover:bg-orange-50 transition-colors"
+                            title="Voir document"
+                          >
+                            <Eye className="w-4 h-4 text-orange-500" />
+                          </button>
+                        </div>
                       </div>
 
                       <div className="space-y-1.5 mb-3">
@@ -784,6 +813,161 @@ export function ChauffeursView() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* ---- KYC Document Preview Dialog ---- */}
+      <Dialog open={kycPreviewOpen} onOpenChange={setKycPreviewOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Eye className="w-4 h-4 text-orange-600" />
+              Aperçu du document KYC
+            </DialogTitle>
+          </DialogHeader>
+
+          {kycPreviewItem && (() => {
+            const sty = kycStatusStyle[kycPreviewItem.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-400' }
+            return (
+              <div className="space-y-5">
+                {/* Status badge header */}
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-orange-50 border border-orange-100">
+                  <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center shrink-0">
+                    <FileText className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-[#111827]">{kycPreviewItem.documentType}</p>
+                    <p className="text-xs text-[#6B7280] mt-0.5">Document KYC soumis par le chauffeur</p>
+                  </div>
+                  <span className={cn('inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold', sty.bg, sty.text)}>
+                    <span className={cn('w-1.5 h-1.5 rounded-full', sty.dot)} />
+                    {kycPreviewItem.status}
+                  </span>
+                </div>
+
+                {/* Info grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { icon: User,     label: 'Chauffeur',      value: kycPreviewItem.name },
+                    { icon: Phone,    label: 'Téléphone',      value: kycPreviewItem.phone },
+                    { icon: Hash,     label: 'Référence doc',  value: kycPreviewItem.id },
+                    { icon: Calendar, label: 'Date soumission',value: kycPreviewItem.submittedDate },
+                  ].map(({ icon: InfoIcon, label, value }) => (
+                    <div key={label} className="bg-[#F9FAFB] border border-[#F3F4F6] rounded-xl p-3">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <InfoIcon className="w-3.5 h-3.5 text-[#9CA3AF]" />
+                        <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">{label}</p>
+                      </div>
+                      <p className="text-sm font-semibold text-[#111827]">{value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Mock document preview */}
+                <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl bg-[#F9FAFB] flex flex-col items-center justify-center py-10 gap-3">
+                  <div className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center">
+                    <FileText className="w-7 h-7 text-orange-600" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-semibold text-[#111827]">{kycPreviewItem.documentType}</p>
+                    <p className="text-xs text-[#9CA3AF] mt-0.5">{kycPreviewItem.name}</p>
+                  </div>
+                  <button
+                    onClick={() => setKycFullscreenOpen(true)}
+                    className="flex items-center gap-1.5 text-xs font-medium text-orange-600 hover:text-orange-700 transition-colors"
+                  >
+                    <ZoomIn className="w-3.5 h-3.5" /> Voir en plein écran
+                  </button>
+                </div>
+
+                {/* Action buttons (only if En attente) */}
+                {kycPreviewItem.status === 'En attente' && (
+                  <div className="flex gap-3 pt-1">
+                    <button
+                      onClick={() => { setKycPreviewOpen(false); handleKycApprove(kycPreviewItem) }}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-colors"
+                    >
+                      <CheckCircle2 className="w-4 h-4" /> Approuver
+                    </button>
+                    <button
+                      onClick={() => { setKycPreviewOpen(false); handleKycReject(kycPreviewItem) }}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white rounded-xl transition-colors"
+                    >
+                      <Ban className="w-4 h-4" /> Rejeter
+                    </button>
+                  </div>
+                )}
+              </div>
+            )
+          })()}
+        </DialogContent>
+      </Dialog>
+
+      {/* ---- KYC Fullscreen Dialog ---- */}
+      <Dialog open={kycFullscreenOpen} onOpenChange={setKycFullscreenOpen}>
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden">
+          <DialogHeader className="px-6 py-4 border-b border-[#E5E7EB] shrink-0">
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="w-4 h-4 text-orange-600" />
+              {kycPreviewItem?.documentType}
+              <span className="text-sm font-normal text-[#9CA3AF] ml-1">— {kycPreviewItem?.name}</span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-auto p-6 flex flex-col items-center justify-center gap-6 bg-[#F9FAFB] min-h-[400px]">
+            {/* Simulated document full view */}
+            <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg border border-[#E5E7EB] overflow-hidden">
+              {/* Document header strip */}
+              <div className="bg-orange-600 px-6 py-4 flex items-center justify-between">
+                <div>
+                  <p className="text-white/70 text-[10px] font-semibold uppercase tracking-widest">Document officiel</p>
+                  <p className="text-white text-base font-black mt-0.5">{kycPreviewItem?.documentType}</p>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-white" />
+                </div>
+              </div>
+              {/* Placeholder content */}
+              <div className="px-6 py-8 space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center shrink-0">
+                    <User className="w-8 h-8 text-orange-400" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Titulaire</p>
+                    <p className="text-lg font-black text-[#111827]">{kycPreviewItem?.name}</p>
+                    <p className="text-xs text-[#6B7280] font-mono mt-0.5">{kycPreviewItem?.id}</p>
+                  </div>
+                </div>
+                <div className="h-px bg-[#F3F4F6]" />
+                <div className="grid grid-cols-3 gap-4">
+                  {[
+                    { label: 'N° Document', value: kycPreviewItem?.id ?? '—' },
+                    { label: 'Date soumission', value: kycPreviewItem?.submittedDate ?? '—' },
+                    { label: 'Statut', value: kycPreviewItem?.status ?? '—' },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="bg-[#F9FAFB] rounded-xl p-3">
+                      <p className="text-[9px] text-[#9CA3AF] uppercase tracking-wider font-semibold">{label}</p>
+                      <p className="text-sm font-bold text-[#374151] mt-0.5">{value}</p>
+                    </div>
+                  ))}
+                </div>
+                {/* Barcode simulation */}
+                <div className="bg-[#F9FAFB] rounded-xl p-4 flex flex-col items-center gap-2">
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: 32 }).map((_, i) => (
+                      <div key={i} className={`w-1 bg-[#374151] rounded-sm`} style={{ height: `${24 + (i % 5) * 6}px` }} />
+                    ))}
+                  </div>
+                  <p className="text-[10px] font-mono text-[#9CA3AF] tracking-widest">{kycPreviewItem?.id}</p>
+                </div>
+              </div>
+              <div className="px-6 py-3 bg-[#F9FAFB] border-t border-[#F3F4F6] flex items-center justify-between">
+                <p className="text-[10px] text-[#9CA3AF]">République du Mali · Document officiel</p>
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+              </div>
+            </div>
+            <p className="text-xs text-[#9CA3AF]">Aperçu simulé — les données réelles seront disponibles en production</p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

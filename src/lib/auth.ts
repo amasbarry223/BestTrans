@@ -13,7 +13,7 @@ export type AuthUser = {
   initials: string
 }
 
-// BestTrans Demo Users — RBAC: Super Admin, Admin, Support, Finance
+// BestTrans Demo Users — RBAC: Super Admin, Admin
 const DEMO_USERS: Record<string, { user: AuthUser; password: string }> = {
   superadmin: {
     password: 'besttrans2025',
@@ -41,32 +41,20 @@ const DEMO_USERS: Record<string, { user: AuthUser; password: string }> = {
       initials: 'FT',
     },
   },
-  support: {
+  'modybarry50@gmail.com': {
     password: 'besttrans2025',
     user: {
-      id: 'support',
-      username: 'support',
-      name: 'Ibrahim Keita',
-      email: 'i.keita@besttrans.ml',
+      id: 'modybarry50',
+      username: 'modybarry50@gmail.com',
+      name: 'Mody Barry',
+      email: 'modybarry50@gmail.com',
       role: 'support',
-      permissions: ['dashboard:read', 'users:read', 'drivers:read', 'courses:read', 'courses:write', 'support:read', 'support:write', 'notifications:read'],
+      permissions: ['dashboard:read', 'users:read', 'drivers:read', 'courses:read', 'support:read', 'support:write', 'notifications:read'],
       location: 'Bamako',
-      initials: 'IK',
+      initials: 'MB',
     },
   },
-  finance: {
-    password: 'besttrans2025',
-    user: {
-      id: 'finance',
-      username: 'finance',
-      name: 'Aminata Coulibaly',
-      email: 'a.coulibaly@besttrans.ml',
-      role: 'finance',
-      permissions: ['dashboard:read', 'payments:read', 'payments:write', 'payments:refund', 'reports:read', 'reports:export', 'notifications:read'],
-      location: 'Bamako',
-      initials: 'AC',
-    },
-  },
+
 }
 
 const emailLookup: Record<string, string> = {}
@@ -101,7 +89,6 @@ export function getRoleLabel(role: string): string {
     super_admin: 'Super Admin',
     admin: 'Admin',
     support: 'Support',
-    finance: 'Finance',
   }
   return labels[role] || role
 }
@@ -111,7 +98,6 @@ export function getRoleColor(role: string): { bg: string; text: string; border: 
     super_admin: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
     admin: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200' },
     support: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
-    finance: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
   }
   return colors[role] || { bg: 'bg-gray-50', text: 'text-gray-700', border: 'border-gray-200' }
 }

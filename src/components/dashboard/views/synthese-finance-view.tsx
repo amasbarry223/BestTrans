@@ -106,19 +106,19 @@ const financialDetails = [
 /* ------------------------------------------------------------------ */
 
 function PieCustomLabel({
-  cx,
-  cy,
-  midAngle,
-  innerRadius,
-  outerRadius,
-  percent,
+  cx = 0,
+  cy = 0,
+  midAngle = 0,
+  innerRadius = 0,
+  outerRadius = 0,
+  percent = 0,
 }: {
-  cx: number
-  cy: number
-  midAngle: number
-  innerRadius: number
-  outerRadius: number
-  percent: number
+  cx?: number
+  cy?: number
+  midAngle?: number
+  innerRadius?: number
+  outerRadius?: number
+  percent?: number
 }) {
   const RADIAN = Math.PI / 180
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5
@@ -259,7 +259,7 @@ export function SyntheseFinanceView() {
                   ))}
                 </Pie>
                 <RechartsTooltip
-                  formatter={(value: number, name: string) => [`${value}%`, name]}
+                  formatter={(value, name) => [`${value ?? ''}%`, String(name)] as [string, string]}
                   contentStyle={{
                     borderRadius: '8px',
                     border: '1px solid #E5E7EB',
@@ -310,8 +310,8 @@ export function SyntheseFinanceView() {
         </div>
 
         {/* Desktop Table */}
-        <div className="hidden md:block overflow-y-auto max-h-[320px]">
-          <table className="w-full text-sm">
+        <div className="hidden md:block overflow-x-auto overflow-y-auto max-h-[320px]">
+          <table className="w-full min-w-[560px] text-sm">
             <thead className="sticky top-0 bg-[#F9FAFB] z-10">
               <tr className="border-b border-[#E5E7EB]">
                 <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Mois</th>

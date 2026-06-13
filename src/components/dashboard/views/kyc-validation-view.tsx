@@ -10,6 +10,10 @@ import {
   ShieldCheck,
   Search,
   Filter,
+  User,
+  Calendar,
+  Hash,
+  ZoomIn,
 } from 'lucide-react'
 import {
   AlertDialog,
@@ -21,6 +25,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
@@ -121,6 +131,16 @@ export function KycValidationView() {
     document: null,
   })
   const [rejectReason, setRejectReason] = useState('')
+
+  // Preview dialog
+  const [previewDoc, setPreviewDoc] = useState<KycDocument | null>(null)
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [fullscreenOpen, setFullscreenOpen] = useState(false)
+
+  const openPreviewDialog = (doc: KycDocument) => {
+    setPreviewDoc(doc)
+    setPreviewOpen(true)
+  }
 
   const filteredDocs = pendingDocuments.filter(
     (doc) =>
@@ -228,8 +248,8 @@ export function KycValidationView() {
         </div>
 
         {/* Desktop table */}
-        <div className="hidden md:block overflow-y-auto max-h-[480px]">
-          <table className="w-full text-sm">
+        <div className="hidden md:block overflow-x-auto overflow-y-auto max-h-[480px]">
+          <table className="w-full min-w-[520px] text-sm">
             <thead className="sticky top-0 bg-[#F9FAFB] z-10">
               <tr className="border-b border-[#E5E7EB]">
                 <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">
@@ -306,6 +326,7 @@ export function KycValidationView() {
                         variant="ghost"
                         size="sm"
                         className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 gap-1.5"
+                        onClick={() => openPreviewDialog(doc)}
                       >
                         <Eye className="w-4 h-4" />
                         Aperçu
@@ -388,6 +409,7 @@ export function KycValidationView() {
                       variant="ghost"
                       size="sm"
                       className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 gap-1 h-7 px-2"
+                      onClick={() => openPreviewDialog(doc)}
                     >
                       <Eye className="w-3.5 h-3.5" />
                     </Button>
@@ -415,6 +437,99 @@ export function KycValidationView() {
           })}
         </div>
       </div>
+
+      {/* ---- Document Preview Dialog ---- */}
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Eye className="w-4 h-4 text-orange-600" />
+              Aperçu du document
+            </DialogTitle>
+          </DialogHeader>
+
+          {previewDoc && (() => {
+            const Icon = docTypeIcon[previewDoc.documentType] || FileText
+            const colors = docTypeColor[previewDoc.documentType] || { bg: 'bg-orange-50', text: 'text-orange-600' }
+            return (
+              <div className="space-y-5">
+                {/* Document type header */}
+                <div className={cn('flex items-center gap-3 p-4 rounded-xl border', colors.bg, 'border-orange-100')}>
+                  <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center bg-white shadow-sm')}>
+                    <Icon className={cn('w-5 h-5', colors.text)} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-[#111827]">{previewDoc.documentType}</p>
+                    <p className="text-xs text-[#6B7280] mt-0.5">Document KYC · En attente de validation</p>
+                  </div>
+                  <Badge className="ml-auto bg-amber-100 text-amber-700 hover:bg-amber-100 border-0">
+                    En attente
+                  </Badge>
+                </div>
+
+                {/* Info rows */}
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { icon: User,     label: 'Chauffeur', value: previewDoc.driverName },
+                    { icon: Hash,     label: 'ID Chauffeur', value: previewDoc.driverId },
+                    { icon: FileText, label: 'Référence', value: previewDoc.id },
+                    { icon: Calendar, label: 'Soumis le', value: new Date(previewDoc.submittedDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) },
+                  ].map(({ icon: InfoIcon, label, value }) => (
+                    <div key={label} className="bg-[#F9FAFB] border border-[#F3F4F6] rounded-xl p-3">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <InfoIcon className="w-3.5 h-3.5 text-[#9CA3AF]" />
+                        <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">{label}</p>
+                      </div>
+                      <p className="text-sm font-semibold text-[#111827]">{value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Mock document preview */}
+                <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl bg-[#F9FAFB] flex flex-col items-center justify-center py-10 gap-3">
+                  <div className={cn('w-14 h-14 rounded-2xl flex items-center justify-center', colors.bg)}>
+                    <Icon className={cn('w-7 h-7', colors.text)} />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-semibold text-[#111827]">{previewDoc.documentType}</p>
+                    <p className="text-xs text-[#9CA3AF] mt-0.5">{previewDoc.driverName} · {previewDoc.driverId}</p>
+                  </div>
+                  <button
+                    onClick={() => setFullscreenOpen(true)}
+                    className="flex items-center gap-1.5 text-xs font-medium text-orange-600 hover:text-orange-700 transition-colors"
+                  >
+                    <ZoomIn className="w-3.5 h-3.5" />
+                    Voir en plein écran
+                  </button>
+                </div>
+
+                {/* CTA buttons */}
+                <div className="flex gap-3 pt-1">
+                  <Button
+                    className="flex-1 bg-orange-600 hover:bg-orange-700 text-white gap-1.5"
+                    onClick={() => {
+                      setPreviewOpen(false)
+                      openValidateDialog(previewDoc)
+                    }}
+                  >
+                    <CheckCircle2 className="w-4 h-4" /> Valider
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="flex-1 text-red-600 border-red-200 hover:bg-red-50 gap-1.5"
+                    onClick={() => {
+                      setPreviewOpen(false)
+                      openRejectDialog(previewDoc)
+                    }}
+                  >
+                    <XCircle className="w-4 h-4" /> Rejeter
+                  </Button>
+                </div>
+              </div>
+            )
+          })()}
+        </DialogContent>
+      </Dialog>
 
       {/* AlertDialog for Validate / Reject */}
       <AlertDialog
@@ -486,6 +601,73 @@ export function KycValidationView() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* ---- Document Fullscreen Dialog ---- */}
+      <Dialog open={fullscreenOpen} onOpenChange={setFullscreenOpen}>
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden">
+          <DialogHeader className="px-6 py-4 border-b border-[#E5E7EB] shrink-0">
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="w-4 h-4 text-orange-600" />
+              {previewDoc?.documentType}
+              <span className="text-sm font-normal text-[#9CA3AF] ml-1">— {previewDoc?.driverName}</span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-auto p-6 flex flex-col items-center justify-center gap-6 bg-[#F9FAFB] min-h-[400px]">
+            <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg border border-[#E5E7EB] overflow-hidden">
+              {/* Document header strip */}
+              <div className="bg-orange-600 px-6 py-4 flex items-center justify-between">
+                <div>
+                  <p className="text-white/70 text-[10px] font-semibold uppercase tracking-widest">Document officiel</p>
+                  <p className="text-white text-base font-black mt-0.5">{previewDoc?.documentType}</p>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-white" />
+                </div>
+              </div>
+              {/* Placeholder content */}
+              <div className="px-6 py-8 space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center shrink-0">
+                    <User className="w-8 h-8 text-orange-400" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Titulaire</p>
+                    <p className="text-lg font-black text-[#111827]">{previewDoc?.driverName}</p>
+                    <p className="text-xs text-[#6B7280] font-mono mt-0.5">{previewDoc?.driverId}</p>
+                  </div>
+                </div>
+                <div className="h-px bg-[#F3F4F6]" />
+                <div className="grid grid-cols-3 gap-4">
+                  {[
+                    { label: 'N° Document', value: previewDoc?.id ?? '—' },
+                    { label: 'ID Chauffeur', value: previewDoc?.driverId ?? '—' },
+                    { label: 'Soumis le', value: previewDoc ? new Date(previewDoc.submittedDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—' },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="bg-[#F9FAFB] rounded-xl p-3">
+                      <p className="text-[9px] text-[#9CA3AF] uppercase tracking-wider font-semibold">{label}</p>
+                      <p className="text-sm font-bold text-[#374151] mt-0.5">{value}</p>
+                    </div>
+                  ))}
+                </div>
+                {/* Barcode simulation */}
+                <div className="bg-[#F9FAFB] rounded-xl p-4 flex flex-col items-center gap-2">
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: 32 }).map((_, i) => (
+                      <div key={i} className="w-1 bg-[#374151] rounded-sm" style={{ height: `${24 + (i % 5) * 6}px` }} />
+                    ))}
+                  </div>
+                  <p className="text-[10px] font-mono text-[#9CA3AF] tracking-widest">{previewDoc?.id}</p>
+                </div>
+              </div>
+              <div className="px-6 py-3 bg-[#F9FAFB] border-t border-[#F3F4F6] flex items-center justify-between">
+                <p className="text-[10px] text-[#9CA3AF]">République du Mali · Document officiel</p>
+                <CheckCircle2 className="w-4 h-4 text-amber-500" />
+              </div>
+            </div>
+            <p className="text-xs text-[#9CA3AF]">Aperçu simulé — les données réelles seront disponibles en production</p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

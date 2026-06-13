@@ -17,6 +17,7 @@ import {
   Circle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +25,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 /* ------------------------------------------------------------------ */
 /*  Types & Styles                                                     */
@@ -98,6 +115,10 @@ export function TransactionsView() {
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [filterMode, setFilterMode] = useState<string>('all')
 
+  const [selectedTx, setSelectedTx] = useState<Transaction | null>(null)
+  const [detailOpen, setDetailOpen] = useState(false)
+  const [refundOpen, setRefundOpen] = useState(false)
+
   const filtered = mockTransactions.filter((t) => {
     const matchSearch =
       searchTerm === '' ||
@@ -110,11 +131,35 @@ export function TransactionsView() {
   })
 
   const handleView = (tx: Transaction) => {
-    alert(`Détail transaction : ${tx.numero}`)
+    setSelectedTx(tx)
+    setDetailOpen(true)
   }
 
   const handleRefund = (tx: Transaction) => {
-    alert(`Remboursement initié pour : ${tx.numero} - ${tx.montant}`)
+    setSelectedTx(tx)
+    setRefundOpen(true)
+  }
+
+  const confirmRefund = () => {
+    toast.success('Remboursement initié', {
+      description: `${selectedTx?.montant} seront remboursés à ${selectedTx?.passager} sous 24-48h.`,
+    })
+    setRefundOpen(false)
+    setSelectedTx(null)
+  }
+
+  const handleExportCSV = () => {
+    const headers = ['N° Transaction', 'Course', 'Passager', 'Montant', 'Mode', 'Statut', 'Date']
+    const rows = filtered.map(t => [t.numero, t.course, t.passager, t.montant, t.mode, t.statut, t.date])
+    const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `transactions-${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    toast.success('Export CSV réussi', { description: `${filtered.length} transaction(s) exportée(s)` })
   }
 
   return (
@@ -198,7 +243,10 @@ export function TransactionsView() {
               <option value="Wave">Wave</option>
             </select>
           </div>
-          <button className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors">
+          <button
+            onClick={handleExportCSV}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <Download className="w-4 h-4" /> Export
           </button>
         </div>
@@ -218,8 +266,8 @@ export function TransactionsView() {
         </div>
 
         {/* Desktop Table */}
-        <div className="hidden md:block flex-1 overflow-y-auto min-h-0 max-h-[460px]">
-          <table className="w-full text-sm">
+        <div className="hidden md:block flex-1 overflow-x-auto overflow-y-auto min-h-0 max-h-[460px]">
+          <table className="w-full min-w-[640px] text-sm">
             <thead className="sticky top-0 bg-[#F9FAFB] z-10">
               <tr className="border-b border-[#E5E7EB]">
                 <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">N° Transaction</th>
@@ -329,6 +377,121 @@ export function TransactionsView() {
           <p className="text-xs text-[#9CA3AF]">{filtered.length} transactions affichées</p>
         </div>
       </div>
+
+      {/* ---- Transaction Detail Dialog ---- */}
+      <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Détail de la transaction</DialogTitle>
+          </DialogHeader>
+          {selectedTx && (() => {
+            const ModeIcon = modeIcon[selectedTx.mode] ?? CreditCard
+            const mSty = modeStyle[selectedTx.mode] ?? { bg: 'bg-gray-50', text: 'text-gray-700' }
+            const sSty = statusStyle[selectedTx.statut] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }
+            return (
+              <div className="space-y-4 pt-2">
+                {/* Numero + statut */}
+                <div className="flex items-center justify-between">
+                  <span className="font-mono font-bold text-orange-700 text-sm">{selectedTx.numero}</span>
+                  <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold', sSty.bg, sSty.text)}>
+                    <span className={cn('w-1.5 h-1.5 rounded-full', sSty.dot)} />
+                    {selectedTx.statut}
+                  </span>
+                </div>
+
+                {/* Montant highlight */}
+                <div className="bg-orange-50 rounded-xl p-4 text-center">
+                  <p className="text-3xl font-bold text-orange-700">{selectedTx.montant}</p>
+                  <p className="text-xs text-orange-500 mt-0.5">Montant de la transaction</p>
+                </div>
+
+                {/* Details grid */}
+                <div className="bg-[#F9FAFB] rounded-xl p-4 space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#9CA3AF]">Passager</span>
+                    <span className="font-medium text-[#111827]">{selectedTx.passager}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#9CA3AF]">Course</span>
+                    <span className="font-mono font-medium text-[#374151]">{selectedTx.course}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#9CA3AF]">Mode de paiement</span>
+                    <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold', mSty.bg, mSty.text)}>
+                      <ModeIcon className="w-3 h-3" />
+                      {selectedTx.mode}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#9CA3AF]">Date</span>
+                    <span className="text-[#374151]">{selectedTx.date}</span>
+                  </div>
+                </div>
+
+                {/* Commission breakdown */}
+                <div className="bg-[#F9FAFB] rounded-xl p-4 space-y-2">
+                  <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider font-semibold mb-2">Ventilation</p>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-[#6B7280]">Montant brut</span>
+                    <span className="font-medium text-[#111827]">{selectedTx.montant}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-[#6B7280]">Commission plateforme (15%)</span>
+                    <span className="font-medium text-rose-600">- {Math.round(parseInt(selectedTx.montant.replace(/[^0-9]/g, '')) * 0.15).toLocaleString('fr-FR')} FCFA</span>
+                  </div>
+                  <div className="border-t border-[#E5E7EB] pt-2 flex justify-between text-xs">
+                    <span className="font-semibold text-[#374151]">Net chauffeur</span>
+                    <span className="font-bold text-emerald-700">{Math.round(parseInt(selectedTx.montant.replace(/[^0-9]/g, '')) * 0.85).toLocaleString('fr-FR')} FCFA</span>
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
+        </DialogContent>
+      </Dialog>
+
+      {/* ---- Refund AlertDialog ---- */}
+      <AlertDialog open={refundOpen} onOpenChange={setRefundOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Initier un remboursement</AlertDialogTitle>
+            <AlertDialogDescription>
+              Vous êtes sur le point de rembourser{' '}
+              <strong className="text-orange-700">{selectedTx?.montant}</strong> à{' '}
+              <strong>{selectedTx?.passager}</strong> pour la transaction{' '}
+              <span className="font-mono text-xs">{selectedTx?.numero}</span>.
+              Cette action est irréversible.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg p-4 my-2">
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Passager</p>
+                <p className="font-semibold text-[#111827]">{selectedTx?.passager}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Montant</p>
+                <p className="font-bold text-orange-600">{selectedTx?.montant}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Mode</p>
+                <p className="font-medium text-[#374151]">{selectedTx?.mode}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Date</p>
+                <p className="font-medium text-[#374151] text-xs">{selectedTx?.date}</p>
+              </div>
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmRefund} className="bg-amber-600 hover:bg-amber-700 text-white">
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Confirmer le remboursement
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

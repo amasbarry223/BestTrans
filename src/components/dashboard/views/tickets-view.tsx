@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Ticket,
   AlertCircle,
@@ -33,14 +33,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { useDashboard } from '@/components/dashboard/dashboard-context'
+import { mockDb, type SupportTicket, type TicketStatus, type TicketPriority } from '@/lib/mock-db'
+import { toast } from 'sonner'
+import { exportToCSV } from '@/lib/export-utils'
 
 /* ------------------------------------------------------------------ */
-/*  Types & Styles                                                     */
+/*  Styles                                                             */
 /* ------------------------------------------------------------------ */
-
-type TicketType = 'Réclamation' | 'Technique' | 'Remboursement' | 'Autre'
-type TicketPriority = 'Haute' | 'Moyenne' | 'Basse'
-type TicketStatus = 'Ouvert' | 'En cours' | 'Résolu'
 
 const priorityStyle: Record<TicketPriority, { bg: string; text: string; dot: string }> = {
   'Haute':  { bg: 'bg-rose-50',   text: 'text-rose-700',   dot: 'bg-rose-500' },
@@ -54,7 +54,7 @@ const statusStyle: Record<TicketStatus, { bg: string; text: string; dot: string 
   'Résolu':    { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
 }
 
-const typeStyle: Record<TicketType, { bg: string; text: string }> = {
+const typeStyle: Record<string, { bg: string; text: string }> = {
   'Réclamation':  { bg: 'bg-rose-50',    text: 'text-rose-700' },
   'Technique':    { bg: 'bg-orange-50',    text: 'text-orange-700' },
   'Remboursement': { bg: 'bg-amber-50',  text: 'text-amber-700' },
@@ -62,44 +62,12 @@ const typeStyle: Record<TicketType, { bg: string; text: string }> = {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Data                                                               */
-/* ------------------------------------------------------------------ */
-
-const kpiCards = [
-  { label: 'Tickets ouverts', value: '23', icon: Ticket, color: 'text-rose-600', bg: 'bg-rose-50' },
-  { label: 'En cours', value: '15', icon: Clock, color: 'text-orange-600', bg: 'bg-orange-50' },
-  { label: 'Résolus aujourd\'hui', value: '8', icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-  { label: 'Temps moyen', value: '2,4h', icon: Timer, color: 'text-orange-600', bg: 'bg-orange-50' },
-]
-
-interface SupportTicket {
-  id: string
-  numero: string
-  personne: string
-  personneRole: 'Passager' | 'Chauffeur'
-  type: TicketType
-  priorite: TicketPriority
-  statut: TicketStatus
-  assigneA: string
-  date: string
-}
-
-const mockTickets: SupportTicket[] = [
-  { id: '1', numero: 'TKT-2026-0234', personne: 'Amadou Diallo',       personneRole: 'Passager',  type: 'Réclamation',   priorite: 'Haute',  statut: 'Ouvert',    assigneA: 'Support A', date: '05 Mar 2026 14:20' },
-  { id: '2', numero: 'TKT-2026-0233', personne: 'Ibrahim Keita',       personneRole: 'Chauffeur', type: 'Technique',      priorite: 'Moyenne', statut: 'En cours',  assigneA: 'Tech B',    date: '05 Mar 2026 13:45' },
-  { id: '3', numero: 'TKT-2026-0232', personne: 'Fatoumata Traoré',    personneRole: 'Passager',  type: 'Remboursement',  priorite: 'Haute',  statut: 'Ouvert',    assigneA: 'Finance C',  date: '05 Mar 2026 12:30' },
-  { id: '4', numero: 'TKT-2026-0231', personne: 'Moussa Sissoko',      personneRole: 'Chauffeur', type: 'Réclamation',    priorite: 'Basse',  statut: 'Résolu',    assigneA: 'Support A', date: '05 Mar 2026 11:15' },
-  { id: '5', numero: 'TKT-2026-0230', personne: 'Aminata Coulibaly',   personneRole: 'Passager',  type: 'Technique',      priorite: 'Moyenne', statut: 'En cours',  assigneA: 'Tech B',    date: '05 Mar 2026 10:40' },
-  { id: '6', numero: 'TKT-2026-0229', personne: 'Seydou Diabaté',      personneRole: 'Chauffeur', type: 'Autre',          priorite: 'Basse',  statut: 'En cours',  assigneA: 'Support D', date: '04 Mar 2026 18:55' },
-  { id: '7', numero: 'TKT-2026-0228', personne: 'Kadiatou Bah',        personneRole: 'Passager',  type: 'Remboursement',  priorite: 'Haute',  statut: 'Ouvert',    assigneA: 'Finance C',  date: '04 Mar 2026 16:20' },
-  { id: '8', numero: 'TKT-2026-0227', personne: 'Oumar Sidibé',        personneRole: 'Chauffeur', type: 'Réclamation',    priorite: 'Moyenne', statut: 'Résolu',    assigneA: 'Support A', date: '04 Mar 2026 14:05' },
-]
-
-/* ------------------------------------------------------------------ */
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
 export function TicketsView() {
+  const { navigateToTicketDetail } = useDashboard()
+  const [tickets, setTickets] = useState<SupportTicket[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [filterPriority, setFilterPriority] = useState<string>('all')
@@ -110,7 +78,54 @@ export function TicketsView() {
   const [closeDialogOpen, setCloseDialogOpen] = useState(false)
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null)
 
-  const filtered = mockTickets.filter((t) => {
+  useEffect(() => {
+    setTickets(mockDb.getTickets())
+  }, [])
+
+  const kpiCards = [
+    { label: 'Tickets ouverts', value: tickets.filter(t => t.statut === 'Ouvert').length.toString(), icon: Ticket, color: 'text-rose-600', bg: 'bg-rose-50' },
+    { label: 'En cours', value: tickets.filter(t => t.statut === 'En cours').length.toString(), icon: Clock, color: 'text-orange-600', bg: 'bg-orange-50' },
+    { label: 'Résolus', value: tickets.filter(t => t.statut === 'Résolu').length.toString(), icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Temps moyen', value: '2,4h', icon: Timer, color: 'text-orange-600', bg: 'bg-orange-50' },
+  ]
+
+  const confirmEscalate = () => {
+    if (selectedTicket) {
+      mockDb.updateTicket(selectedTicket.id, { statut: 'En cours', priorite: 'Haute' })
+      setTickets(mockDb.getTickets())
+      toast.warning(`Ticket ${selectedTicket.numero} escaladé`)
+      setEscalateDialogOpen(false)
+      setSelectedTicket(null)
+    }
+  }
+
+  const confirmClose = () => {
+    if (selectedTicket) {
+      mockDb.updateTicket(selectedTicket.id, { statut: 'Résolu' })
+      setTickets(mockDb.getTickets())
+      toast.success(`Ticket ${selectedTicket.numero} clôturé`)
+      setCloseDialogOpen(false)
+      setSelectedTicket(null)
+    }
+  }
+
+  const handleExportCSV = () => {
+    exportToCSV<SupportTicket>(filtered, 'tickets_besttrans', {
+      id: 'ID',
+      numero: 'N° Ticket',
+      personne: 'Client',
+      personneRole: 'Rôle',
+      type: 'Type',
+      priorite: 'Priorité',
+      statut: 'Statut',
+      assigneA: 'Assigné à',
+      date: 'Date',
+      sujet: 'Sujet',
+    })
+    toast.success('Export CSV généré')
+  }
+
+  const filtered = tickets.filter((t) => {
     const matchSearch =
       searchTerm === '' ||
       t.numero.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -123,7 +138,16 @@ export function TicketsView() {
   })
 
   const handleView = (ticket: SupportTicket) => {
-    alert(`Détail ticket : ${ticket.numero} — ${ticket.personne}`)
+    navigateToTicketDetail({
+      id: ticket.id,
+      numero: ticket.numero,
+      personne: ticket.personne,
+      type: ticket.type,
+      priorite: ticket.priorite,
+      statut: ticket.statut,
+      date: ticket.date,
+      sujet: ticket.sujet,
+    })
   }
 
   const handleEscalate = (ticket: SupportTicket) => {
@@ -134,22 +158,6 @@ export function TicketsView() {
   const handleClose = (ticket: SupportTicket) => {
     setSelectedTicket(ticket)
     setCloseDialogOpen(true)
-  }
-
-  const confirmEscalate = () => {
-    if (selectedTicket) {
-      alert(`Ticket ${selectedTicket.numero} escaladé avec succès`)
-      setEscalateDialogOpen(false)
-      setSelectedTicket(null)
-    }
-  }
-
-  const confirmClose = () => {
-    if (selectedTicket) {
-      alert(`Ticket ${selectedTicket.numero} clôturé avec succès`)
-      setCloseDialogOpen(false)
-      setSelectedTicket(null)
-    }
   }
 
   return (
@@ -231,7 +239,10 @@ export function TicketsView() {
               <option value="Autre">Autre</option>
             </select>
           </div>
-          <button className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors">
+          <button
+            onClick={handleExportCSV}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <Download className="w-4 h-4" /> Export
           </button>
         </div>
@@ -251,8 +262,8 @@ export function TicketsView() {
         </div>
 
         {/* Desktop Table */}
-        <div className="hidden md:block flex-1 overflow-y-auto min-h-0 max-h-[460px]">
-          <table className="w-full text-sm">
+        <div className="hidden md:block flex-1 overflow-x-auto overflow-y-auto min-h-0 max-h-[460px]">
+          <table className="w-full min-w-[540px] text-sm">
             <thead className="sticky top-0 bg-[#F9FAFB] z-10">
               <tr className="border-b border-[#E5E7EB]">
                 <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">N° Ticket</th>
@@ -267,7 +278,7 @@ export function TicketsView() {
             </thead>
             <tbody>
               {filtered.map((t) => {
-                const tSty = typeStyle[t.type]
+                const tSty = typeStyle[t.type] || typeStyle['Autre']
                 const pSty = priorityStyle[t.priorite]
                 const sSty = statusStyle[t.statut]
                 return (
@@ -353,7 +364,7 @@ export function TicketsView() {
             {filtered.map((t) => {
               const pSty = priorityStyle[t.priorite]
               const sSty = statusStyle[t.statut]
-              const tSty = typeStyle[t.type]
+              const tSty = typeStyle[t.type] || typeStyle['Autre']
               return (
                 <div key={t.id} className="px-4 py-3 flex items-start gap-3">
                   <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0', sSty.bg)}>

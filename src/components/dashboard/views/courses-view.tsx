@@ -17,6 +17,16 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useDashboard, type CourseData } from '@/components/dashboard/dashboard-context'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 /* ──────────── Types ──────────── */
 type CourseStatut = 'En attente' | 'En cours' | 'Terminée' | 'Annulée'
@@ -72,13 +82,45 @@ const mockCourses: Course[] = [
 export function CoursesView() {
   const { navigateToCourseDetail } = useDashboard()
 
+  const [courses, setCourses] = useState<Course[]>(mockCourses)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatut, setFilterStatut] = useState<string>('all')
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
   const [showFilters, setShowFilters] = useState(false)
 
-  const filtered = mockCourses.filter((c) => {
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
+  const [refundDialogOpen, setRefundDialogOpen] = useState(false)
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
+
+  const handleCancelCourse = (c: Course) => {
+    setSelectedCourse(c)
+    setCancelDialogOpen(true)
+  }
+
+  const handleRefundCourse = (c: Course) => {
+    setSelectedCourse(c)
+    setRefundDialogOpen(true)
+  }
+
+  const confirmCancel = () => {
+    if (selectedCourse) {
+      setCourses((prev) =>
+        prev.map((c) =>
+          c.id === selectedCourse.id ? { ...c, statut: 'Annulée' as CourseStatut } : c
+        )
+      )
+      setCancelDialogOpen(false)
+      setSelectedCourse(null)
+    }
+  }
+
+  const confirmRefund = () => {
+    setRefundDialogOpen(false)
+    setSelectedCourse(null)
+  }
+
+  const filtered = courses.filter((c) => {
     const q = searchTerm.toLowerCase()
     const matchSearch =
       searchTerm === '' ||
@@ -264,12 +306,14 @@ export function CoursesView() {
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
+                          onClick={() => handleCancelCourse(c)}
                           title="Annuler"
                           className="p-1.5 rounded-md hover:bg-rose-50 text-rose-500 transition-colors"
                         >
                           <XCircle className="w-4 h-4" />
                         </button>
                         <button
+                          onClick={() => handleRefundCourse(c)}
                           title="Rembourser"
                           className="p-1.5 rounded-md hover:bg-amber-50 text-amber-500 transition-colors"
                         >
@@ -352,10 +396,16 @@ export function CoursesView() {
                   >
                     <Eye className="w-3.5 h-3.5" /> Détail
                   </button>
-                  <button className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-rose-600 bg-rose-50 rounded-lg hover:bg-rose-100 transition-colors">
+                  <button
+                    onClick={() => handleCancelCourse(c)}
+                    className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-rose-600 bg-rose-50 rounded-lg hover:bg-rose-100 transition-colors"
+                  >
                     <XCircle className="w-3.5 h-3.5" /> Annuler
                   </button>
-                  <button className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-amber-600 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
+                  <button
+                    onClick={() => handleRefundCourse(c)}
+                    className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-amber-600 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors"
+                  >
                     <RotateCcw className="w-3.5 h-3.5" /> Rembourser
                   </button>
                 </div>
@@ -369,6 +419,89 @@ export function CoursesView() {
           )}
         </div>
       </div>
+
+      {/* ── Cancel AlertDialog ── */}
+      <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Annuler la course</AlertDialogTitle>
+            <AlertDialogDescription>
+              Êtes-vous sûr de vouloir annuler la course{' '}
+              <strong className="text-orange-700 font-mono">{selectedCourse?.number}</strong> ?
+              Le passager <strong>{selectedCourse?.passager}</strong> sera notifié.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg p-4 my-2">
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <p className="text-[10px] text-[#9CA3AF] uppercase">Passager</p>
+                <p className="font-semibold text-[#111827]">{selectedCourse?.passager}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-[#9CA3AF] uppercase">Chauffeur</p>
+                <p className="font-semibold text-[#111827]">{selectedCourse?.chauffeur}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-[#9CA3AF] uppercase">Trajet</p>
+                <p className="font-medium text-[#374151]">{selectedCourse?.depart} → {selectedCourse?.arrivee}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-[#9CA3AF] uppercase">Prix</p>
+                <p className="font-bold text-orange-600">{selectedCourse?.prix}</p>
+              </div>
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmCancel} className="bg-rose-600 hover:bg-rose-700 text-white">
+              <XCircle className="w-4 h-4 mr-2" />
+              Confirmer l&apos;annulation
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* ── Refund AlertDialog ── */}
+      <AlertDialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Rembourser le passager</AlertDialogTitle>
+            <AlertDialogDescription>
+              Vous êtes sur le point de rembourser{' '}
+              <strong className="text-orange-700">{selectedCourse?.prix}</strong> à{' '}
+              <strong>{selectedCourse?.passager}</strong> pour la course{' '}
+              <span className="font-mono text-xs">{selectedCourse?.number}</span>.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg p-4 my-2">
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <p className="text-[10px] text-[#9CA3AF] uppercase">Passager</p>
+                <p className="font-semibold text-[#111827]">{selectedCourse?.passager}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-[#9CA3AF] uppercase">Montant</p>
+                <p className="font-bold text-orange-600">{selectedCourse?.prix}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-[#9CA3AF] uppercase">Mode paiement</p>
+                <p className="font-medium text-[#374151]">{selectedCourse?.modePaiement}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-[#9CA3AF] uppercase">Statut actuel</p>
+                <p className="font-medium text-[#374151]">{selectedCourse?.statut}</p>
+              </div>
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmRefund} className="bg-amber-600 hover:bg-amber-700 text-white">
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Confirmer le remboursement
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

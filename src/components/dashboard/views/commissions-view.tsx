@@ -42,8 +42,8 @@ import { useDashboard } from '@/components/dashboard/dashboard-context'
 /*  Types & Accent Map                                                 */
 /* ------------------------------------------------------------------ */
 
-type TxType = 'Dépôt' | 'Retrait' | 'Transfert' | 'Airtime' | 'Autres'
-type TxStatus = 'Payé' | 'En attente' | 'Échoué'
+type TxType = 'Course standard' | 'Course premium' | 'Aéroport' | 'Abonnement' | 'Autres'
+type TxStatus = 'Versé' | 'En attente' | 'Annulé'
 
 const accentMap: Record<string, { bg: string; iconBg: string; iconText: string; ring: string }> = {
   emerald: { bg: 'bg-emerald-50', iconBg: 'bg-emerald-100', iconText: 'text-emerald-600', ring: 'ring-emerald-200' },
@@ -55,25 +55,25 @@ const accentMap: Record<string, { bg: string; iconBg: string; iconText: string; 
 }
 
 const txTypeIcon: Record<TxType, React.ElementType> = {
-  'Dépôt':     ArrowDownToLine,
-  'Retrait':   ArrowUpFromLine,
-  'Transfert': Send,
-  'Airtime':   Smartphone,
-  'Autres':    MoreHorizontal,
+  'Course standard': Send,
+  'Course premium':  ArrowUpFromLine,
+  'Aéroport':        ArrowDownToLine,
+  'Abonnement':      Smartphone,
+  'Autres':          MoreHorizontal,
 }
 
 const txTypeAccent: Record<TxType, string> = {
-  'Dépôt':     'emerald',
-  'Retrait':   'sky',
-  'Transfert': 'amber',
-  'Airtime':   'rose',
-  'Autres':    'violet',
+  'Course standard': 'emerald',
+  'Course premium':  'sky',
+  'Aéroport':        'amber',
+  'Abonnement':      'teal',
+  'Autres':          'violet',
 }
 
 const statusStyle: Record<TxStatus, { bg: string; text: string; dot: string }> = {
-  'Payé':       { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
+  'Versé':      { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
   'En attente': { bg: 'bg-amber-50',   text: 'text-amber-700',   dot: 'bg-amber-500' },
-  'Échoué':     { bg: 'bg-rose-50',    text: 'text-rose-700',    dot: 'bg-rose-500' },
+  'Annulé':     { bg: 'bg-rose-50',    text: 'text-rose-700',    dot: 'bg-rose-500' },
 }
 
 /* ------------------------------------------------------------------ */
@@ -83,31 +83,31 @@ const statusStyle: Record<TxStatus, { bg: string; text: string; dot: string }> =
 const summaryCards = [
   {
     label: "Commission aujourd'hui",
-    value: '35,250 FCFA',
-    trend: '+12%',
+    value: '42,500 FCFA',
+    trend: '+14%',
     trendUp: true,
     icon: TrendingUp,
     accent: 'emerald' as const,
   },
   {
     label: 'Commission ce mois',
-    value: '425,800 FCFA',
-    trend: '+8%',
+    value: '876,200 FCFA',
+    trend: '+11%',
     trendUp: true,
     icon: Calendar,
     accent: 'sky' as const,
   },
   {
-    label: 'Nombre de transactions',
-    value: '156',
+    label: 'Courses commissionnées',
+    value: '312',
     trend: '',
     trendUp: true,
     icon: Hash,
     accent: 'amber' as const,
   },
   {
-    label: 'Commission moyenne',
-    value: '2,730 FCFA',
+    label: 'Taux moyen plateforme',
+    value: '15%',
     trend: '',
     trendUp: true,
     icon: BarChart3,
@@ -134,19 +134,19 @@ const dailyCommissionConfig: ChartConfig = {
 
 // Commission breakdown by type (donut chart)
 const typeBreakdownData = [
-  { name: 'Dépôt',     value: 40, color: '#10b981' },
-  { name: 'Retrait',   value: 25, color: '#0ea5e9' },
-  { name: 'Transfert', value: 20, color: '#f59e0b' },
-  { name: 'Airtime',   value: 10, color: '#f43f5e' },
-  { name: 'Autres',    value: 5,  color: '#8b5cf6' },
+  { name: 'Course standard', value: 55, color: '#10b981' },
+  { name: 'Course premium',  value: 22, color: '#0ea5e9' },
+  { name: 'Aéroport',        value: 12, color: '#f59e0b' },
+  { name: 'Abonnement',      value: 7,  color: '#14b8a6' },
+  { name: 'Autres',          value: 4,  color: '#8b5cf6' },
 ]
 
 const typeBreakdownConfig: ChartConfig = {
-  'Dépôt':     { label: 'Dépôt',     color: '#10b981' },
-  'Retrait':   { label: 'Retrait',   color: '#0ea5e9' },
-  'Transfert': { label: 'Transfert', color: '#f59e0b' },
-  'Airtime':   { label: 'Airtime',   color: '#f43f5e' },
-  'Autres':    { label: 'Autres',    color: '#8b5cf6' },
+  'Course standard': { label: 'Course standard', color: '#10b981' },
+  'Course premium':  { label: 'Course premium',  color: '#0ea5e9' },
+  'Aéroport':        { label: 'Aéroport',        color: '#f59e0b' },
+  'Abonnement':      { label: 'Abonnement',      color: '#14b8a6' },
+  'Autres':          { label: 'Autres',          color: '#8b5cf6' },
 }
 
 // Commission history (10 rows)
@@ -158,16 +158,16 @@ const commissionHistory: {
   commission: string
   statut: TxStatus
 }[] = [
-  { date: '05 Mar 2025', transaction: 'RIC-2025-001201', type: 'Dépôt',     montant: '150,000 FCFA', commission: '1,500 FCFA', statut: 'Payé' },
-  { date: '05 Mar 2025', transaction: 'RIC-2025-001198', type: 'Retrait',   montant: '75,000 FCFA',  commission: '750 FCFA',   statut: 'Payé' },
-  { date: '05 Mar 2025', transaction: 'RIC-2025-001195', type: 'Airtime',   montant: '10,000 FCFA',  commission: '300 FCFA',   statut: 'Payé' },
-  { date: '04 Mar 2025', transaction: 'RIC-2025-001190', type: 'Transfert', montant: '200,000 FCFA', commission: '2,000 FCFA', statut: 'En attente' },
-  { date: '04 Mar 2025', transaction: 'RIC-2025-001185', type: 'Dépôt',     montant: '50,000 FCFA',  commission: '500 FCFA',   statut: 'Payé' },
-  { date: '04 Mar 2025', transaction: 'RIC-2025-001182', type: 'Autres',    montant: '25,000 FCFA',  commission: '375 FCFA',   statut: 'Payé' },
-  { date: '03 Mar 2025', transaction: 'RIC-2025-001178', type: 'Retrait',   montant: '100,000 FCFA', commission: '1,000 FCFA', statut: 'Payé' },
-  { date: '03 Mar 2025', transaction: 'RIC-2025-001170', type: 'Transfert', montant: '180,000 FCFA', commission: '1,800 FCFA', statut: 'Échoué' },
-  { date: '02 Mar 2025', transaction: 'RIC-2025-001162', type: 'Dépôt',     montant: '300,000 FCFA', commission: '3,000 FCFA', statut: 'Payé' },
-  { date: '02 Mar 2025', transaction: 'RIC-2025-001158', type: 'Airtime',   montant: '5,000 FCFA',   commission: '150 FCFA',   statut: 'Payé' },
+  { date: '13 Jun 2026', transaction: 'BT-2026-003412', type: 'Course standard', montant: '8,500 FCFA',  commission: '1,275 FCFA', statut: 'Versé' },
+  { date: '13 Jun 2026', transaction: 'BT-2026-003408', type: 'Course premium',  montant: '15,000 FCFA', commission: '2,700 FCFA', statut: 'Versé' },
+  { date: '13 Jun 2026', transaction: 'BT-2026-003405', type: 'Aéroport',        montant: '25,000 FCFA', commission: '4,375 FCFA', statut: 'Versé' },
+  { date: '12 Jun 2026', transaction: 'BT-2026-003399', type: 'Course standard', montant: '6,200 FCFA',  commission: '930 FCFA',   statut: 'En attente' },
+  { date: '12 Jun 2026', transaction: 'BT-2026-003394', type: 'Course premium',  montant: '18,500 FCFA', commission: '3,330 FCFA', statut: 'Versé' },
+  { date: '12 Jun 2026', transaction: 'BT-2026-003388', type: 'Abonnement',      montant: '20,000 FCFA', commission: '3,000 FCFA', statut: 'Versé' },
+  { date: '11 Jun 2026', transaction: 'BT-2026-003381', type: 'Course standard', montant: '7,800 FCFA',  commission: '1,170 FCFA', statut: 'Versé' },
+  { date: '11 Jun 2026', transaction: 'BT-2026-003375', type: 'Aéroport',        montant: '30,000 FCFA', commission: '5,250 FCFA', statut: 'Annulé' },
+  { date: '11 Jun 2026', transaction: 'BT-2026-003368', type: 'Course standard', montant: '5,500 FCFA',  commission: '825 FCFA',   statut: 'Versé' },
+  { date: '10 Jun 2026', transaction: 'BT-2026-003360', type: 'Course premium',  montant: '12,000 FCFA', commission: '2,160 FCFA', statut: 'Versé' },
 ]
 
 /* ------------------------------------------------------------------ */
@@ -175,19 +175,19 @@ const commissionHistory: {
 /* ------------------------------------------------------------------ */
 
 function PieCustomLabel({
-  cx,
-  cy,
-  midAngle,
-  innerRadius,
-  outerRadius,
-  percent,
+  cx = 0,
+  cy = 0,
+  midAngle = 0,
+  innerRadius = 0,
+  outerRadius = 0,
+  percent = 0,
 }: {
-  cx: number
-  cy: number
-  midAngle: number
-  innerRadius: number
-  outerRadius: number
-  percent: number
+  cx?: number
+  cy?: number
+  midAngle?: number
+  innerRadius?: number
+  outerRadius?: number
+  percent?: number
 }) {
   const RADIAN = Math.PI / 180
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5
@@ -224,7 +224,7 @@ export function CommissionsView() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-[#111827]">Commissions</h1>
-          <p className="text-sm text-[#6B7280] mt-0.5">Suivez vos revenus et commissions</p>
+          <p className="text-sm text-[#6B7280] mt-0.5">Revenus plateforme et taux de commission par course</p>
         </div>
         <div className="flex items-center gap-1 bg-[#F3F4F6] rounded-full p-1">
           {periodTabs.map((tab, i) => (
@@ -379,7 +379,7 @@ export function CommissionsView() {
                   ))}
                 </Pie>
                 <RechartsTooltip
-                  formatter={(value: number, name: string) => [`${value}%`, name]}
+                  formatter={(value, name) => [`${value ?? ''}%`, String(name)] as [string, string]}
                   contentStyle={{
                     borderRadius: '8px',
                     border: '1px solid #E5E7EB',
@@ -417,7 +417,7 @@ export function CommissionsView() {
           </div>
           <button
             type="button"
-            onClick={() => setActiveView('historique')}
+            onClick={() => setActiveView('transactions')}
             className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
           >
             Voir tout
@@ -426,8 +426,8 @@ export function CommissionsView() {
         </div>
 
         {/* Desktop: Enhanced Table */}
-        <div className="hidden md:block flex-1 overflow-y-auto min-h-0 max-h-[420px]">
-          <table className="w-full text-sm">
+        <div className="hidden md:block flex-1 overflow-x-auto overflow-y-auto min-h-0 max-h-[420px]">
+          <table className="w-full min-w-[560px] text-sm">
             <thead className="sticky top-0 bg-[#F9FAFB] z-10">
               <tr className="border-b border-[#E5E7EB]">
                 <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Type</th>
@@ -532,7 +532,7 @@ export function CommissionsView() {
           </p>
           <button
             type="button"
-            onClick={() => setActiveView('historique')}
+            onClick={() => setActiveView('transactions')}
             className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
           >
             Voir tout

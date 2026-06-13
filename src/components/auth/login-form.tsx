@@ -5,12 +5,12 @@ import { useSearchParams } from 'next/navigation'
 import {
   ArrowRight,
   Check,
+  ChevronDown,
   Eye,
   EyeOff,
   Loader2,
   Lock,
-  User,
-  Sparkles,
+  Mail,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -18,24 +18,24 @@ import { getAllDemoUsers, getRoleLabel, getRoleColor } from '@/lib/auth'
 import type { AuthUser } from '@/lib/auth'
 
 const inputClass =
-  'w-full h-12 pl-11 pr-4 rounded-2xl border border-[#E5E7EB]/80 bg-[#F9FAFB]/90 text-[#111827] text-sm placeholder:text-[#9CA3AF] transition-all duration-200 focus:outline-none focus:bg-white focus:border-orange-400/60 focus:ring-4 focus:ring-orange-500/10'
+  'w-full h-9 pl-9 pr-4 rounded-xl border border-[#E5E7EB]/80 bg-[#F9FAFB]/90 text-[#111827] text-xs placeholder:text-[#9CA3AF] transition-all duration-200 focus:outline-none focus:bg-white focus:border-orange-400/60 focus:ring-2 focus:ring-orange-500/10'
 
 export function LoginForm() {
   const searchParams = useSearchParams()
-  const [identifier, setIdentifier] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [remember, setRemember] = useState(true)
   const [loading, setLoading] = useState(false)
-  const [focused, setFocused] = useState<'id' | 'pwd' | null>(null)
+  const [focused, setFocused] = useState<'email' | 'pwd' | null>(null)
   const [selectedDemo, setSelectedDemo] = useState<string | null>(null)
-  const identifierRef = useRef<HTMLInputElement>(null)
+  const emailRef = useRef<HTMLInputElement>(null)
 
   const demoUsers = getAllDemoUsers()
 
   useEffect(() => {
     if (selectedDemo) {
-      setIdentifier(selectedDemo)
+      setEmail(selectedDemo)
       setPassword('besttrans2025')
       const timer = setTimeout(() => {
         const pwdInput = document.getElementById('password')
@@ -53,12 +53,12 @@ export function LoginForm() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier, password }),
+        body: JSON.stringify({ identifier: email, password }),
       })
 
       if (!res.ok) {
         toast.error('Identifiants incorrects', {
-          description: 'Vérifiez votre identifiant et votre mot de passe.',
+          description: 'Vérifiez votre adresse email et votre mot de passe.',
         })
         return
       }
@@ -80,9 +80,9 @@ export function LoginForm() {
     }
   }
 
-  function handleDemoClick(username: string) {
-    setSelectedDemo(username)
-    setIdentifier(username)
+  function handleDemoClick(demoEmail: string) {
+    setSelectedDemo(demoEmail)
+    setEmail(demoEmail)
     setPassword('besttrans2025')
   }
 
@@ -90,32 +90,32 @@ export function LoginForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <label
-          htmlFor="identifier"
+          htmlFor="email"
           className="text-xs font-semibold uppercase tracking-wider text-[#6B7280]"
         >
-          Identifiant
+          Adresse email
         </label>
         <div className="relative group">
-          <User
+          <Mail
             className={cn(
               'absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors',
-              focused === 'id' ? 'text-orange-500' : 'text-[#9CA3AF]'
+              focused === 'email' ? 'text-orange-500' : 'text-[#9CA3AF]'
             )}
           />
           <input
-            ref={identifierRef}
-            id="identifier"
-            type="text"
-            autoComplete="username"
+            ref={emailRef}
+            id="email"
+            type="email"
+            autoComplete="email"
             required
-            value={identifier}
-            onFocus={() => setFocused('id')}
+            value={email}
+            onFocus={() => setFocused('email')}
             onBlur={() => setFocused(null)}
             onChange={(e) => {
-              setIdentifier(e.target.value)
+              setEmail(e.target.value)
               setSelectedDemo(null)
             }}
-            placeholder="Nom d'utilisateur ou email"
+            placeholder="votre@email.com"
             className={inputClass}
           />
         </div>
@@ -204,7 +204,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="group w-full h-12 mt-2 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-[#1A1A2E] text-white font-semibold shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-200 flex items-center justify-center gap-2"
+        className="group w-full h-9 mt-2 rounded-xl bg-gradient-to-r from-orange-500 via-orange-600 to-[#1A1A2E] text-white text-sm font-semibold shadow-md shadow-orange-500/25 hover:shadow-lg hover:shadow-orange-500/30 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-200 flex items-center justify-center gap-2"
       >
         {loading ? (
           <>
@@ -219,77 +219,79 @@ export function LoginForm() {
         )}
       </button>
 
-      <div className="pt-3">
-        <div className="rounded-2xl border border-orange-200/60 bg-gradient-to-b from-orange-50/60 to-orange-50/30 px-4 py-4">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-orange-500" />
-            <p className="text-xs font-semibold text-orange-700 uppercase tracking-wider">
-              Comptes de démonstration
-            </p>
-            <Sparkles className="w-3.5 h-3.5 text-orange-500" />
-          </div>
-          <p className="text-[11px] text-orange-600/70 text-center mb-3">
-            Cliquez sur un rôle pour remplir automatiquement les identifiants
-          </p>
-          <div className="grid grid-cols-1 gap-1.5 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
-            {demoUsers.map((du) => {
-              const roleColor = getRoleColor(du.role)
-              const roleLabel = getRoleLabel(du.role)
-              const isSelected = selectedDemo === du.username
+      <DemoAccounts
+        demoUsers={demoUsers}
+        selectedDemo={selectedDemo}
+        onDemoClick={handleDemoClick}
+      />
+    </form>
+  )
+}
 
-              return (
-                <button
-                  key={du.username}
-                  type="button"
-                  onClick={() => handleDemoClick(du.username)}
+function DemoAccounts({
+  demoUsers,
+  selectedDemo,
+  onDemoClick,
+}: {
+  demoUsers: ReturnType<typeof getAllDemoUsers>
+  selectedDemo: string | null
+  onDemoClick: (email: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="pt-1">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-center gap-1.5 text-[11px] text-[#9CA3AF] hover:text-orange-500 transition-colors"
+      >
+        <span>Accès démo</span>
+        <ChevronDown
+          className={cn('w-3 h-3 transition-transform duration-200', open && 'rotate-180')}
+        />
+      </button>
+
+      {open && (
+        <div className="mt-2 flex flex-col gap-1">
+          {demoUsers.map((du) => {
+            const roleColor = getRoleColor(du.role)
+            const roleLabel = getRoleLabel(du.role)
+            const isSelected = selectedDemo === du.email
+            return (
+              <button
+                key={du.email}
+                type="button"
+                onClick={() => onDemoClick(du.email)}
+                className={cn(
+                  'flex items-center gap-2 px-3 py-1.5 rounded-xl border text-left transition-all duration-150',
+                  'hover:scale-[1.01] active:scale-[0.99]',
+                  isSelected
+                    ? 'border-orange-300 bg-orange-50 ring-1 ring-orange-400/30'
+                    : cn(roleColor.border, roleColor.bg, 'hover:border-orange-300/60')
+                )}
+              >
+                <span
                   className={cn(
-                    'w-full flex items-center gap-2.5 px-3 py-2 rounded-xl border text-left transition-all duration-200',
-                    'hover:shadow-sm hover:scale-[1.01] active:scale-[0.99]',
-                    isSelected
-                      ? 'border-orange-300 bg-orange-100/80 shadow-sm ring-1 ring-orange-400/30'
-                      : cn(
-                          roleColor.border,
-                          roleColor.bg,
-                          'hover:border-orange-300/60'
-                        )
+                    'shrink-0 w-2 h-2 rounded-full',
+                    du.role === 'super_admin' ? 'bg-rose-500' :
+                    du.role === 'admin' ? 'bg-orange-500' :
+                    du.role === 'support' ? 'bg-amber-500' : 'bg-emerald-500'
                   )}
-                >
-                  <span
-                    className={cn(
-                      'shrink-0 w-2.5 h-2.5 rounded-full',
-                      du.role === 'super_admin'
-                        ? 'bg-rose-500'
-                        : du.role === 'admin'
-                          ? 'bg-orange-500'
-                          : du.role === 'support'
-                            ? 'bg-amber-500'
-                            : 'bg-emerald-500'
-                    )}
-                  />
-                  <span className={cn('text-xs font-semibold shrink-0', roleColor.text)}>
-                    {roleLabel}
-                  </span>
-                  <span className="text-orange-300/60 text-[10px]">•</span>
-                  <span className="text-xs text-[#6B7280] truncate flex-1">{du.name}</span>
-                  <code
-                    className={cn(
-                      'text-[10px] font-mono px-1.5 py-0.5 rounded-md shrink-0 border',
-                      isSelected
-                        ? 'bg-orange-100 border-orange-300 text-orange-700'
-                        : 'bg-white/80 border-[#E5E7EB] text-[#6B7280]'
-                    )}
-                  >
-                    {du.username}
-                  </code>
-                </button>
-              )
-            })}
-          </div>
-          <p className="text-[10px] text-orange-500/60 text-center mt-2.5">
-            Mot de passe commun : <code className="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-orange-100 text-[#6B7280]">besttrans2025</code>
+                />
+                <span className={cn('text-[11px] font-semibold shrink-0', roleColor.text)}>
+                  {roleLabel}
+                </span>
+                <span className="text-[11px] text-[#6B7280] truncate flex-1">{du.name}</span>
+                <code className="text-[10px] font-mono text-[#9CA3AF] shrink-0">{du.email}</code>
+              </button>
+            )
+          })}
+          <p className="text-[10px] text-[#9CA3AF] text-center mt-0.5">
+            Mot de passe : <code className="font-mono">besttrans2025</code>
           </p>
         </div>
-      </div>
-    </form>
+      )}
+    </div>
   )
 }

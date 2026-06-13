@@ -1,6 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
+import dynamic from 'next/dynamic'
+
+const ZonesHeatmapInner = dynamic(
+  () => import('./zones-heatmap-inner'),
+  { ssr: false, loading: () => <div className="h-full w-full bg-orange-50 animate-pulse rounded-xl" /> }
+)
 import {
   BarChart3,
   Activity,
@@ -12,6 +18,12 @@ import {
   Users,
   Calendar,
   Clock,
+  Star,
+  CreditCard,
+  Smartphone,
+  Banknote,
+  Wallet,
+  AlertTriangle,
 } from 'lucide-react'
 import {
   Bar,
@@ -22,6 +34,9 @@ import {
   Area,
   AreaChart,
   Tooltip as RechartsTooltip,
+  Pie,
+  PieChart,
+  Cell,
 } from 'recharts'
 import {
   ChartContainer,
@@ -39,12 +54,14 @@ import { toast } from 'sonner'
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
-type ReportTab = 'activite' | 'zones' | 'export'
+type ReportTab = 'activite' | 'chauffeurs' | 'paiements' | 'zones' | 'export'
 
 const reportTabs: { key: ReportTab; label: string; icon: React.ElementType }[] = [
-  { key: 'activite', label: 'Activité', icon: Activity },
-  { key: 'zones', label: 'Zones', icon: MapPin },
-  { key: 'export', label: 'Export', icon: Download },
+  { key: 'activite',   label: 'Activité',   icon: Activity },
+  { key: 'chauffeurs', label: 'Chauffeurs', icon: Car },
+  { key: 'paiements',  label: 'Paiements',  icon: CreditCard },
+  { key: 'zones',      label: 'Zones',      icon: MapPin },
+  { key: 'export',     label: 'Export',     icon: Download },
 ]
 
 /* ------------------------------------------------------------------ */
@@ -182,9 +199,11 @@ export function RapportsView() {
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'activite' && <ActiviteTab />}
-      {activeTab === 'zones' && <ZonesTab />}
-      {activeTab === 'export' && <ExportTab />}
+      {activeTab === 'activite'   && <ActiviteTab />}
+      {activeTab === 'chauffeurs' && <ChauffeursTab />}
+      {activeTab === 'paiements'  && <PaiementsTab />}
+      {activeTab === 'zones'      && <ZonesTab />}
+      {activeTab === 'export'     && <ExportTab />}
     </div>
   )
 }
@@ -377,6 +396,24 @@ function ZonesTab() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Heatmap */}
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-orange-600" />
+            <h2 className="text-sm font-semibold text-[#111827]">Carte de chaleur — Bamako</h2>
+          </div>
+          <div className="flex items-center gap-3 text-[10px] text-[#6B7280]">
+            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-orange-500 inline-block" /> Forte activité</span>
+            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-amber-400 inline-block" /> Moyenne</span>
+            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-sky-400 inline-block" /> Faible</span>
+          </div>
+        </div>
+        <div className="h-72 rounded-xl overflow-hidden">
+          <ZonesHeatmapInner />
         </div>
       </div>
 
@@ -597,6 +634,350 @@ function ExportTab() {
               </Button>
             </div>
           ))}
+        </div>
+      </div>
+    </>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CHAUFFEURS TAB
+   ══════════════════════════════════════════════════════════════════ */
+
+const topChauffeurs = [
+  { nom: 'Amadou Keïta',     courses: 312, revenus: '1,092,000 FCFA', note: 4.9, acceptation: '94%', ponctualite: '98%' },
+  { nom: 'Fatoumata Diallo', courses: 287, revenus: '1,004,500 FCFA', note: 4.8, acceptation: '91%', ponctualite: '96%' },
+  { nom: 'Oumar Sidibé',     courses: 265, revenus: '927,500 FCFA',   note: 4.7, acceptation: '88%', ponctualite: '95%' },
+  { nom: 'Daouda Camara',    courses: 241, revenus: '843,500 FCFA',   note: 4.6, acceptation: '85%', ponctualite: '93%' },
+  { nom: 'Mamadou Diarra',   courses: 218, revenus: '763,000 FCFA',   note: 4.5, acceptation: '83%', ponctualite: '91%' },
+  { nom: 'Boubacar Bah',     courses: 198, revenus: '693,000 FCFA',   note: 4.4, acceptation: '80%', ponctualite: '89%' },
+  { nom: 'Salimata Traoré',  courses: 175, revenus: '612,500 FCFA',   note: 4.3, acceptation: '78%', ponctualite: '88%' },
+]
+
+const chauffeursActifData = [
+  { sem: 'S1', actifs: 98 }, { sem: 'S2', actifs: 112 }, { sem: 'S3', actifs: 127 },
+  { sem: 'S4', actifs: 134 }, { sem: 'S5', actifs: 121 }, { sem: 'S6', actifs: 139 },
+  { sem: 'S7', actifs: 145 }, { sem: 'S8', actifs: 152 },
+]
+
+const chauffeursActifConfig: ChartConfig = {
+  actifs: { label: 'Chauffeurs actifs', color: '#f97316' },
+}
+
+function ChauffeursTab() {
+  return (
+    <>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+        {[
+          { label: 'Chauffeurs actifs',   value: '152',   icon: Car,      color: 'text-orange-600', bg: 'bg-orange-50' },
+          { label: 'Note moyenne',        value: '4,6/5', icon: Star,     color: 'text-amber-600',  bg: 'bg-amber-50' },
+          { label: "Taux d'acceptation",  value: '87%',   icon: Activity, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+          { label: 'Taux de ponctualité', value: '93%',   icon: Clock,    color: 'text-sky-600',     bg: 'bg-sky-50' },
+        ].map(card => {
+          const Icon = card.icon
+          return (
+            <div key={card.label} className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3">
+              <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0', card.bg)}>
+                <Icon className={cn('w-5 h-5', card.color)} />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-[#111827]">{card.value}</p>
+                <p className="text-[11px] text-[#6B7280]">{card.label}</p>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 mb-5">
+        <div className="lg:col-span-3 bg-white border border-[#E5E7EB] rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-[#111827] mb-4 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-orange-600" /> Évolution chauffeurs actifs (8 semaines)
+          </h3>
+          <ChartContainer config={chauffeursActifConfig} className="h-[200px] w-full">
+            <AreaChart data={chauffeursActifData}>
+              <defs>
+                <linearGradient id="chaufGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#f97316" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#f97316" stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} stroke="#E5E7EB" strokeDasharray="3 3" />
+              <XAxis dataKey="sem" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
+              <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} width={30} />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Area type="monotone" dataKey="actifs" stroke="#f97316" strokeWidth={2.5} fill="url(#chaufGrad)" />
+            </AreaChart>
+          </ChartContainer>
+        </div>
+
+        <div className="lg:col-span-2 bg-white border border-[#E5E7EB] rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-[#111827] mb-4 flex items-center gap-2">
+            <BarChart3 className="w-4 h-4 text-sky-600" /> Répartition par statut
+          </h3>
+          <div className="space-y-3">
+            {[
+              { label: 'En course',  value: 47, pct: 31, color: 'bg-amber-500' },
+              { label: 'En attente', value: 85, pct: 56, color: 'bg-emerald-500' },
+              { label: 'Hors ligne', value: 20, pct: 13, color: 'bg-gray-400' },
+            ].map(item => (
+              <div key={item.label}>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-[#6B7280]">{item.label}</span>
+                  <span className="font-semibold text-[#111827]">{item.value} ({item.pct}%)</span>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className={cn('h-full rounded-full', item.color)} style={{ width: `${item.pct}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 pt-4 border-t border-[#E5E7EB] grid grid-cols-2 gap-3">
+            <div>
+              <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Moy. courses/jour</p>
+              <p className="text-sm font-bold text-[#111827] mt-0.5">8,4</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">Revenus moy./chauffeur</p>
+              <p className="text-sm font-bold text-[#111827] mt-0.5">234 500 FCFA</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center gap-2">
+          <Star className="w-4 h-4 text-amber-500" />
+          <h3 className="text-sm font-semibold text-[#111827]">Top chauffeurs du mois</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-[#F9FAFB]">
+              <tr className="border-b border-[#E5E7EB]">
+                <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">#</th>
+                <th className="py-2.5 px-3 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Chauffeur</th>
+                <th className="py-2.5 px-3 text-right text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Courses</th>
+                <th className="py-2.5 px-3 text-right text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Revenus</th>
+                <th className="py-2.5 px-3 text-center text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Note</th>
+                <th className="py-2.5 px-3 text-center text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Acceptation</th>
+                <th className="py-2.5 px-3 text-center text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Ponctualité</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topChauffeurs.map((c, i) => (
+                <tr key={c.nom} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB]">
+                  <td className="py-3 px-5">
+                    <span className={cn(
+                      'inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold',
+                      i === 0 ? 'bg-amber-100 text-amber-700' :
+                      i === 1 ? 'bg-gray-100 text-gray-600' :
+                      i === 2 ? 'bg-orange-100 text-orange-700' : 'text-[#9CA3AF]'
+                    )}>
+                      {i + 1}
+                    </span>
+                  </td>
+                  <td className="py-3 px-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-[10px]">
+                        {c.nom.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </div>
+                      <span className="font-medium text-[#111827] text-xs">{c.nom}</span>
+                    </div>
+                  </td>
+                  <td className="py-3 px-3 text-right font-semibold text-[#111827] text-xs">{c.courses}</td>
+                  <td className="py-3 px-3 text-right text-xs text-emerald-600 font-semibold">{c.revenus}</td>
+                  <td className="py-3 px-3 text-center">
+                    <span className="inline-flex items-center gap-0.5 text-xs font-bold text-amber-600">
+                      <Star className="w-3 h-3 fill-amber-400 text-amber-400" />{c.note}
+                    </span>
+                  </td>
+                  <td className="py-3 px-3 text-center text-xs font-medium text-[#374151]">{c.acceptation}</td>
+                  <td className="py-3 px-3 text-center text-xs font-medium text-[#374151]">{c.ponctualite}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PAIEMENTS TAB
+   ══════════════════════════════════════════════════════════════════ */
+
+const paiementRepartitionData = [
+  { name: 'Mobile Money', value: 42, color: '#f97316' },
+  { name: 'Orange Money', value: 28, color: '#ea580c' },
+  { name: 'Wave',         value: 15, color: '#06b6d4' },
+  { name: 'Cash',         value: 10, color: '#10b981' },
+  { name: 'Carte',        value: 5,  color: '#8b5cf6' },
+]
+
+const paiementRepartitionConfig: ChartConfig = {
+  'Mobile Money': { label: 'Mobile Money', color: '#f97316' },
+  'Orange Money': { label: 'Orange Money', color: '#ea580c' },
+  'Wave':         { label: 'Wave',         color: '#06b6d4' },
+  'Cash':         { label: 'Cash',         color: '#10b981' },
+  'Carte':        { label: 'Carte',        color: '#8b5cf6' },
+}
+
+const echecTrendData = [
+  { jour: 'Lun', echec: 3.2 }, { jour: 'Mar', echec: 2.8 }, { jour: 'Mer', echec: 4.1 },
+  { jour: 'Jeu', echec: 2.5 }, { jour: 'Ven', echec: 3.8 }, { jour: 'Sam', echec: 1.9 },
+  { jour: 'Dim', echec: 2.2 },
+]
+
+const echecConfig: ChartConfig = {
+  echec: { label: "Taux d'échec (%)", color: '#f43f5e' },
+}
+
+const modeStats = [
+  { mode: 'Mobile Money', icon: Smartphone, transactions: 1248, volume: '3,120,000 FCFA', taux_echec: '2.1%', bg: 'bg-orange-50', text: 'text-orange-700' },
+  { mode: 'Orange Money', icon: Smartphone, transactions: 831,  volume: '2,077,500 FCFA', taux_echec: '1.8%', bg: 'bg-orange-50', text: 'text-orange-600' },
+  { mode: 'Wave',         icon: Wallet,     transactions: 445,  volume: '1,112,500 FCFA', taux_echec: '0.9%', bg: 'bg-sky-50',    text: 'text-sky-700' },
+  { mode: 'Cash',         icon: Banknote,   transactions: 297,  volume: '742,500 FCFA',   taux_echec: '0.0%', bg: 'bg-emerald-50', text: 'text-emerald-700' },
+  { mode: 'Carte',        icon: CreditCard, transactions: 148,  volume: '370,000 FCFA',   taux_echec: '4.7%', bg: 'bg-violet-50', text: 'text-violet-700' },
+]
+
+function PieLabel(props: { cx?: number; cy?: number; midAngle?: number; innerRadius?: number; outerRadius?: number; percent?: number }) {
+  const { cx = 0, cy = 0, midAngle = 0, innerRadius = 0, outerRadius = 0, percent = 0 } = props
+  if (percent < 0.08) return null
+  const RADIAN = Math.PI / 180
+  const r = innerRadius + (outerRadius - innerRadius) * 0.5
+  const x = cx + r * Math.cos(-midAngle * RADIAN)
+  const y = cy + r * Math.sin(-midAngle * RADIAN)
+  return (
+    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: 10, fontWeight: 700 }}>
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  )
+}
+
+function PaiementsTab() {
+  return (
+    <>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+        {[
+          { label: 'Volume total',       value: '7,422,500 FCFA', icon: TrendingUp,    color: 'text-emerald-600', bg: 'bg-emerald-50' },
+          { label: 'Transactions',       value: '2,969',          icon: CreditCard,    color: 'text-sky-600',     bg: 'bg-sky-50' },
+          { label: "Taux d'échec moyen", value: '1.9%',           icon: AlertTriangle, color: 'text-rose-600',    bg: 'bg-rose-50' },
+          { label: 'Paiement dématér.',  value: '90%',            icon: Smartphone,    color: 'text-orange-600',  bg: 'bg-orange-50' },
+        ].map(card => {
+          const Icon = card.icon
+          return (
+            <div key={card.label} className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3">
+              <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0', card.bg)}>
+                <Icon className={cn('w-5 h-5', card.color)} />
+              </div>
+              <div>
+                <p className="text-base font-bold text-[#111827] leading-tight">{card.value}</p>
+                <p className="text-[11px] text-[#6B7280]">{card.label}</p>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 mb-5">
+        <div className="lg:col-span-2 bg-white border border-[#E5E7EB] rounded-xl p-5 flex flex-col">
+          <h3 className="text-sm font-semibold text-[#111827] mb-4 flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-orange-600" /> Répartition par méthode
+          </h3>
+          <ChartContainer config={paiementRepartitionConfig} className="h-[200px] w-full">
+            <PieChart>
+              <Pie
+                data={paiementRepartitionData}
+                cx="50%" cy="50%"
+                innerRadius={50} outerRadius={80}
+                paddingAngle={3} dataKey="value"
+                labelLine={false} label={PieLabel}
+                strokeWidth={0}
+              >
+                {paiementRepartitionData.map((entry, i) => (
+                  <Cell key={i} fill={entry.color} />
+                ))}
+              </Pie>
+              <RechartsTooltip
+                formatter={(v: unknown, n: unknown) => [`${v}%`, n as string]}
+                contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB', fontSize: '12px' }}
+              />
+            </PieChart>
+          </ChartContainer>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-2">
+            {paiementRepartitionData.map(item => (
+              <div key={item.name} className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                <span className="text-[11px] text-[#6B7280] truncate">{item.name}</span>
+                <span className="text-[11px] font-semibold text-[#111827] ml-auto">{item.value}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="lg:col-span-3 bg-white border border-[#E5E7EB] rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-[#111827] mb-4 flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-rose-500" /> Taux d&apos;échec quotidien (%)
+          </h3>
+          <ChartContainer config={echecConfig} className="h-[200px] w-full">
+            <BarChart data={echecTrendData} barSize={28}>
+              <CartesianGrid vertical={false} stroke="#E5E7EB" strokeDasharray="3 3" />
+              <XAxis dataKey="jour" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
+              <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} width={32}
+                tickFormatter={(v: number) => `${v}%`} />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Bar dataKey="echec" fill="#f43f5e" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ChartContainer>
+        </div>
+      </div>
+
+      <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-orange-600" />
+          <h3 className="text-sm font-semibold text-[#111827]">Détail par méthode de paiement</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-[#F9FAFB]">
+              <tr className="border-b border-[#E5E7EB]">
+                <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Méthode</th>
+                <th className="py-2.5 px-3 text-right text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Transactions</th>
+                <th className="py-2.5 px-3 text-right text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Volume</th>
+                <th className="py-2.5 px-3 text-center text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Taux d&apos;échec</th>
+              </tr>
+            </thead>
+            <tbody>
+              {modeStats.map(row => {
+                const Icon = row.icon
+                return (
+                  <tr key={row.mode} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB]">
+                    <td className="py-3 px-5">
+                      <div className="flex items-center gap-2.5">
+                        <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center shrink-0', row.bg)}>
+                          <Icon className={cn('w-4 h-4', row.text)} />
+                        </div>
+                        <span className="font-medium text-[#111827] text-xs">{row.mode}</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-3 text-right font-semibold text-[#111827] text-xs">{row.transactions.toLocaleString('fr')}</td>
+                    <td className="py-3 px-3 text-right text-xs text-emerald-600 font-semibold">{row.volume}</td>
+                    <td className="py-3 px-3 text-center">
+                      <span className={cn(
+                        'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold',
+                        parseFloat(row.taux_echec) === 0 ? 'bg-emerald-50 text-emerald-700' :
+                        parseFloat(row.taux_echec) > 3 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'
+                      )}>
+                        {parseFloat(row.taux_echec) > 0 && <AlertTriangle className="w-2.5 h-2.5" />}
+                        {row.taux_echec}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     </>

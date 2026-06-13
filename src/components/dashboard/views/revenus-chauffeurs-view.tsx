@@ -12,8 +12,12 @@ import {
   Eye,
   ArrowRightLeft,
   User,
+  Car,
+  Star,
+  Calendar,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +35,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 
 /* ------------------------------------------------------------------ */
 /*  Types & Data                                                       */
@@ -70,6 +80,7 @@ export function RevenusChauffeursView() {
   const [searchTerm, setSearchTerm] = useState('')
   const [transferDialogOpen, setTransferDialogOpen] = useState(false)
   const [selectedChauffeur, setSelectedChauffeur] = useState<Chauffeur | null>(null)
+  const [detailSheetOpen, setDetailSheetOpen] = useState(false)
 
   const filtered = mockChauffeurs.filter((c) => {
     return (
@@ -79,7 +90,8 @@ export function RevenusChauffeursView() {
   })
 
   const handleViewDetail = (c: Chauffeur) => {
-    alert(`Détail chauffeur : ${c.nom} — Revenus: ${c.revenus}`)
+    setSelectedChauffeur(c)
+    setDetailSheetOpen(true)
   }
 
   const handleTransfer = (c: Chauffeur) => {
@@ -89,10 +101,26 @@ export function RevenusChauffeursView() {
 
   const confirmTransfer = () => {
     if (selectedChauffeur) {
-      alert(`Virement de ${selectedChauffeur.soldeDisponible} déclenché pour ${selectedChauffeur.nom}`)
+      toast.success('Versement initié', {
+        description: `Versement de ${selectedChauffeur.soldeDisponible} initié pour ${selectedChauffeur.nom}.`,
+      })
       setTransferDialogOpen(false)
       setSelectedChauffeur(null)
     }
+  }
+
+  const handleExportCSV = () => {
+    const headers = ['Nom', 'Courses', 'Revenus totaux', 'Solde disponible', 'Dernier versement']
+    const rows = filtered.map(c => [c.nom, String(c.courses), c.revenus, c.soldeDisponible, c.dernierVersement])
+    const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `revenus-chauffeurs-${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    toast.success('Export CSV réussi', { description: `${filtered.length} chauffeur(s) exporté(s)` })
   }
 
   return (
@@ -147,7 +175,10 @@ export function RevenusChauffeursView() {
               className="w-full pl-9 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
-          <button className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors">
+          <button
+            onClick={handleExportCSV}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <Download className="w-4 h-4" /> Export
           </button>
         </div>
@@ -167,8 +198,8 @@ export function RevenusChauffeursView() {
         </div>
 
         {/* Desktop Table */}
-        <div className="hidden md:block flex-1 overflow-y-auto min-h-0 max-h-[460px]">
-          <table className="w-full text-sm">
+        <div className="hidden md:block flex-1 overflow-x-auto overflow-y-auto min-h-0 max-h-[460px]">
+          <table className="w-full min-w-[580px] text-sm">
             <thead className="sticky top-0 bg-[#F9FAFB] z-10">
               <tr className="border-b border-[#E5E7EB]">
                 <th className="py-2.5 px-5 text-left text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Chauffeur</th>
@@ -266,6 +297,99 @@ export function RevenusChauffeursView() {
           <p className="text-xs text-[#9CA3AF]">{filtered.length} chauffeurs affichés</p>
         </div>
       </div>
+
+      {/* ---- Chauffeur Detail Sheet ---- */}
+      <Sheet open={detailSheetOpen} onOpenChange={setDetailSheetOpen}>
+        <SheetContent className="w-full sm:max-w-md overflow-y-auto">
+          <SheetHeader className="mb-5">
+            <SheetTitle>Détail chauffeur</SheetTitle>
+          </SheetHeader>
+          {selectedChauffeur && (
+            <div className="space-y-6">
+              {/* Identity */}
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-xl shrink-0">
+                  {selectedChauffeur.nom.split(' ').map((w) => w[0]).join('')}
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-[#111827]">{selectedChauffeur.nom}</p>
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                    <span className="text-sm font-semibold text-amber-600">4,8</span>
+                    <span className="text-xs text-[#9CA3AF] ml-1">— Chauffeur actif</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats cards */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-orange-50 rounded-xl p-4 text-center">
+                  <p className="text-2xl font-bold text-orange-700">{selectedChauffeur.courses}</p>
+                  <p className="text-xs text-orange-600 mt-0.5">Courses totales</p>
+                </div>
+                <div className="bg-emerald-50 rounded-xl p-4 text-center">
+                  <p className="text-xs font-bold text-emerald-700 leading-tight">{selectedChauffeur.soldeDisponible}</p>
+                  <p className="text-xs text-emerald-600 mt-0.5">Solde disponible</p>
+                </div>
+              </div>
+
+              {/* Details */}
+              <div className="bg-[#F9FAFB] rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2 text-[#9CA3AF]">
+                    <DollarSign className="w-4 h-4" />
+                    <span>Revenus totaux</span>
+                  </div>
+                  <span className="font-bold text-[#111827]">{selectedChauffeur.revenus}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2 text-[#9CA3AF]">
+                    <Car className="w-4 h-4" />
+                    <span>Courses effectuées</span>
+                  </div>
+                  <span className="font-semibold text-[#374151]">{selectedChauffeur.courses}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2 text-[#9CA3AF]">
+                    <Calendar className="w-4 h-4" />
+                    <span>Dernier versement</span>
+                  </div>
+                  <span className="font-semibold text-[#374151]">{selectedChauffeur.dernierVersement}</span>
+                </div>
+              </div>
+
+              {/* Revenue breakdown */}
+              <div className="bg-[#F9FAFB] rounded-xl p-4 space-y-2">
+                <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider font-semibold mb-3">Répartition des revenus</p>
+                {[
+                  { label: 'Courses standard', pct: 55, color: 'bg-orange-500' },
+                  { label: 'Courses premium', pct: 30, color: 'bg-amber-500' },
+                  { label: 'Aéroport', pct: 15, color: 'bg-emerald-500' },
+                ].map((item) => (
+                  <div key={item.label} className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-[#6B7280]">{item.label}</span>
+                      <span className="font-semibold text-[#374151]">{item.pct}%</span>
+                    </div>
+                    <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div className={cn('h-full rounded-full', item.color)} style={{ width: `${item.pct}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA */}
+              <button
+                onClick={() => { setDetailSheetOpen(false); setTransferDialogOpen(true) }}
+                className="w-full flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-sm py-3 rounded-xl transition-colors"
+              >
+                <ArrowRightLeft className="w-4 h-4" />
+                Déclencher un virement
+              </button>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
 
       {/* ---- AlertDialog for manual transfer ---- */}
       <AlertDialog open={transferDialogOpen} onOpenChange={setTransferDialogOpen}>

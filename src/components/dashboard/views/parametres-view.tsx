@@ -23,6 +23,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
+  Activity,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getRoleLabel, getRoleColor } from '@/lib/auth'
@@ -182,8 +183,8 @@ const ROLE_PRESETS: Record<string, string[]> = {
 
 // ─── Action badge config ─────────────────────────────────────
 
-function getActionBadgeConfig(action: AuditAction) {
-  const config: Record<AuditAction, { bg: string; text: string; icon: React.ReactNode }> = {
+function getActionBadgeConfig(action: string) {
+  const config: Record<string, { bg: string; text: string; icon: React.ReactNode }> = {
     CONNEXION: { bg: 'bg-emerald-50', text: 'text-emerald-700', icon: <LogIn className="w-3 h-3" /> },
     CREATION: { bg: 'bg-green-50', text: 'text-green-700', icon: <Plus className="w-3 h-3" /> },
     MODIFICATION: { bg: 'bg-sky-50', text: 'text-sky-700', icon: <Pencil className="w-3 h-3" /> },
@@ -192,7 +193,7 @@ function getActionBadgeConfig(action: AuditAction) {
     VALIDATION_KYC: { bg: 'bg-violet-50', text: 'text-violet-700', icon: <ShieldCheck className="w-3 h-3" /> },
     DECONNEXION: { bg: 'bg-gray-50', text: 'text-gray-700', icon: <LogOut className="w-3 h-3" /> },
   }
-  return config[action]
+  return config[action] ?? { bg: 'bg-gray-50', text: 'text-gray-700', icon: <Activity className="w-3 h-3" /> }
 }
 
 // ─── Date formatting ─────────────────────────────────────────

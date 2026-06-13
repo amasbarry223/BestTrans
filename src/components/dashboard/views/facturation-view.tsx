@@ -178,7 +178,7 @@ export function FacturationView() {
                 </thead>
                 <tbody>
                   {mockInvoices.map((inv) => {
-                    const sty = invoiceStatusStyle[inv.status]
+                    const sty = invoiceStatusStyle[inv.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }
                     return (
                       <tr key={inv.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors cursor-pointer">
                         <td className="py-3 px-4 font-mono text-xs font-semibold text-teal-700">{inv.number}</td>

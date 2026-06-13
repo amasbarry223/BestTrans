@@ -250,7 +250,7 @@ export function DepotsView() {
               </thead>
               <tbody>
                 {mockMovements.map((m) => {
-                  const sty = moveTypeStyle[m.type]
+                  const sty = moveTypeStyle[m.type] ?? { bg: 'bg-gray-50', text: 'text-gray-700', icon: ArrowRightLeft }
                   const Icon = sty.icon
                   return (
                     <tr key={m.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors">

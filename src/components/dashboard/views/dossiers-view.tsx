@@ -243,8 +243,8 @@ export function DossiersView() {
             </thead>
             <tbody>
               {filtered.map((d) => {
-                const sty = statusStyle[d.status]
-                const tsty = typeStyle[d.type]
+                const sty = statusStyle[d.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }
+                const tsty = typeStyle[d.type] ?? { bg: 'bg-gray-50', text: 'text-gray-700' }
                 return (
                   <tr key={d.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors group">
                     <td className="py-3 px-4">
@@ -303,8 +303,8 @@ export function DossiersView() {
       <div className="md:hidden flex-1 overflow-y-auto">
         <div className="space-y-3">
           {filtered.map((d) => {
-            const sty = statusStyle[d.status]
-            const tsty = typeStyle[d.type]
+            const sty = statusStyle[d.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }
+            const tsty = typeStyle[d.type] ?? { bg: 'bg-gray-50', text: 'text-gray-700' }
             return (
               <div key={d.id} className="bg-white border border-[#E5E7EB] rounded-xl p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-2">

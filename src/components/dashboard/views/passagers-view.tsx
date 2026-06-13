@@ -240,7 +240,7 @@ export function PassagersView() {
             </thead>
             <tbody>
               {filtered.map((p) => {
-                const sty = statusStyle[p.status]
+                const sty = statusStyle[p.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }
                 return (
                   <tr key={p.id} className="border-b border-[#F3F4F6] last:border-b-0 hover:bg-[#F9FAFB] transition-colors">
                     <td className="py-3 px-5">
@@ -307,7 +307,7 @@ export function PassagersView() {
       <div className="md:hidden flex-1 overflow-y-auto min-h-0">
         <div className="space-y-3">
           {filtered.map((p) => {
-            const sty = statusStyle[p.status]
+            const sty = statusStyle[p.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }
             return (
               <div key={p.id} className="bg-white border border-[#E5E7EB] rounded-xl p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between mb-3">

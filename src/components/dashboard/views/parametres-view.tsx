@@ -863,9 +863,9 @@ function UtilisateursTab() {
     if (!searchQuery.trim()) return true
     const q = searchQuery.toLowerCase()
     return (
-      u.name.toLowerCase().includes(q) ||
-      u.email.toLowerCase().includes(q) ||
-      u.username.toLowerCase().includes(q)
+      u.name?.toLowerCase().includes(q) ||
+      u.email?.toLowerCase().includes(q) ||
+      u.username?.toLowerCase().includes(q)
     )
   })
 
@@ -916,12 +916,15 @@ function UtilisateursTab() {
     try {
       const computedInitials =
         formInitials ||
-        formName
-          .split(' ')
-          .map((w) => w[0])
-          .join('')
-          .slice(0, 2)
-          .toUpperCase()
+        (formName
+          ? formName
+              .split(' ')
+              .filter(Boolean)
+              .map((w) => w[0])
+              .join('')
+              .slice(0, 2)
+              .toUpperCase()
+          : '??')
 
       if (editingUser) {
         // Update
@@ -1130,7 +1133,7 @@ function UtilisateursTab() {
                         </button>
                         {isExpanded && (
                           <div className="mt-1 p-2 bg-gray-50 rounded-md text-xs text-[#6B7280] max-w-[250px]">
-                            {user.permissions.length > 0 ? (
+                            {(user.permissions?.length ?? 0) > 0 ? (
                               <div className="flex flex-wrap gap-1">
                                 {user.permissions.map((p) => (
                                   <Badge key={p} variant="secondary" className="text-[10px] px-1.5 py-0 h-5">

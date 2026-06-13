@@ -234,9 +234,9 @@ export function TransactionsView() {
             </thead>
             <tbody>
               {filtered.map((tx) => {
-                const ModeIcon = modeIcon[tx.mode]
-                const mSty = modeStyle[tx.mode]
-                const sSty = statusStyle[tx.statut]
+                const ModeIcon = modeIcon[tx.mode] ?? CreditCard
+                const mSty = modeStyle[tx.mode] ?? { bg: 'bg-gray-50', text: 'text-gray-700' }
+                const sSty = statusStyle[tx.statut] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }
                 return (
                   <tr
                     key={tx.id}
@@ -294,9 +294,9 @@ export function TransactionsView() {
         <div className="md:hidden flex-1 overflow-y-auto min-h-0 max-h-[460px]">
           <div className="divide-y divide-[#F3F4F6]">
             {filtered.map((tx) => {
-              const ModeIcon = modeIcon[tx.mode]
-              const mSty = modeStyle[tx.mode]
-              const sSty = statusStyle[tx.statut]
+              const ModeIcon = modeIcon[tx.mode] ?? CreditCard
+              const mSty = modeStyle[tx.mode] ?? { bg: 'bg-gray-50', text: 'text-gray-700' }
+              const sSty = statusStyle[tx.statut] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }
               return (
                 <div key={tx.id} className="px-4 py-3 flex items-start gap-3">
                   <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0', mSty.bg)}>

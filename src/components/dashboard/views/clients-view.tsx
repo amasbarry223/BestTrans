@@ -226,9 +226,9 @@ export function ClientsView() {
       <div className="flex-1 overflow-y-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filtered.map((c) => {
-            const tsty = typeStyle[c.type]
-            const encoursNum = parseInt(c.encours.replace(/[^0-9]/g, ''))
-            const plafondNum = parseInt(c.plafond.replace(/[^0-9]/g, ''))
+            const tsty = typeStyle[c.type] ?? { bg: 'bg-gray-50', text: 'text-gray-700' }
+            const encoursNum = parseInt(c.encours.replace(/[^0-9]/g, '')) || 0
+            const plafondNum = parseInt(c.plafond.replace(/[^0-9]/g, '')) || 1
             const ratio = Math.round((encoursNum / plafondNum) * 100)
             return (
               <div key={c.id} className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer">

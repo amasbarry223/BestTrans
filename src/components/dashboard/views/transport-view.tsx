@@ -242,7 +242,7 @@ export function TransportView() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {vehicles.map((v) => {
-                const sty = vehicleStatusStyle[v.status]
+                const sty = vehicleStatusStyle[v.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700' }
                 return (
                   <div key={v.id} className="border border-[#E5E7EB] rounded-xl p-4 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-3">
@@ -362,7 +362,7 @@ export function TransportView() {
             </div>
             <div className="space-y-3">
               {missions.map((m) => {
-                const sty = missionStatusStyle[m.status]
+                const sty = missionStatusStyle[m.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }
                 return (
                   <div key={m.id} className="border border-[#E5E7EB] rounded-xl p-4 hover:shadow-md transition-shadow">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
@@ -683,8 +683,8 @@ export function TransportView() {
                     <p className="text-lg font-bold text-[#111827] font-mono">{itemToView.data.immat}</p>
                     <span className={cn(
                       'text-[10px] font-semibold px-2 py-0.5 rounded',
-                      vehicleStatusStyle[itemToView.data.status].bg,
-                      vehicleStatusStyle[itemToView.data.status].text
+                      (vehicleStatusStyle[itemToView.data.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700' }).bg,
+                      (vehicleStatusStyle[itemToView.data.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700' }).text
                     )}>
                       {itemToView.data.status}
                     </span>
@@ -728,10 +728,10 @@ export function TransportView() {
                     <p className="text-lg font-bold text-[#111827] font-mono">{itemToView.data.number}</p>
                     <span className={cn(
                       'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold',
-                      missionStatusStyle[itemToView.data.status].bg,
-                      missionStatusStyle[itemToView.data.status].text
+                      (missionStatusStyle[itemToView.data.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }).bg,
+                      (missionStatusStyle[itemToView.data.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }).text
                     )}>
-                      <span className={cn('w-1.5 h-1.5 rounded-full', missionStatusStyle[itemToView.data.status].dot)} />
+                      <span className={cn('w-1.5 h-1.5 rounded-full', (missionStatusStyle[itemToView.data.status] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }).dot)} />
                       {itemToView.data.status}
                     </span>
                   </div>

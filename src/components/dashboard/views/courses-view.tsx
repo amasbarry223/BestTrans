@@ -225,8 +225,8 @@ export function CoursesView() {
             </thead>
             <tbody>
               {filtered.map((c) => {
-                const st = statutStyle[c.statut]
-                const mp = paiementStyle[c.modePaiement as ModePaiement]
+                const st = statutStyle[c.statut] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }
+                const mp = paiementStyle[c.modePaiement as ModePaiement] ?? { bg: 'bg-gray-50', text: 'text-gray-700' }
                 return (
                   <tr key={c.id} className="border-b border-[#F3F4F6] hover:bg-blue-50/40 transition-colors">
                     <td className="py-3 px-4">
@@ -296,8 +296,8 @@ export function CoursesView() {
       <div className="md:hidden flex-1 overflow-y-auto">
         <div className="space-y-3">
           {filtered.map((c) => {
-            const st = statutStyle[c.statut]
-            const mp = paiementStyle[c.modePaiement as ModePaiement]
+            const st = statutStyle[c.statut] ?? { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' }
+            const mp = paiementStyle[c.modePaiement as ModePaiement] ?? { bg: 'bg-gray-50', text: 'text-gray-700' }
             return (
               <div key={c.id} className="bg-white border border-[#E5E7EB] rounded-xl p-4 hover:shadow-md transition-shadow">
                 {/* Header row */}

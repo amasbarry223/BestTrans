@@ -1,9 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Bell, LogOut, Menu, Settings, ChevronDown, PanelLeftOpen, Sun, Moon } from 'lucide-react'
+import { Bell, LogOut, Menu, Settings, ChevronDown, PanelLeftOpen } from 'lucide-react'
 import { useAuthUser } from '@/hooks/use-auth-user'
-import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
 import { type ViewKey } from './navigation'
 import { mockDb } from '@/lib/mock-db'
@@ -47,7 +46,6 @@ export function DashboardHeader({
 }) {
   const { title, subtitle } = viewTitles[activeView] || viewTitles.dashboard
   const user = useAuthUser()
-  const { theme, setTheme } = useTheme()
   const [profileOpen, setProfileOpen] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
   const profileRef = useRef<HTMLDivElement | null>(null)
@@ -59,10 +57,6 @@ export function DashboardHeader({
     }, 5000)
     return () => clearInterval(timer)
   }, [])
-
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
-  }
 
   async function handleLogout() {
     setProfileOpen(false)
@@ -110,19 +104,8 @@ export function DashboardHeader({
       </div>
       <div className="flex items-center gap-2 sm:gap-3">
         <button
-          onClick={toggleTheme}
-          title="Changer le thème"
-          className="p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-slate-800 transition-colors"
-        >
-          {theme === 'dark' ? (
-            <Sun className="w-5 h-5 text-amber-400" />
-          ) : (
-            <Moon className="w-5 h-5 text-[#6B7280]" />
-          )}
-        </button>
-        <button
           onClick={onNotificationClick}
-          className="relative p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-slate-800 transition-colors"
+          className="relative p-2 rounded-lg hover:bg-orange-50 transition-colors"
         >
           <Bell className="w-5 h-5 text-[#6B7280]" />
           {unreadCount > 0 && (

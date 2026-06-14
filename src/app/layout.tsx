@@ -4,7 +4,6 @@ import "./globals.css";
 import { StripExtensionAttrs } from "@/components/strip-extension-attrs";
 import { STRIP_EXTENSION_ATTRS_SCRIPT } from "@/lib/strip-extension-attrs-script";
 import { Toaster } from "sonner";
-import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,20 +37,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <script
-            suppressHydrationWarning
-            dangerouslySetInnerHTML={{ __html: STRIP_EXTENSION_ATTRS_SCRIPT }}
-          />
-          <StripExtensionAttrs />
-          <div suppressHydrationWarning>{children}</div>
-          <Toaster position="top-right" richColors closeButton />
-        </ThemeProvider>
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: STRIP_EXTENSION_ATTRS_SCRIPT }}
+        />
+        <StripExtensionAttrs />
+        <div suppressHydrationWarning>{children}</div>
+        <Toaster position="top-right" richColors closeButton />
       </body>
     </html>
   );
